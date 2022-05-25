@@ -1,0 +1,105 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="/css/home.css">
+    
+    <link rel="icon" href="/img/LOGO BEMP STAT UNJ.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <title>BEMP STATISTIKA UNJ </title>
+  </head>
+  <body>
+    
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="/img/LOGO BEMP STAT UNJ.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+        BEMP STATISTIKA UNJ
+      </a>  
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link "  href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link  " href="/posts">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/categories">Categories</a>
+          </li>
+     
+        </ul>
+        
+        <ul class="navbar-nav ms-auto">
+                          <li class="nav-item">
+                <a href="/login" class="nav-link "><i class="bi bi-box-arrow-in-right"></i> Login</a>
+              </li>
+                    </ul>
+       
+      </div>
+    </div>
+  </nav>        <div class="wrapper">
+          <div class="container mt-4" style="min-height:85vh;">
+<div class="main ">
+  <div class="blog-post blog-post-wrapper">
+    <div class="container">
+      <article id="post-648" class="section section-text">
+  <div class="row">
+        <div class="col-md-8 single-post-container col-md-offset-2" data-layout="sidebar-right">
+
+      <div class="single-post-wrap entry-content">  <div class="row"><div class="col-md-10 col-md-offset-1"><h1 class="hestia-title title-in-content entry-title">Tentang BEMP Statistika UNJ</h1><p class="author meta-in-content">Published by <a href="https://bempstatistikaunj.com/" class="vcard author"><strong class="fn">BEMP Statistika UNJ</strong></a></p></div></div><p><div class="d-flex justify-content-evenly"><img src="https://i.ibb.co/PQcPZP4/logo-bem.png" alt="" width="350" class="aligncenter size-medium wp-image-3606" sizes="(max-width: 295px) 100vw, 295px" /></div></noscript></p>
+<p style="text-align: justify">BEMP Statistika UNJ dibentuk atas dasar untuk memberikan pelayanan-pelayanan untuk seluruh elemen yang ada
+di prodi Statistika. BEMP Statisika memiliki fungsi eksekusi, dimana BEMP Statistika akan melaksanakan segala
+bentuk pelayanan, program, dan kegiatan yang dapat menunjang kebutuhan-kebutuhan yang dibutuhkan di prodi Statistika.</p>
+<p style="text-align: center"><strong>VISI</strong></p>
+<p style="text-align: justify;">Terwujudnya BEMP Statistika UNJ yang profesional, inovatif, berprestasi, dan aktif dalam satu kesatuan yang utuh yang
+berlandaskan iman dan ketakwaan untuk Statistika UNJ yang unggul.</p>
+<p style="text-align: center"><strong> MISI</strong></p>
+<ol>
+<li style="text-align: justify">Membentuk dan menjaga nilai-nilai ketuhanan, kekeluargaan, dan keharmonisan dalam ruang lingkup internal
+BEMP Statistika UNJ maupun seluruh civitas akademika Statistika UNJ.</li>
+<li style="text-align: justify">Menumbuhkembangkan sikap semangat berprestasi pada bidang akademik maupun nonakademik dalam mendukung
+terwujudnya Statistika UNJ menuju akreditasi unggul.</li>
+<li style="text-align: justify">Menjadikan program kerja BEMP Statistika UNJ menjadi suatu kegiatan yang bermanfaat yang dapat
+menumbuhkembangkan bakat, kreativitas, dan potensi yang dimiliki mahasiswa Program Studi Statistika UNJ.</li>
+<li style="text-align: justify">Mempererat dan meningkatkan lingkungan Statistika UNJ yang komunikatif dan interaktif dalam berperan
+sebagai wadah aspirasi mahasiswa serta memaksimalkan fungsi 3P advokasi (pengaduan, pelayanan, dan pembelaan).</li>
+<li style="text-align: justify">Menjaga dan meningkatkan hubungan dengan birokrat serta memperluas relasi untuk membangun kerja sama
+yang produktif dan inovatif</li>
+</ol>
+<p style="text-align: center"><strong>Struktur Organisasi</strong></p>
+<p><img src="https://i.ibb.co/gdGQznB/Struktur.png" alt="" width="700" height="350" class="aligncenter size-full wp-image-3643"/></noscript></p>
+</div>
+
+</div>
+    
+        </div>
+        <!-- Footer -->
+<div class="container-fluid py-3" style="background-color: #212529">
+    <div class="container">
+      <footer class="text-light text-center">&copy;2022 BEMP STATISTIKA UNJ</footer>
+    </div>
+</div>
+  <!-- Akhir Footer -->
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
