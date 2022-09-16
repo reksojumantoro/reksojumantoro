@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="/css/home.css">
+    
+    <link rel="icon" href="/img/LOGO BEMP STAT UNJ.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <title>BEMP STATISTIKA UNJ </title>
+  </head>
+  <body>
+    
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="/img/LOGO BEMP STAT UNJ.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+        BEMP STATISTIKA UNJ
+      </a>  
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link "  href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link  " href="/posts">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/categories">Categories</a>
+          </li>
+     
+        </ul>
+        
+        <ul class="navbar-nav ms-auto">
+                          <li class="nav-item">
+                <a href="/login" class="nav-link "><i class="bi bi-box-arrow-in-right"></i> Login</a>
+              </li>
+                    </ul>
+       
+      </div>
+    </div>
+  </nav>        <div class="wrapper">
+          <div class="container mt-4" style="min-height:85vh;">
+<div class="main ">
+  <div class="blog-post blog-post-wrapper">
+    <div class="container">
+      <article id="post-648" class="section section-text">
+  <div class="row">
+        <div class="col-md-8 single-post-container col-md-offset-2" data-layout="sidebar-right">
+
+      <div class="single-post-wrap entry-content">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <h1 class="hestia-title title-in-content entry-title">SMART STATISTIC (SMATIC)</h1>
+            <p class="author meta-in-content">Published by 
+              <a href="https://bempstatistikaunj.com/" class="vcard author"><strong class="fn">BEMP Statistika UNJ</strong></a></p>
+            </div>
+          </div>
+          <p>
+            <div class="d-flex justify-content-evenly"><a href="https://www.instagram.com/p/CiHRv_bBT5J/?utm_source=ig_web_copy_link" target="blank"><img src="https://i.ibb.co/X8Z0vWY/smatic.jpg" alt="" width="350" class="aligncenter size-medium wp-image-3606" sizes="(max-width: 295px) 100vw, 295px" /></a>
+            </div></noscript>
+          </p>
+<p style="text-align: justify">SMART STATISTIC UNJ / SMATIC UNJ merupakan salah satu program kerja dari Departemen Akademik dan Keprofesian BEM Prodi Statistika Universitas Negeri Jakarta. Perlu diketahui, SMART STATISTIC UNJ merupakan program kerja yang diselenggarakan pada setiap tahun. Agenda ini merupakan sebuah ajang perlombaan pada bidang statistika yakni lomba infografis, lomba penulisan esai statistika, serta olimpiade statistika nasional yang terbuka bagi kalian mahasiswa aktif tingkat diploma atau sarjana dari seluruh Indonesia. </p>
+<p style="text-align: justify;">Pada tahun lalu, SMATIC 2.0 dilaksanakan secara daring dalam waktu 2 bulan pelaksanaan yakni pada bulan Oktober hingga bulan November 2021. Agenda yang mengangkat tema “Establish Futuristic Era with Data Analyzed” yang bermakna Membangun Era Futuristik dengan Analisis Data ini berhasil mendatangkan 23 peserta yang berasal dari 10 instansi di Indonesia.</p>
+
+<p style="text-align: justify;">Tahun 2022, merupakan tahun ke-3 BEM Prodi Statistika UNJ menyelenggarakan agenda ini. Wabah COVID-19 yang belum sepenuhnya usai di Indonesia memaksa SMATIC 3.0 kembali dilaksanakan secara daring. Tahun ini kami kembali melaksanakan agenda SMART STATISTIC bertemakan “Bangkitkan Kreatifitas Mahasiswa Menuju Indonesia Emas 2045”. Indonesia Emas 2045 adalah suatu upaya dalam membangun generasi emas yang dimana adalah sebuah konsep penerapan untuk menyiapkan suatu generasi penerus bangsa Indonesia pada 100 tahun emas Indonesia merdeka antara tahun 1945 sampai tahun 2045. Dengan mengangkat tema tersebut, Kami harap dapat mampu meningkatkan semangat kreatifitas mahasiswa serta melatih pola pikir keilmiahan untuk pada akhirnya dapat mewujudkan cita-cita bangsa Indonesia di 100 tahun emas Indonesia merdeka.</p>
+
+<p style="text-align: justify;">Agenda ini dilaksanakan selama 3 bulan pelaksanaan, yaitu bulan Juni 2022 sebagai masa pendaftaran peserta, Bulan Juli sebagai tahap pelaksanaan lomba, dan Bulan Agustus sebagai masa final dan pengumuman pemenang lomba. Agenda ini bertujuan untuk memberikan ruang bagi mahasiswa yang ingin mengekspresikan kreatifitasnya melalui karya infografis ataupun karya tulis berupa esai.</p>
+
+<p style="text-align: justify;">Meskipun dilaksanakan secara daring, tidak membatasi semangat para peserta SMATIC 3.0 dalam mengikuti seluruh kegiatan perlombaan dari awal hingga akhir. Tercatat bahwa ada sebanyak 35 Tim pada cabang lomba Infografis, 21 Tim pada cabang lomba Esai, dan 18 Tim pada cabang Olimpiade Statistika. Seluruh peserta tersebar pada 25 Instansi yang berbeda dari total 10 Provinsi di Indonesia. Kami juga mengucapkan terima kasih kepada seluruh peserta yang telah berpartisipasi serta Kami ucapankan selamat bagi seluruh pemenang lomba SMATIC 3.0 pada tahun ini. Semoga seluruh agenda perlombaan yang diadakan BEMP Statistika UNJ pada tahun depan yakni SMATIC 4.0 dapat segera terlaksanakan secara luring kembali agar jalannya perlombaan ini akan lebih terkendali dibandingkan tahun-tahun sebelumnya.</p>
+
+<p style="text-align: justify;">Ikuti terus info terbaru dari rangkaian Smart Statistic BEMP Statistika UNJ dengan mengikuti sosial media kami pada Instagram <a href="http://instagram.com/smatic_unj" target="blank">@smatic_unj</a> atau dengan mengunjungi laman web <a href="http://smatic.bempstatistikaunj.com" target="blank">SMATIC</a>.</p>
+
+
+</div>
+
+</div>
+    
+        </div>
+        <!-- Footer -->
+<div class="container-fluid py-3" style="background-color: #212529">
+    <div class="container">
+      <footer class="text-light text-center">&copy;2022 BEMP STATISTIKA UNJ</footer>
+    </div>
+</div>
+  <!-- Akhir Footer -->
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
