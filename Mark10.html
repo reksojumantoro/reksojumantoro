@@ -1,95 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Pribadi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .paragraph {
+            text-align: justify;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="bg-dark py-2 text-white text-center">
+        <h1>Rekso Jumantoro's Personal Site</h1>
+    </header>
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekso Jumantoro</title>
-
-    <!-- CSS Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>CV Design</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .section-heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+        .section-content {
+            margin-top: 10px;
+        }
+        .profile-pic {
+            max-width: 200px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 
 <body>
-    <header class="bg-primary py-5">
-        <div class="container">
-            <h1 class="display-4 text-white">Rekso Jumantoro's Web</h1>
-        </div>
-    </header>
+    <div class="container mt-4">
+        <header class="text-center">
+            <img src="https://i.ibb.co/3mCGQ3D/IMG-4542-2.jpg" alt="Profile Picture" class="profile-pic mb-3">
+            <h1>Rekso Jumantoro</h1>
+            <p>Mahasiswa</p>
+        </header>
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Beranda</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="https://reksojumantoro.github.io/reksojumantoro/">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            More
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Music</a></li>
-            <li><a class="dropdown-item" href="#">CV</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Other</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+        <section>
+            <h2 class="section-heading">Profile</h2>
+             <p class="paragraph">Saya adalah seorang mahasiswa statistika yang memiliki minat mendalam dalam bidang <span class="highlight">data analisis</span> dan <span class="highlight">teknologi</span>. Saya percaya bahwa data adalah aset berharga yang dapat menghasilkan wawasan berharga untuk pengambilan keputusan. Dalam perjalanan akademik saya, saya terus belajar dan mengembangkan keterampilan analitis untuk menggali informasi dari data yang kompleks.</p>
+        </section>
+
+        <section>
+            <h2 class="section-heading">Pendidikan</h2>
+            <p class="section-content"><strong>Statistika</strong><br>Universitas Negeri Jakarta<br>2020 - Sekarang</p>
+        </section>
+
+        <section>
+            <h2 class="section-heading">Pengalaman</h2>
+            <p class="section-content"><strong>BADAN PUSAT STATISTIK</strong><br>Agen Pojok Statistik.<br>September 2022 - September 2023<br>Melayani mahasiswa dan masyarakat umum yang membutuhkan data untuk berbagai kepentingan.</p>
+        </section>
+
+        <section>
+            <h2 class="section-heading">Skills</h2>
+            <ul class="section-content">
+                <li>HTML, Bootstrap, RStudio</li>
+                <li>Microsoft Word, Excel, Power Point</li>
+                <li>Canva</li>
+                <li>Adaptive</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="section-heading">Contact</h2>
+            <p class="section-content">Email: reksoj7@gmail.com<br>Phone: 085715936065<br>LinkedIn: linkedin.com/in/rekso-jumantoro-a56424261</p>
+        </section>
     </div>
-  </div>
-</nav>
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
+    <footer class="bg-dark text-white py-3 text-center mt-4">
+        <p>&copy; Rekso Jumantoro 2023</p>
+    </footer>
 
-<div class="d-flex justify-content-center">
-  <div class="card" style="width: 18rem;">
-    <img src="https://i.ibb.co/RB0dWbj/COVER.jpg" class="card-img-top">
-    <div class="card-body">
-      <h5 class="card-title" id="more">More About Me</h5>
-      <p class="card-text">Gua punya list lagu ciptaan gua di bawah ini, juga sosial media yang gua pake.</p>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">Warna-Warni Rindu    <a href="https://open.spotify.com/track/5sU2AL5qW8S3L0RnJQf5yS?si=wYUZVLqPSzqqqDKpVg8H6w&utm_source=copy-link" target="_blank"><button type="button" class="btn btn-primary">Play</button></a></li>
-      <li class="list-group-item">It's Always You   <a href="https://open.spotify.com/track/214ptMriFfBLQolh8dLPNU?si=0yaxi7t4RF668MtGns-t8g&utm_source=copy-link" target="_blank"><button type="button" class="btn btn-primary">Play</button></a></li>
-    
-    </ul>
-    <div class="card-body">
-      <a href="http://instagram.com/reksojumantoro9" target="_blank" class="card-link"><button type="button" class="btn btn-primary">Instagram</button></a>
-      <a href="http://instagram.com/my_glryy" target="_blank" class="card-link"><button type="button" class="btn btn-primary">My Gallery</button></a>
-    </div>
-  </div>
-</div>
-
-    <header class="mt-3 bg-primary py-2">
-        <div class="container">
-            <div class="d-flex justify-content-center"><h6 class="text-white">©Rekso Jumantoro 2022</h6></div>
-        </div>
-    </header>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
