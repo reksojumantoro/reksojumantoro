@@ -5,161 +5,950 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekso Jumantoro's CV</title>
+
+    <title>CV | Rekso Jumantoro</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #f5f7fa;
+            --dark: #151515;
+            --text: #2b2b2b;
+            --muted: #707070;
+            --accent: #e74c3c;
+            --card: #ffffff;
+            --border: #e6e6e6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #f8f9fa;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.65;
         }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
+        /* =========================
+           NAVBAR
+        ========================== */
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.97) !important;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .section-heading {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 30px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--dark) !important;
         }
 
-        .section-content {
-            margin-top: 10px;
+        .navbar-brand span {
+            color: var(--accent);
+        }
+
+        .nav-link {
+            color: #555 !important;
+            font-weight: 500;
+            margin-left: 12px;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .nav-link.cv-link {
+            color: var(--accent) !important;
+            font-weight: 700;
+        }
+
+        /* =========================
+           CV CONTAINER
+        ========================== */
+
+        .cv-container {
+            max-width: 900px;
+            margin: 50px auto 80px;
+            padding: 0 20px;
+        }
+
+        .cv-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 50px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        /* =========================
+           PROFILE
+        ========================== */
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
         }
 
         .profile-pic {
-            max-width: 150px;
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
             border-radius: 50%;
-            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
         }
 
         .contact-info {
-            font-size: 14px;
-            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 0.9rem;
         }
 
-        .highlight {
-            font-weight: bold;
+        .contact-info a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            color: var(--accent);
+        }
+
+        /* =========================
+           SECTIONS
+        ========================== */
+
+        .cv-section {
+            margin-top: 40px;
+        }
+
+        .section-heading {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-heading::before {
+            content: "";
+            width: 5px;
+            height: 25px;
+            background-color: var(--accent);
+            border-radius: 5px;
+        }
+
+        .profile-text {
+            color: #555;
+            margin-bottom: 0;
+        }
+
+        /* =========================
+           TIMELINE
+        ========================== */
+
+        .timeline-item {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 30px;
+            border-left: 2px solid #e5e5e5;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -6px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-title {
+            font-size: 1.05rem;
+            font-weight: 750;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .timeline-company {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .timeline-date {
+            font-size: 0.82rem;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .timeline-description {
+            color: #666;
+            font-size: 0.93rem;
+            margin: 0;
+        }
+
+        /* =========================
+           SKILLS
+        ========================== */
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .skill {
+            padding: 8px 14px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+            color: #555;
+            font-size: 0.88rem;
+            transition: 0.2s ease;
+        }
+
+        .skill:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* =========================
+           EDUCATION CARD
+        ========================== */
+
+        .education-card {
+            padding: 20px;
+            background-color: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .education-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .education-title {
+            font-weight: 750;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .education-school {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .education-date {
+            color: #999;
+            font-size: 0.82rem;
+        }
+
+        .education-extra {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        /* =========================
+           TRAINING
+        ========================== */
+
+        .training-box {
+            background-color: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .training-title {
+            font-weight: 750;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .training-description {
+            color: #666;
+            font-size: 0.92rem;
+            margin: 8px 0 0;
+        }
+
+        /* =========================
+           LANGUAGES
+        ========================== */
+
+        .language-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .language-row:last-child {
+            border-bottom: none;
+        }
+
+        .language-name {
+            font-weight: 600;
+        }
+
+        .language-level {
+            color: #888;
+        }
+
+        /* =========================
+           DOWNLOAD / ACTION
+        ========================== */
+
+        .cv-actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 11px 22px;
+            border-radius: 8px;
+            background-color: var(--dark);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            background-color: var(--dark);
+            color: #999;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 768px) {
+
+            .cv-container {
+                margin-top: 25px;
+                padding: 0 12px;
+            }
+
+            .cv-card {
+                padding: 30px 22px;
+                border-radius: 14px;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .profile-info h1 {
+                font-size: 2.1rem;
+            }
+
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+
         }
     </style>
 </head>
 
 
 <body>
-    <header class="bg-dark py-2 text-white text-center">
-        <h1>Rekso Jumantoro</h1>
-    </header>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+
         <div class="container">
-            <a class="navbar-brand" href="https://reksojumantoro.github.io/reksojumantoro/">Beranda</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+            <a class="navbar-brand" href="index.html">
+                Rekso<span>.</span>
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
                 <span class="navbar-toggler-icon"></span>
+
             </button>
+
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="index.html#deskripsi">Deskripsi Diri</a>
-                    </li>
+
+                <ul class="navbar-nav ms-auto">
+
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html#my-work">My Work</a>
+                        <a class="nav-link" href="index.html#deskripsi">
+                            About
+                        </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="Mark10.html">My CV</a>
+                        <a class="nav-link" href="index.html#my-work">
+                            My Work
+                        </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link cv-link" href="Mark10.html">
+                            CV
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="games.html">
+                            🎮 Games
+                        </a>
+                    </li>
+
                 </ul>
+
             </div>
+
         </div>
+
     </nav>
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deskripsi Diri</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-        .paragraph {
-            text-align: justify;
-        }
-        .highlight {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-    </style>
-    <div class="container mt-4">
-        <header class="text-center">
-            <img src="https://i.ibb.co/3mCGQ3D/IMG-4542-2.jpg" alt="Profile Picture" class="profile-pic">
-            <div class="contact-info">
-                <p>Email: reksoj7@gmail.com | Phone: +6285715936065 | LinkedIn: <a href="https://linkedin.com/in/rekso-jumantoro-a56424261" target="_blank">linkedin.com/in/rekso-jumantoro-a56424261</a></p>
+
+
+    <!-- =========================
+         CV
+    ========================== -->
+
+    <main class="cv-container">
+
+        <div class="cv-card">
+
+
+            <!-- PROFILE HEADER -->
+
+            <section class="profile-section">
+
+                <img
+                    src="https://i.ibb.co/3mCGQ3D/IMG-4542-2.jpg"
+                    alt="Rekso Jumantoro"
+                    class="profile-pic">
+
+                <div class="profile-info">
+
+                    <h1>Rekso Jumantoro</h1>
+
+                    <div class="profile-title">
+                        Data Migration & Analytics
+                    </div>
+
+                    <div class="contact-info">
+
+                        <div>
+                            📧
+                            <a href="mailto:reksoj7@gmail.com">
+                                reksoj7@gmail.com
+                            </a>
+                        </div>
+
+                        <div>
+                            📱 +62 857 1593 6065
+                        </div>
+
+                        <div>
+                            🔗
+                            <a
+                                href="https://linkedin.com/in/rekso-jumantoro-a56424261"
+                                target="_blank">
+                                LinkedIn
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROFILE -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Profile
+                </h2>
+
+                <p class="profile-text">
+                    Statistics graduate from Universitas Negeri Jakarta
+                    with a strong interest in data, technology, and
+                    problem solving. Currently working in a
+                    <strong>Data Migration team</strong> on an
+                    <strong>SAP ECC to S/4HANA migration project</strong>,
+                    with a focus on SAP PP and QM master data.
+                </p>
+
+                <p class="profile-text mt-3">
+                    Experienced in data profiling, transformation,
+                    validation, reporting, and dashboard development.
+                    Comfortable working with
+                    <strong>Power BI, Excel, DAX, Power Query, SQL,
+                    Python, and Power Automate</strong>, while continuously
+                    developing technical and analytical skills.
+                </p>
+
+            </section>
+
+
+            <!-- WORK EXPERIENCE -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Work Experience
+                </h2>
+
+
+                <!-- CURRENT ROLE -->
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Data Migration / Data Analyst
+                    </div>
+
+                    <div class="timeline-company">
+                        Sinarmas Agribusiness and Food
+                    </div>
+
+                    <div class="timeline-date">
+                        Current Role
+                    </div>
+
+                    <p class="timeline-description">
+                        Working as part of a data migration team for the
+                        migration from SAP ECC to SAP S/4HANA. Responsible
+                        for extracting, profiling, transforming, validating,
+                        and preparing master data for migration, particularly
+                        across SAP Production Planning (PP) and Quality
+                        Management (QM).
+                    </p>
+
+                    <p class="timeline-description mt-2">
+                        Working with SAP master data including BOM,
+                        Work Center, Routing, Master Recipe, Production
+                        Version, Class & Characteristics, and related
+                        migration objects. Also involved in data analysis,
+                        reporting, dashboard development, and process
+                        improvement.
+                    </p>
+
+                </div>
+
+
+                <!-- KITABISA -->
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        HR Generalist Intern
+                    </div>
+
+                    <div class="timeline-company">
+                        PT Kitabisa
+                    </div>
+
+                    <div class="timeline-date">
+                        April 2024 – June 2024
+                    </div>
+
+                    <p class="timeline-description">
+                        Supported HR operations through reimbursement
+                        checking and approval, candidate interview
+                        scheduling, monthly attendance recap, internal
+                        communication content, and employee correspondence.
+                    </p>
+
+                </div>
+
+
+                <!-- BPS -->
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Statistics Corner Service Agent
+                    </div>
+
+                    <div class="timeline-company">
+                        Statistics Indonesia (BPS)
+                    </div>
+
+                    <div class="timeline-date">
+                        October 2022 – October 2023
+                    </div>
+
+                    <p class="timeline-description">
+                        Assisted students in finding and understanding
+                        statistical data according to established SOPs.
+                        Sourced relevant datasets from the BPS website
+                        and provided support for basic data analysis
+                        discussions.
+                    </p>
+
+                </div>
+
+
+                <!-- MINISTRY -->
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Data Entry Intern
+                    </div>
+
+                    <div class="timeline-company">
+                        Indonesian Ministry of Transportation
+                    </div>
+
+                    <div class="timeline-date">
+                        June 2023 – August 2023
+                    </div>
+
+                    <p class="timeline-description">
+                        Performed data entry through the Ministry's
+                        internal portal, developed a prototype
+                        transportation statistics book, and conducted
+                        descriptive analysis for the 2022 Eid
+                        transportation report.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- EDUCATION -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Education
+                </h2>
+
+
+                <div class="education-card">
+
+                    <div class="education-title">
+                        Bachelor of Statistics
+                    </div>
+
+                    <div class="education-school">
+                        Universitas Negeri Jakarta
+                    </div>
+
+                    <div class="education-date">
+                        2020 – 2026
+                    </div>
+
+                    <div class="education-extra">
+                        GPA: 3.40 / 4.00
+                    </div>
+
+                </div>
+
+
+                <div class="education-card">
+
+                    <div class="education-title">
+                        Senior High School
+                    </div>
+
+                    <div class="education-school">
+                        SMA Negeri 3 Rangkasbitung
+                    </div>
+
+                    <div class="education-date">
+                        2017 – 2020
+                    </div>
+
+                    <div class="education-extra">
+                        Student Council · Choir Group ·
+                        4th Place, District-Level Mathematics Olympiad
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ORGANIZATIONAL EXPERIENCE -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Organizational Experience
+                </h2>
+
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Head of Communication & Information Department
+                    </div>
+
+                    <div class="timeline-company">
+                        BEM FMIPA UNJ
+                    </div>
+
+                    <div class="timeline-date">
+                        March 2023 – January 2024
+                    </div>
+
+                    <p class="timeline-description">
+                        Led a team of 9 members and developed a new
+                        art exhibition program for the faculty.
+                    </p>
+
+                </div>
+
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Communication & Information Department Member
+                    </div>
+
+                    <div class="timeline-company">
+                        BEMP Statistika UNJ
+                    </div>
+
+                    <div class="timeline-date">
+                        March 2021 – February 2023
+                    </div>
+
+                    <p class="timeline-description">
+                        Created social media designs, organized design
+                        training programs, and later led the department.
+                        Helped improve the department's performance
+                        evaluation from C to A.
+                    </p>
+
+                </div>
+
+
+                <div class="timeline-item">
+
+                    <div class="timeline-title">
+                        Event Organizer
+                    </div>
+
+                    <div class="timeline-company">
+                        Student Leadership Training Program
+                    </div>
+
+                    <div class="timeline-date">
+                        October 2021 – November 2021
+                    </div>
+
+                    <p class="timeline-description">
+                        Coordinated team members and task distribution,
+                        developed the overall event concept, and served
+                        as Master of Ceremonies during the main events.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- SKILLS -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Technical Skills
+                </h2>
+
+                <div class="skills-container">
+
+                    <span class="skill">Power BI</span>
+                    <span class="skill">Microsoft Excel</span>
+                    <span class="skill">DAX</span>
+                    <span class="skill">Power Query</span>
+                    <span class="skill">SQL</span>
+                    <span class="skill">Python</span>
+                    <span class="skill">Power Automate</span>
+                    <span class="skill">SAP</span>
+                    <span class="skill">SAP PP</span>
+                    <span class="skill">SAP QM</span>
+                    <span class="skill">RStudio</span>
+                    <span class="skill">SPSS</span>
+                    <span class="skill">Data Analysis</span>
+                    <span class="skill">Data Visualization</span>
+                    <span class="skill">Data Migration</span>
+
+                </div>
+
+            </section>
+
+
+            <!-- TRAINING -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Training
+                </h2>
+
+                <div class="training-box">
+
+                    <div class="training-title">
+                        StarCore Analytics
+                    </div>
+
+                    <div class="education-date">
+                        Machine Learning Applications in Marketing & Business
+                    </div>
+
+                    <p class="training-description">
+                        Studied the fundamentals of applying machine
+                        learning in marketing and business, including
+                        basic SAS usage, data analysis, and practical
+                        exercises guided by industry experts.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- LANGUAGES -->
+
+            <section class="cv-section">
+
+                <h2 class="section-heading">
+                    Languages
+                </h2>
+
+                <div class="language-row">
+
+                    <span class="language-name">
+                        Indonesian
+                    </span>
+
+                    <span class="language-level">
+                        Native
+                    </span>
+
+                </div>
+
+                <div class="language-row">
+
+                    <span class="language-name">
+                        English
+                    </span>
+
+                    <span class="language-level">
+                        Working Proficiency
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- BACK BUTTON -->
+
+            <div class="cv-actions">
+
+                <a href="index.html" class="back-button">
+                    ← Back to Website
+                </a>
+
             </div>
-        </header>
 
-        <section>
-            <h2 class="section-heading">Profile</h2>
-            <p class="section-content">I am an enthusiastic statistics student with a deep interest in <span class="highlight">data analysis</span> and <span class="highlight">technology</span>. I believe that data is a valuable asset that can generate valuable insights for decision-making. Throughout my academic journey, I have continuously learned and developed analytical skills to extract information from complex data.</p>
-        </section>
+        </div>
 
-        <section>
-            <h2 class="section-heading">Education</h2>
-            <p class="section-content"><strong>Bachelor of Statistics</strong><br>Universitas Negeri Jakarta<br>Aug 2020 - Present<br>GPA: 3.40/4.00</p>
-            <p class="section-content"><strong>High School</strong><br>SMA Negeri 3 Rangkasbitung<br>2017 - 2020<br>Activities: Student council, choir group, 4th place in district level mathematics olympiad competition</p>
-        </section>
+    </main>
 
-        <section>
-            <h2 class="section-heading">Work Experience</h2>
-            <p class="section-content"><strong>HR Generalist Intern</strong><br>PT Kitabisa<br>April 2024 - June 2024<br>Responsibilities: Checking and approving reimbursements, scheduling candidate interviews, recapping monthly attendance data, creating communication content, and handling correspondence as requested by employees.</p>
-            <p class="section-content"><strong>Statistics Corner Service Agent</strong><br>Badan Pusat Statistik<br>Oct 2022 - Oct 2023<br>Responsibilities: Serving students requiring data in accordance with SOPs, finding required data on the BPS website, assisting other students with data analysis discussions.</p>
-            <p class="section-content"><strong>Data Entry Intern</strong><br>Indonesian Ministry of Transportation<br>July 2023 - Sept 2023<br>Responsibilities: Data entry on the Ministry's portal, creating a prototype transportation statistics book, conducting descriptive analysis of the 2022 Eid report.</p>
-        </section>
 
-        <section>
-            <h2 class="section-heading">Organizational Experience</h2>
-            <p class="section-content"><strong>Communication and Information Department Member</strong><br>BEMP Statistika UNJ<br>Mar 2021 - Feb 2023<br>Created social media designs, organized design training events, led the department in the second year, and improved department grade from C to A.</p>
-            <p class="section-content"><strong>Communication and Information Department Head</strong><br>BEM FMIPA UNJ<br>Mar 2023 - Jan 2024<br>Led a team of 9 partners, organized a new art exhibition program for the faculty.</p>
-            <p class="section-content"><strong>Event Organizer</strong><br>Student Leadership Training Program<br>Oct 2021 - Nov 2021<br>Coordinated division members for task distribution, created a big concept for the event, and served as the master of ceremonies for the peak events.</p>
-        </section>
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
-        <section>
-            <h2 class="section-heading">Skills</h2>
-            <ul class="section-content">
-                <li>Microsoft Office (Word, Excel, PowerPoint)</li>
-                <li>RStudio</li>
-                <li>SPSS</li>
-                <li>SQL</li>
-                <li>Canva</li>
-                <li>Indonesian (native), English (limited working proficiency)</li>
-            </ul>
-        </section>
+    <footer>
 
-        <section>
-            <h2 class="section-heading">Training</h2>
-            <p class="section-content"><strong>StarCore Analytics</strong><br>Training on the Application of Machine Learning in Marketing and Business<br>Learned the basics of using SAS for data analysis, studied data dynamics in marketing and business, and practiced using SAS guided by experts from StarCore Analytics.</p>
-        </section>
+        <p>
+            © <span id="year"></span> Rekso Jumantoro.
+        </p>
 
-        <section>
-            <h2 class="section-heading">Contact</h2>
-            <p class="section-content">Email: reksoj7@gmail.com<br>Phone: +6285715936065<br>LinkedIn: <a href="https://linkedin.com/in/rekso-jumantoro-a56424261" target="_blank">linkedin.com/in/rekso-jumantoro-a56424261</a></p>
-        </section>
-    </div>
-
-    <footer class="bg-dark text-white py-3 text-center mt-4">
-        <p>&copy; Rekso Jumantoro 2023</p>
     </footer>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById("year").textContent =
+            new Date().getFullYear();
+    </script>
+
 </body>
 
 </html>
