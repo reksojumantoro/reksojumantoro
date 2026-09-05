@@ -1,328 +1,571 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Flappy Meme Hardcore</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #1a1a2e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: white;
-      overflow: hidden;
-    }
-    #game-container {
-      text-align: center;
-    }
-    canvas {
-      border: 4px solid #16213e;
-      border-radius: 12px;
-      background: linear-gradient(to bottom, #0f3460, #16213e);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-    }
-    p {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #e94560;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Games | Rekso Jumantoro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --dark: #151515;
+            --text: #2b2b2b;
+            --muted: #777;
+            --accent: #e74c3c;
+            --card: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.97) !important;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--dark) !important;
+        }
+
+        .navbar-brand span {
+            color: var(--accent);
+        }
+
+        .nav-link {
+            color: #555 !important;
+            font-weight: 500;
+            margin-left: 12px;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .nav-link.games-link {
+            color: var(--accent) !important;
+            font-weight: 700;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .games-hero {
+            padding: 90px 20px 70px;
+            text-align: center;
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(231, 76, 60, 0.12),
+                    transparent 35%
+                ),
+                var(--bg);
+        }
+
+        .hero-label {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .games-hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -3px;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .games-hero h1 span {
+            color: var(--accent);
+        }
+
+        .games-hero p {
+            max-width: 620px;
+            margin: auto;
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        /* =========================
+           GAME LIST
+        ========================= */
+
+        .games-section {
+            padding: 40px 20px 100px;
+        }
+
+        .games-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .game-card {
+            background: var(--card);
+            border: 1px solid #e7e7e7;
+            border-radius: 18px;
+            overflow: hidden;
+            height: 100%;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.09);
+        }
+
+        .game-banner {
+            height: 210px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #151515,
+                    #292929
+                );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-banner::before {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+        }
+
+        .game-banner::after {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .game-icon {
+            font-size: 5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .game-tag {
+            display: inline-block;
+            width: fit-content;
+            padding: 5px 10px;
+            border-radius: 50px;
+            background-color: #f1f1f1;
+            color: #666;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .game-content h3 {
+            font-size: 1.45rem;
+            font-weight: 750;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .game-content p {
+            color: #777;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .game-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .play-button {
+            margin-top: auto;
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 11px 20px;
+            border-radius: 8px;
+            background-color: var(--dark);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .play-button:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* =========================
+           COMING SOON
+        ========================= */
+
+        .coming-soon {
+            height: 100%;
+            border: 2px dashed #ddd;
+            border-radius: 18px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .coming-soon-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon h4 {
+            color: #666;
+            font-weight: 700;
+        }
+
+        .coming-soon p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background-color: var(--dark);
+            color: #999;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 768px) {
+
+            .games-hero {
+                padding: 70px 20px 50px;
+            }
+
+            .games-hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .game-banner {
+                height: 180px;
+            }
+
+        }
+    </style>
 </head>
+
+
 <body>
 
-<div id="game-container">
-  <canvas id="canvas" width="360" height="520"></canvas>
-  <p>SPASI / KLIK untuk lompat | Focus!</p>
-</div>
+    <nav class="navbar navbar-expand-lg navbar-light">
 
-<script>
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+        <div class="container">
 
-  let frames = 0;
-  let score = 0;
-  let highScore = 0;
-  let gameOver = false;
-  let gameStarted = false;
+            <a class="navbar-brand" href="index.html">
+                Rekso<span>.</span>
+            </a>
 
-  // Daftar Emoji Meme Face buat Popup Background
-  const memeList = ["🤡", "🗿", "💀", "🤓", "🤪", "👻", "👺", "👽"];
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
 
-  // Background Meme Pop-up Manager
-  const memeBackground = {
-    currentMeme: null,
-    timer: 0,
-    
-    update() {
-      if (!gameStarted || gameOver) return;
+                <span class="navbar-toggler-icon"></span>
 
-      // Tiap ~2,5 detik (150 frames), ganti/munculin meme baru di posisi acak
-      if (frames % 150 === 0) {
-        this.currentMeme = {
-          symbol: memeList[Math.floor(Math.random() * memeList.length)],
-          x: Math.floor(Math.random() * (canvas.width - 100)) + 50,
-          y: Math.floor(Math.random() * (canvas.height - 150)) + 50,
-          size: Math.floor(Math.random() * 60) + 60, // Ukuran jumbo biar berdistraksi
-          opacity: 0.35 // Semi-transparan biar tetap kelihatan jalurnya
-        };
-        this.timer = 90; // Muncul selama 90 frame (~1.5 detik)
-      }
+            </button>
 
-      if (this.timer > 0) {
-        this.timer--;
-        if (this.timer === 0) this.currentMeme = null;
-      }
-    },
 
-    draw() {
-      if (this.currentMeme) {
-        ctx.save();
-        ctx.globalAlpha = this.currentMeme.opacity;
-        ctx.font = `${this.currentMeme.size}px serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(this.currentMeme.symbol, this.currentMeme.x, this.currentMeme.y);
-        ctx.restore();
-      }
-    }
-  };
+            <div class="collapse navbar-collapse" id="navbarNav">
 
-  // Karakter Player
-  const bird = {
-    x: 60,
-    y: 200,
-    radius: 18,
-    gravity: 0.38,
-    jump: 6.2,
-    velocity: 0,
-    rotation: 0,
-    
-    draw() {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      
-      this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (this.velocity / 10)));
-      ctx.rotate(this.rotation);
+                <ul class="navbar-nav ms-auto">
 
-      ctx.font = "28px serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("👾", 0, 0);
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#deskripsi">
+                            About
+                        </a>
+                    </li>
 
-      ctx.restore();
-    },
-    
-    flap() {
-      this.velocity = -this.jump;
-    },
-    
-    update() {
-      if (!gameStarted) return;
-      
-      this.velocity += this.gravity;
-      this.y += this.velocity;
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#my-work">
+                            My Work
+                        </a>
+                    </li>
 
-      // Benturan Tanah
-      if (this.y + this.radius >= canvas.height - 30) {
-        this.y = canvas.height - 30 - this.radius;
-        endGame();
-      }
+                    <li class="nav-item">
+                        <a class="nav-link" href="Mark10.html">
+                            CV
+                        </a>
+                    </li>
 
-      // Atap
-      if (this.y - this.radius <= 0) {
-        this.y = this.radius;
-        this.velocity = 0;
-      }
-    },
-    
-    reset() {
-      this.y = 200;
-      this.velocity = 0;
-      this.rotation = 0;
-    }
-  };
+                    <li class="nav-item">
+                        <a class="nav-link games-link" href="games.html">
+                            🎮 Games
+                        </a>
+                    </li>
 
-  // Pipa
-  const pipes = {
-    position: [],
-    w: 55,
-    gap: 98, // Celah sempit (susah)
-    dx: 3,   // Speed cepat
+                </ul>
 
-    draw() {
-      for (let i = 0; i < this.position.length; i++) {
-        let p = this.position[i];
-        let topY = p.y;
-        let bottomY = p.y + this.gap;
+            </div>
 
-        let grad = ctx.createLinearGradient(p.x, 0, p.x + this.w, 0);
-        grad.addColorStop(0, '#e94560');
-        grad.addColorStop(1, '#0f3460');
+        </div>
 
-        ctx.fillStyle = grad;
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 2;
+    </nav>
 
-        // Pipa atas
-        ctx.fillRect(p.x, 0, this.w, topY);
-        ctx.strokeRect(p.x, 0, this.w, topY);
 
-        // Pipa bawah
-        ctx.fillRect(p.x, bottomY, this.w, canvas.height - bottomY - 30);
-        ctx.strokeRect(p.x, bottomY, this.w, canvas.height - bottomY - 30);
-      }
-    },
+    <section class="games-hero">
 
-    update() {
-      if (!gameStarted || gameOver) return;
+        <div class="container">
 
-      if (frames % 75 === 0) {
-        this.position.push({
-          x: canvas.width,
-          y: Math.floor(Math.random() * (canvas.height - 220 - this.gap)) + 40
-        });
-      }
+            <div class="hero-label">
+                The Fun Department
+            </div>
 
-      for (let i = 0; i < this.position.length; i++) {
-        let p = this.position[i];
-        p.x -= this.dx;
+            <h1>
+                My <span>Games.</span>
+            </h1>
 
-        // Hitbox Pipa
-        let birdTop = bird.y - bird.radius;
-        let birdBottom = bird.y + bird.radius;
-        let birdLeft = bird.x - bird.radius;
-        let birdRight = bird.x + bird.radius;
+            <p>
+                A collection of small games and experiments I've built
+                whenever I felt like doing something completely unrelated
+                to my actual job.
+            </p>
 
-        if (birdRight > p.x && birdLeft < p.x + this.w) {
-          if (birdTop < p.y || birdBottom > p.y + this.gap) {
-            endGame();
-          }
-        }
+        </div>
 
-        // Skor
-        if (p.x + this.w < bird.x && !p.passed) {
-          score++;
-          p.passed = true;
-        }
+    </section>
 
-        if (p.x + this.w <= 0) {
-          this.position.shift();
-          i--;
-        }
-      }
-    },
 
-    reset() {
-      this.position = [];
-    }
-  };
+    <section class="games-section">
 
-  // Tanah
-  const fg = {
-    h: 30,
-    draw() {
-      ctx.fillStyle = "#16213e";
-      ctx.fillRect(0, canvas.height - this.h, canvas.width, this.h);
-      
-      ctx.strokeStyle = "#e94560";
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(0, canvas.height - this.h);
-      ctx.lineTo(canvas.width, canvas.height - this.h);
-      ctx.stroke();
-    }
-  };
+        <div class="games-container">
 
-  function endGame() {
-    gameOver = true;
-    if (score > highScore) highScore = score;
-  }
+            <div class="row g-4">
 
-  function resetGame() {
-    bird.reset();
-    pipes.reset();
-    memeBackground.currentMeme = null;
-    score = 0;
-    frames = 0;
-    gameOver = false;
-    gameStarted = true;
-  }
 
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "Space") handleInput();
-  });
+                <div class="col-md-6">
 
-  canvas.addEventListener("click", handleInput);
+                    <div class="game-card">
 
-  function handleInput() {
-    if (!gameStarted) {
-      gameStarted = true;
-    } else if (gameOver) {
-      resetGame();
-    } else {
-      bird.flap();
-    }
-  }
+                        <div class="game-banner">
 
-  function drawUI() {
-    ctx.fillStyle = "#FFF";
-    ctx.font = "bold 18px sans-serif";
+                            <div class="game-icon">
+                                🎲
+                            </div>
 
-    if (!gameStarted) {
-      ctx.textAlign = "center";
-      ctx.fillText("KLIK / SPASI UNTUK MULAI", canvas.width / 2, canvas.height / 2);
-    } else if (gameOver) {
-      ctx.fillStyle = "rgba(15, 52, 96, 0.85)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#e94560";
-      ctx.font = "bold 32px sans-serif";
-      ctx.fillText("YOU DIED!", canvas.width / 2, 180);
-      
-      ctx.fillStyle = "#FFF";
-      ctx.font = "18px sans-serif";
-      ctx.fillText(`Skor Kamu: ${score}`, canvas.width / 2, 230);
-      ctx.fillText(`Skor Tertinggi: ${highScore}`, canvas.width / 2, 260);
-      
-      ctx.fillStyle = "#4ecca3";
-      ctx.fillText("Klik untuk Coba Lagi", canvas.width / 2, 320);
-    } else {
-      ctx.textAlign = "left";
-      ctx.font = "bold 28px sans-serif";
-      ctx.fillText(score, 20, 45);
-    }
-  }
+                        </div>
 
-  function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Render meme di layer paling belakang
-    memeBackground.update();
-    memeBackground.draw();
+                        <div class="game-content">
 
-    pipes.update();
-    pipes.draw();
-    
-    fg.draw();
-    
-    bird.update();
-    bird.draw();
+                            <span class="game-tag">
+                                Random / Survival
+                            </span>
 
-    drawUI();
+                            <h3>
+                                Random Bullshit Generator
+                            </h3>
 
-    frames++;
-    requestAnimationFrame(loop);
-  }
+                            <p>
+                                A completely unnecessary survival game
+                                where every day comes with increasingly
+                                ridiculous random conditions.
+                            </p>
 
-  loop();
-</script>
+                            <div class="game-meta">
+
+                                <span>
+                                    🎮 Single Player
+                                </span>
+
+                                <span>
+                                    🤡 Stupid
+                                </span>
+
+                                <span>
+                                    💀 Unpredictable
+                                </span>
+
+                            </div>
+
+                            <a
+                               href="games/random_bullshit_generator.html" class="play-button" target="_blank">
+                                Play Now &rarr;
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="game-card">
+
+                        <div class="game-banner">
+
+                            <div class="game-icon">
+                                🐤
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-content">
+
+                            <span class="game-tag">
+                                Arcade / Casual
+                            </span>
+
+                            <h3>
+                                Flappy Bird
+                            </h3>
+
+                            <p>
+                                A simple arcade game where you tap to flap 
+                                your wings and avoid obstacles to reach 
+                                high scores.
+                            </p>
+
+                            <div class="game-meta">
+
+                                <span>
+                                    🎮 Single Player
+                                </span>
+
+                                <span>
+                                    🕹️ Arcade
+                                </span>
+
+                                <span>
+                                    🔥 Addictive
+                                </span>
+
+                            </div>
+
+                            <a
+                               href="games/flappy_bird.html" class="play-button" target="_blank">
+                                Play Now &rarr;
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <div class="coming-soon">
+
+                        <div class="coming-soon-icon">
+                            🛠️
+                        </div>
+
+                        <h4>
+                            Something Stupid Is Coming
+                        </h4>
+
+                        <p>
+                            Another questionable game will appear here
+                            eventually.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <p>
+            © <span id="year"></span> Rekso Jumantoro.
+            Built for absolutely no reason.
+        </p>
+
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById("year").textContent =
+            new Date().getFullYear();
+    </script>
 
 </body>
+
 </html>
