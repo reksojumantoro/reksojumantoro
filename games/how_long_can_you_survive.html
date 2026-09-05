@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>How Long Can You Survive? - ABSURD EDITION</title>
+  <title>How Long Can You Survive? - JOYSTICK EDITION</title>
   <style>
     * { box-sizing: border-box; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
     body { margin: 0; background: #08090d; color: #fff; font-family: Arial, sans-serif; overflow: hidden; touch-action: none; }
@@ -54,43 +54,82 @@
       color: #ff3366;
     }
 
-    #help {
+    /* Area khusus Touch Joystick (Sisi Kiri Layar) */
+    #touch-zone {
       position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(8, 9, 13, 0.8);
-      border: 1px solid #596273;
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 11px;
-      color: #ccd1db;
-      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 50vw;
+      height: 100vh;
+      z-index: 4;
+      touch-action: none;
     }
 
-    /* Kontrol Sentuh HP */
-    .touch-btn {
+    /* Visual Joystick Analog */
+    #joystick-base {
       position: fixed;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.4);
+      width: 110px;
+      height: 110px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      z-index: 5;
+    }
+
+    #joystick-stick {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      background: rgba(89, 184, 255, 0.6);
+      border: 2px solid #59b8ff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Tombol Aksi Kanan */
+    .action-btn {
+      position: fixed;
       border-radius: 50%;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      z-index: 5;
+      z-index: 6;
       touch-action: none;
+      user-select: none;
     }
-    .touch-btn:active, .touch-btn.active { background: rgba(255, 255, 255, 0.4); }
 
-    #dpad { position: fixed; bottom: 20px; left: 20px; width: 130px; height: 130px; z-index: 5; }
-    #btn-up { top: 0; left: 42px; width: 46px; height: 46px; }
-    #btn-down { bottom: 0; left: 42px; width: 46px; height: 46px; }
-    #btn-left { top: 42px; left: 0; width: 46px; height: 46px; }
-    #btn-right { top: 42px; right: 0; width: 46px; height: 46px; }
+    #btn-dash {
+      bottom: 30px;
+      right: 30px;
+      width: 75px;
+      height: 75px;
+      font-size: 13px;
+      background: rgba(89, 184, 255, 0.3);
+      border: 2px solid #59b8ff;
+    }
 
-    #btn-dash { bottom: 25px; right: 25px; width: 65px; height: 65px; font-size: 12px; background: rgba(89, 184, 255, 0.25); border-color: #59b8ff; }
-    #btn-sprint { bottom: 100px; right: 25px; width: 55px; height: 55px; font-size: 11px; background: rgba(255, 215, 0, 0.25); border-color: #ffd700; }
+    #btn-sprint {
+      bottom: 120px;
+      right: 35px;
+      width: 60px;
+      height: 60px;
+      font-size: 11px;
+      background: rgba(255, 215, 0, 0.3);
+      border: 2px solid #ffd700;
+    }
+
+    .action-btn:active, .action-btn.active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.5);
+    }
 
     #screen { position: fixed; inset: 0; background: #07090df5; display: flex; align-items: center; justify-content: center; z-index: 9; }
     .panel { width: min(620px, 90vw); padding: 24px; background: #12151d; border: 1px solid #596273; border-radius: 14px; box-shadow: 0 20px 80px #000; text-align: center; }
@@ -113,23 +152,18 @@
 </div>
 
 <div id="event"></div>
-<div id="help">HP / Keyboard Compatible</div>
 
-<div id="dpad">
-  <div id="btn-up" class="touch-btn">▲</div>
-  <div id="btn-down" class="touch-btn">▼</div>
-  <div id="btn-left" class="touch-btn">◄</div>
-  <div id="btn-right" class="touch-btn">►</div>
-</div>
-
-<div id="btn-sprint" class="touch-btn">RUN</div>
-<div id="btn-dash" class="touch-btn">DASH</div>
+<!-- Controller Layer -->
+<div id="touch-zone"></div>
+<div id="joystick-base"><div id="joystick-stick"></div></div>
+<div id="btn-sprint" class="action-btn">RUN</div>
+<div id="btn-dash" class="action-btn">DASH</div>
 
 <div id="screen">
   <div class="panel" id="panel">
-    <h1>MAXIMUM CHAOS EDITION</h1>
-    <p>15+ Event absurd bakal menyerangmu tanpa henti!</p>
-    <p class="muted">Awas UFO, Bebek, Pisang, Batu Raksasa, Hantu, dan Ledakan acak.</p>
+    <h1>JOYSTICK CONTROL EDITION</h1>
+    <p>Sentuh & geser area kiri layar untuk menggerakkan karakter dengan Analog 360°!</p>
+    <p class="muted">Gunakan tombol RUN & DASH di sisi kanan untuk menghindar.</p>
     <button id="start">START SURVIVING</button>
   </div>
 </div>
@@ -141,6 +175,12 @@ let lava=0,reverse=0,slip=0,black=0,timeScale=1;
 
 const p={x:480,y:330,r:11,vx:0,vy:0,st:100,h:3};
 let hz=[], npcs=[], parts=[], traps=[];
+
+// VIRTUAL JOYSTICK STATE
+let joyActive = false;
+let joyTouchId = null;
+let joyOrigin = { x: 0, y: 0 };
+let joyDir = { x: 0, y: 0 };
 
 const say=s=>{let e=document.getElementById("event");e.textContent=s;e.style.opacity=1;clearTimeout(say.q);say.q=setTimeout(()=>e.style.opacity=0,1200)};
 const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y), r=(a,b)=>a+Math.random()*(b-a);
@@ -203,22 +243,33 @@ function triggerEvent(){
 
 function move(dt){
   let a=0,b=0;
+  
+  // Baca Input Keyboard (PC)
   if(K.w||K.ArrowUp)b--; if(K.s||K.ArrowDown)b++;
   if(K.a||K.ArrowLeft)a--; if(K.d||K.ArrowRight)a++;
+
+  // Kombinasikan dengan Input Joystick Analog (Mobile)
+  if(joyActive){
+    a = joyDir.x;
+    b = joyDir.y;
+  }
+
   if(reverse){a=-a;b=-b}
   
-  if(a||b){
-    let z=Math.hypot(a,b);a/=z;b/=z;
-    let sprint=(K.Shift||K.sprint)&&p.st>0, sp=2.8*(sprint?1.75:1);
-    if(sprint) p.st=Math.max(0,p.st-40*dt); else p.st=Math.min(100,p.st+25*dt);
-    if(slip){ p.vx+=a*sp*dt*6; p.vy+=b*sp*dt*6; p.vx*=.98; p.vy*=.98; }
-    else { p.vx=a*sp; p.vy=b*sp; }
+  if(a || b){
+    let z = Math.hypot(a,b);
+    if(z > 1) { a /= z; b /= z; } // Normalize jika melebihi 1
+    let sprint = (K.Shift || K.sprint) && p.st > 0, sp = 2.8 * (sprint ? 1.75 : 1);
+    if(sprint) p.st = Math.max(0, p.st - 40 * dt); else p.st = Math.min(100, p.st + 25 * dt);
+    
+    if(slip){ p.vx += a * sp * dt * 6; p.vy += b * sp * dt * 6; p.vx *= .98; p.vy *= .98; }
+    else { p.vx = a * sp; p.vy = b * sp; }
   } else {
-    p.st=Math.min(100,p.st+25*dt);
-    if(!slip) p.vx=p.vy=0;
+    p.st = Math.min(100, p.st + 25 * dt);
+    if(!slip) p.vx = p.vy = 0;
   }
-  p.x=Math.max(70,Math.min(890,p.x+p.vx*dt*60*timeScale));
-  p.y=Math.max(80,Math.min(520,p.y+p.vy*dt*60*timeScale));
+  p.x = Math.max(70, Math.min(890, p.x + p.vx * dt * 60 * timeScale));
+  p.y = Math.max(80, Math.min(520, p.y + p.vy * dt * 60 * timeScale));
 }
 
 function update(dt){
@@ -228,7 +279,6 @@ function update(dt){
   
   if(lava>0){ lava-=dt; if(Math.random()<dt*.6 && p.x>65&&p.x<895&&p.y>75&&p.y<525) hit(); }
 
-  // Update Hazard (Meteors, Gooses, UFO, etc.)
   for(let i=hz.length-1;i>=0;i--){
     let a=hz[i];
     if(a.type=="goose"){
@@ -253,7 +303,6 @@ function update(dt){
     }
   }
 
-  // Update Traps (Bombs, Bananas)
   for(let i=traps.length-1;i>=0;i--){
     let t=traps[i];
     if(t.type=="bomb"){
@@ -273,7 +322,6 @@ function update(dt){
     }
   }
 
-  // Update NPCs & Ghosts
   for(let i=npcs.length-1;i>=0;i--){
     let a=npcs[i], X=p.x-a.x, Y=p.y-a.y, Z=Math.hypot(X,Y)||1;
     a.x+=X/Z*a.sp*dt*60; a.y+=Y/Z*a.sp*dt*60; a.z-=dt;
@@ -281,7 +329,6 @@ function update(dt){
     if(a.z<=0) npcs.splice(i,1);
   }
 
-  // Particle update
   for(let i=parts.length-1;i>=0;i--){
     let a=parts[i]; a.x+=a.vx*dt*60; a.y+=a.vy*dt*60; a.vy+=.1; a.z-=dt;
     if(a.z<=0) parts.splice(i,1);
@@ -291,7 +338,6 @@ function update(dt){
 function draw(){
   x.clearRect(0,0,W,H);
   
-  // Screen Shake effect
   x.save();
   if(shake > 0) x.translate(r(-shake*15, shake*15), r(-shake*15, shake*15));
 
@@ -302,7 +348,6 @@ function draw(){
   x.strokeStyle="#697181"; x.lineWidth=4; x.strokeRect(65,75,830,450); x.lineWidth=1;
   if(lava>0){ x.fillStyle="#702a20"; x.fillRect(65,75,830,450); }
 
-  // Draw Traps
   for(let t of traps){
     if(t.type=="bomb"){
       x.fillStyle="rgba(255, 0, 0, 0.3)"; x.beginPath(); x.arc(t.x,t.y,t.R,0,7); x.fill();
@@ -312,7 +357,6 @@ function draw(){
     }
   }
 
-  // Draw Hazards
   for(let a of hz){
     if(a.type=="meteor"){
       x.fillStyle="#bd4937"; x.beginPath(); x.arc(a.x,a.y,a.R,0,7); x.fill();
@@ -328,16 +372,13 @@ function draw(){
     }
   }
 
-  // Draw NPCs / Ghosts
   for(let a of npcs){
     x.fillStyle = a.type=="ghost" ? "rgba(255,255,255,0.6)" : "#b98c67";
     x.beginPath(); x.arc(a.x,a.y,a.R,0,7); x.fill();
   }
 
-  // Draw Particles
   for(let a of parts){ x.fillStyle="#ff7675"; x.fillRect(a.x,a.y,4,4); }
 
-  // Draw Player
   if(inv==0||Math.floor(inv*12)%2==0){
     x.fillStyle="#59b8ff"; x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill();
     x.fillStyle="#fff"; x.beginPath(); x.arc(p.x-4,p.y-3,2,0,7); x.arc(p.x+4,p.y-3,2,0,7); x.fill();
@@ -355,28 +396,70 @@ function draw(){
 function loop(now){
   let dt=Math.min(.035,(now-last)/1000); last=now;
   if(run&&!dead){
-    t+=dt; th=1+Math.floor(t/15); // Threat naik tiap 15 detik!
-    if((et+=dt) >= Math.max(0.6, 3.5 - t*.05)){ et=0; triggerEvent(); } // Spawn rate makin cepat!
+    t+=dt; th=1+Math.floor(t/15);
+    if((et+=dt) >= Math.max(0.6, 3.5 - t*.05)){ et=0; triggerEvent(); }
     update(dt); hud();
   }
   draw(); requestAnimationFrame(loop);
 }
 
-// BINDING KONTROL KEYBOARD & TOUCH
-document.addEventListener("keydown",e=>{
-  K[e.key]=1;
-  if([" ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
-  if(e.key==" "&&run&&!dead) triggerDash();
+// LOGIK KONTROL DYNAMIC JOYSTICK
+const touchZone = document.getElementById("touch-zone");
+const joyBase = document.getElementById("joystick-base");
+const joyStick = document.getElementById("joystick-stick");
+
+touchZone.addEventListener("touchstart", e => {
+  e.preventDefault();
+  if(joyActive) return;
+  const touch = e.changedTouches[0];
+  joyTouchId = touch.identifier;
+  joyActive = true;
+  joyOrigin = { x: touch.clientX, y: touch.clientY };
+
+  joyBase.style.left = joyOrigin.x + "px";
+  joyBase.style.top = joyOrigin.y + "px";
+  joyBase.style.display = "block";
+  joyStick.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
+  joyDir = { x: 0, y: 0 };
 });
-document.addEventListener("keyup",e=>K[e.key]=0);
 
-function triggerDash(){
-  if(!run||dead) return;
-  p.vx*=3.2; p.vy*=3.2;
-  setTimeout(()=>{p.vx*=.2; p.vy*=.2},120);
-}
+touchZone.addEventListener("touchmove", e => {
+  e.preventDefault();
+  if(!joyActive) return;
+  for(let i=0; i<e.changedTouches.length; i++){
+    let touch = e.changedTouches[i];
+    if(touch.identifier === joyTouchId){
+      let dx = touch.clientX - joyOrigin.x;
+      let dy = touch.clientY - joyOrigin.y;
+      let dist = Math.hypot(dx, dy);
+      let maxDist = 45; // Maksimal jangkauan analog
 
-function bindTouch(id, keyName){
+      if(dist > maxDist){
+        dx = (dx / dist) * maxDist;
+        dy = (dy / dist) * maxDist;
+      }
+
+      joyStick.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px)`;
+      joyDir = { x: dx / maxDist, y: dy / maxDist };
+    }
+  }
+});
+
+const endJoy = e => {
+  for(let i=0; i<e.changedTouches.length; i++){
+    if(e.changedTouches[i].identifier === joyTouchId){
+      joyActive = false;
+      joyTouchId = null;
+      joyBase.style.display = "none";
+      joyDir = { x: 0, y: 0 };
+    }
+  }
+};
+touchZone.addEventListener("touchend", endJoy);
+touchZone.addEventListener("touchcancel", endJoy);
+
+// KONTROL TOMBOL SPRINT & DASH
+function bindBtn(id, keyName){
   const el = document.getElementById(id);
   const start = (e) => { e.preventDefault(); K[keyName] = 1; el.classList.add('active'); };
   const end = (e) => { e.preventDefault(); K[keyName] = 0; el.classList.remove('active'); };
@@ -384,15 +467,27 @@ function bindTouch(id, keyName){
   el.addEventListener('mousedown', start); el.addEventListener('mouseup', end);
 }
 
-bindTouch('btn-up', 'w'); bindTouch('btn-down', 's');
-bindTouch('btn-left', 'a'); bindTouch('btn-right', 'd');
-bindTouch('btn-sprint', 'sprint');
+bindBtn('btn-sprint', 'sprint');
 
 const dashBtn = document.getElementById('btn-dash');
 const dashStart = (e) => { e.preventDefault(); triggerDash(); dashBtn.classList.add('active'); };
 const dashEnd = (e) => { e.preventDefault(); dashBtn.classList.remove('active'); };
 dashBtn.addEventListener('touchstart', dashStart); dashBtn.addEventListener('touchend', dashEnd);
 dashBtn.addEventListener('mousedown', dashStart); dashBtn.addEventListener('mouseup', dashEnd);
+
+function triggerDash(){
+  if(!run||dead) return;
+  p.vx*=3.2; p.vy*=3.2;
+  setTimeout(()=>{p.vx*=.2; p.vy*=.2},120);
+}
+
+// KEYBOARD BINDING (PC)
+document.addEventListener("keydown",e=>{
+  K[e.key]=1;
+  if([" ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
+  if(e.key==" "&&run&&!dead) triggerDash();
+});
+document.addEventListener("keyup",e=>K[e.key]=0);
 
 document.getElementById("start").onclick=()=>{
   run=1; document.getElementById("screen").style.display="none"; say("SURVIVE IF YOU CAN!");
