@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>STUPID WAYS TO DIE - ULTIMATE EDITION</title>
+  <style>
+    * { box-sizing: border-box; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+    body {
+      margin: 0; padding: 0; background: #0b0c10; color: #fff;
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      overflow: hidden; touch-action: manipulation; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    #app {
+      position: relative; width: 100vw; height: 100vh; max-width: 480px; max-height: 850px;
+      background: #1f2833; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,0,0,0.9); border-radius: 8px;
+    }
+
+    /* HUD TOP BAR */
+    #hud {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; background: rgba(0,0,0,0.4); z-index: 5;
+    }
+    .lives { font-size: 22px; letter-spacing: 2px; }
+    .score { font-size: 18px; font-weight: 800; color: #66fcf1; }
+
+    /* TIMER BAR */
+    #timer-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); z-index: 5; }
+    #timer-bar { width: 100%; height: 100%; background: #ff0055; transition: width 0.1s linear; }
+
+    /* ARENA STAGE */
+    #stage {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 20px; text-align: center; position: relative;
+    }
+
+    #instruction {
+      font-size: 22px; font-weight: 900; margin-bottom: 20px;
+      text-transform: uppercase; color: #66fcf1; text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      line-height: 1.3;
+    }
+
+    .character { font-size: 75px; margin: 15px 0; transition: transform 0.2s; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+
+    /* ACTION BUTTONS */
+    .btn-group { display: flex; gap: 12px; width: 100%; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+    .btn {
+      flex: 1; min-width: 120px; padding: 16px; border: none; border-radius: 12px; font-size: 15px;
+      font-weight: 900; cursor: pointer; color: white; background: #45a29e;
+      box-shadow: 0 6px 0 #1f2833; transition: all 0.1s; text-transform: uppercase;
+    }
+    .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #1f2833; }
+    .btn-red { background: #ff0055; box-shadow: 0 6px 0 #990033; }
+    .btn-red:active { box-shadow: 0 2px 0 #990033; }
+    .btn-green { background: #00e676; box-shadow: 0 6px 0 #008f4c; color: #000; }
+    .btn-green:active { box-shadow: 0 2px 0 #008f4c; }
+    .btn-yellow { background: #ffcc00; box-shadow: 0 6px 0 #997a00; color: #000; }
+    .btn-yellow:active { box-shadow: 0 2px 0 #997a00; }
+
+    /* FULLSCREEN SCREENS */
+    .screen {
+      position: absolute; inset: 0; background: #0b0c10; z-index: 10;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 30px; text-align: center;
+    }
+
+    h1 { font-size: 34px; margin-bottom: 5px; color: #ff0055; text-transform: uppercase; letter-spacing: -1px; }
+    p { color: #c5c6c7; line-height: 1.5; font-size: 14px; }
+
+    /* DEATH SCREEN SPECIFIC */
+    .cause-box {
+      background: #1f2833; border: 2px dashed #ff0055; border-radius: 12px;
+      padding: 15px; margin: 20px 0; width: 100%;
+    }
+    .cause-title { font-size: 11px; color: #ff0055; letter-spacing: 2px; font-weight: bold; }
+    .cause-text { font-size: 17px; font-weight: bold; color: #FFF; margin-top: 5px; }
+
+    .meter-box { width: 100%; margin: 15px 0; text-align: left; }
+    .meter-bg { width: 100%; height: 16px; background: #0b0c10; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+    .meter-fill { height: 100%; background: linear-gradient(90deg, #66fcf1, #ff0055); width: 0%; transition: width 0.5s ease; }
+
+    .toast {
+      position: absolute; top: 20px; background: #66fcf1; color: #0b0c10;
+      padding: 10px 20px; border-radius: 20px; font-weight: 900; font-size: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5); animation: pop 0.3s ease; z-index: 20;
+    }
+
+    @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div id="hud">
+    <div class="lives" id="lives-display">❤️❤️❤️</div>
+    <div class="score">SCORE: <span id="score-display">0</span></div>
+  </div>
+  <div id="timer-bg"><div id="timer-bar"></div></div>
+
+  <div id="stage"></div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="screen">
+    <div style="font-size: 70px; margin-bottom: 10px;">🧠❌</div>
+    <h1>STUPID WAYS TO DIE</h1>
+    <p style="color: #66fcf1; font-weight: bold; margin-bottom: 20px;">INDONESIA ULTIMATE EDITION</p>
+    <p>3 LIVES.<br>15 EXTREMELY DUMB MINI-GAMES.<br><b>ZERO COMMON SENSE.</b></p>
+    <button class="btn btn-red" style="margin-top: 30px; width: 100%; font-size: 18px;" onclick="startGame()">START GAME</button>
+  </div>
+
+  <!-- DEATH / GAME OVER SCREEN -->
+  <div id="death-screen" class="screen" style="display: none;">
+    <div style="font-size: 60px;">💀</div>
+    <h1 id="death-status">YOU DIED</h1>
+    
+    <div class="cause-box">
+      <div class="cause-title">CAUSE OF DEATH</div>
+      <div class="cause-text" id="cause-of-death">You exists.</div>
+    </div>
+
+    <div class="meter-box">
+      <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
+        <span>COMMON SENSE LEVEL</span>
+        <span id="brain-pct">0%</span>
+      </div>
+      <div class="meter-bg"><div class="meter-fill" id="brain-meter"></div></div>
+    </div>
+
+    <button class="btn btn-green" style="margin-top: 15px; width: 100%; font-size: 18px;" onclick="nextRoundOrRestart()">CONTINUE</button>
+  </div>
+</div>
+
+<script>
+let lives = 3;
+let score = 0;
+let stupidityCount = 0;
+let currentTimer = null;
+let gameActive = false;
+let historyGames = [];
+let achievements = {};
+
+// DATA 15 MINI-GAMES ABSURD
+const miniGames = [
+  // 1. HELMET
+  {
+    id: "helmet",
+    instruction: "WEAR YOUR HELMET!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🛵🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🪖 HELMET</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'At least you died with 5G.')">📱 PHONE</button>
+      </div>`
+  },
+  // 2. DUCK
+  {
+    id: "duck",
+    instruction: "ANGRY DUCK APPROACHING!",
+    time: 3.2,
+    render: () => `
+      <div class="character">🦆💨 🏃</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🏃 RUN!</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'You really thought that was a good idea?')">🫳 PET IT</button>
+      </div>`
+  },
+  // 3. NOODLE
+  {
+    id: "noodle",
+    instruction: "WAIT FOR IT TO COOL!",
+    time: 3.8,
+    setup: () => {
+      window.noodleSafe = false;
+      setTimeout(() => {
+        window.noodleSafe = true;
+        let ins = document.getElementById('instruction');
+        if(ins) ins.innerHTML = "<span style='color:#00e676'>EAT NOW!</span>";
+      }, 2300);
+    },
+    render: () => `
+      <div class="character">🍜♨️</div>
+      <div class="btn-group">
+        <button class="btn btn-red" onclick="resolveGame(window.noodleSafe, window.noodleSafe ? '' : 'Your tongue has left the chat.')">🥢 EAT NOW!</button>
+      </div>`
+  },
+  // 4. SELFIE
+  {
+    id: "selfie",
+    instruction: "DO NOT TAKE A SELFIE!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🐊 📸 🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-red" onclick="resolveGame(false, 'Crocodile liked your picture. And your body.')">📸 TAKE SELFIE</button>
+      </div>`
+  },
+  // 5. RED BUTTON
+  {
+    id: "red_button",
+    instruction: "DO NOT PRESS THE RED BUTTON",
+    time: 3.5,
+    render: () => `
+      <div class="character">🚽</div>
+      <div class="btn-group">
+        <button class="btn btn-red" style="font-size: 22px;" onclick="resolveGame(false, 'Curiosity killed the idiot.')">🔴 RED BUTTON</button>
+      </div>`
+  },
+  // 6. TRAIN CROSSING
+  {
+    id: "train",
+    instruction: "TRAIN IS COMING!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🚆💨 🚧 🛵</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🛑 WAIT</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'You tried to beat a train. Train won.')">🏎️ BE AN IDIOT</button>
+      </div>`
+  },
+  // 7. BEE IN ROOM
+  {
+    id: "bee",
+    instruction: "DON'T MOVE! BEE IS ON YOU!",
+    time: 3.8,
+    render: () => `
+      <div class="character">🐝🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-red" onclick="resolveGame(false, 'Panicking only made the bee angry.')">👋 SWAT IT!</button>
+      </div>`
+  },
+  // 8. UMBRELLA VS PHONE
+  {
+    id: "rain",
+    instruction: "LIGHTNING STORM! CHOOSE!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🌧️⚡ 🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">☂️ UMBRELLA</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Priorities. You got electrocuted.')">📱 TIKTOK FIRST</button>
+      </div>`
+  },
+  // 9. GAS STOVE
+  {
+    id: "gas",
+    instruction: "GAS LEAK DETECTED!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🔥🍳</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🧯 TURN OFF</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Boom. Natural selection at work.')">🔥 TOUCH FIRE</button>
+      </div>`
+  },
+  // 10. LEAN WINDOW
+  {
+    id: "window",
+    instruction: "DON'T LEAN OUT THE WINDOW!",
+    time: 3.5,
+    render: () => `
+      <div class="character">🏢🪟🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">STEP BACK</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Gravity has entered the conversation.')">LEAN MORE</button>
+      </div>`
+  },
+  // 11. SHARK SWIMMING
+  {
+    id: "shark",
+    instruction: "SHARK IN THE WATER!",
+    time: 3.2,
+    render: () => `
+      <div class="character">🦈🌊 🏊</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🏊 SWIM TO SHORE</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Sharks don\'t like high-fives.')">✋ HIGH FIVE</button>
+      </div>`
+  },
+  // 12. HIGH VOLTAGE
+  {
+    id: "voltage",
+    instruction: "HIGH VOLTAGE WIRE!",
+    time: 3.5,
+    render: () => `
+      <div class="character">⚡🔌</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🚶 WALK AWAY</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'You became a human lightbulb.')">👅 LICK IT</button>
+      </div>`
+  },
+  // 13. WET FLOOR
+  {
+    id: "slippery",
+    instruction: "WET FLOOR! WALK CAREFULLY!",
+    time: 3.2,
+    render: () => `
+      <div class="character">⚠️🧹 🏃</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🚶 WALK SLOW</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Slipped and broke your entire skeleton.')">🏃 RUN FAST</button>
+      </div>`
+  },
+  // 14. MICROWAVE METAL
+  {
+    id: "microwave",
+    instruction: "HEAT YOUR FOOD!",
+    time: 3.5,
+    render: () => `
+      <div class="character">📻♨️</div>
+      <div class="btn-group">
+        <button class="btn btn-green" onclick="resolveGame(true)">🥣 PLASTIC BOWL</button>
+        <button class="btn btn-red" onclick="resolveGame(false, 'Microwaved metal = Instant fireworks inside kitchen.')">FOIL BOWL</button>
+      </div>`
+  },
+  // 15. SLEEPING BEAR
+  {
+    id: "bear",
+    instruction: "DON'T WAKE THE BEAR!",
+    time: 3.8,
+    render: () => `
+      <div class="character">🐻💤 🧍</div>
+      <div class="btn-group">
+        <button class="btn btn-red" onclick="resolveGame(false, 'Bear woke up. Bear was hungry.')">PULL TAIL</button>
+      </div>`
+  }
+];
+
+function startGame() {
+  lives = 3;
+  score = 0;
+  stupidityCount = 0;
+  historyGames = [];
+  document.getElementById("start-screen").style.display = "none";
+  updateHUD();
+  nextMiniGame();
+}
+
+function updateHUD() {
+  document.getElementById("lives-display").textContent = "❤️".repeat(Math.max(0, lives)) + "🖤".repeat(Math.max(0, 3 - lives));
+  document.getElementById("score-display").textContent = score;
+}
+
+function showToast(msg) {
+  let t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML = "🏆 " + msg;
+  document.getElementById("app").appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+function unlockAchievement(key, title) {
+  if (!achievements[key]) {
+    achievements[key] = true;
+    showToast(title);
+  }
+}
+
+function getRandomGameIndex() {
+  let available = [];
+  for (let i = 0; i < miniGames.length; i++) {
+    if (!historyGames.includes(i)) available.push(i);
+  }
+  if (available.length === 0) {
+    historyGames = [];
+    return Math.floor(Math.random() * miniGames.length);
+  }
+  let pick = available[Math.floor(Math.random() * available.length)];
+  historyGames.push(pick);
+  if (historyGames.length > 5) historyGames.shift(); // Ingat 5 game terakhir
+  return pick;
+}
+
+function nextMiniGame() {
+  if (lives <= 0) {
+    showGameOver();
+    return;
+  }
+
+  gameActive = true;
+  document.getElementById("death-screen").style.display = "none";
+  
+  let rand = getRandomGameIndex();
+  let game = miniGames[rand];
+
+  let stage = document.getElementById("stage");
+  stage.innerHTML = `<div id="instruction">${game.instruction}</div>` + game.render();
+
+  if (game.setup) game.setup();
+
+  // Start Timer Bar
+  let bar = document.getElementById("timer-bar");
+  bar.style.transition = "none";
+  bar.style.width = "100%";
+  
+  setTimeout(() => {
+    bar.style.transition = `width ${game.time}s linear`;
+    bar.style.width = "0%";
+  }, 50);
+
+  clearTimeout(currentTimer);
+  currentTimer = setTimeout(() => {
+    if (gameActive) {
+      // Game pasif (harus dibiarkan tanpa disentuh)
+      if (["selfie", "red_button", "bee", "bear"].includes(game.id)) {
+        resolveGame(true);
+      } else {
+        resolveGame(false, "You froze. Brain disconnected.");
+      }
+    }
+  }, game.time * 1000);
+}
+
+function resolveGame(success, deathReason = "Too stupid to live.") {
+  if (!gameActive) return;
+  gameActive = false;
+  clearTimeout(currentTimer);
+
+  if (success) {
+    score += 100;
+    updateHUD();
+    nextMiniGame();
+  } else {
+    lives--;
+    stupidityCount++;
+    updateHUD();
+    showDeathScreen(deathReason);
+  }
+}
+
+function showDeathScreen(reason) {
+  let screen = document.getElementById("death-screen");
+  document.getElementById("death-status").textContent = lives <= 0 ? "GAME OVER" : "YOU DIED";
+  document.getElementById("cause-of-death").textContent = reason;
+
+  let brainPct = Math.max(0, 100 - (stupidityCount * 20));
+  document.getElementById("brain-pct").textContent = brainPct + "%";
+  document.getElementById("brain-meter").style.width = brainPct + "%";
+
+  // Check Achievements
+  if (stupidityCount >= 1) unlockAchievement("first_death", "Natural Selection");
+  if (reason.includes("Curiosity")) unlockAchievement("curious", "Curiosity Killed The Idiot");
+  if (stupidityCount >= 5) unlockAchievement("dumbass", "Professional Dumbass");
+
+  screen.style.display = "flex";
+}
+
+function showGameOver() {
+  showDeathScreen("Final Verdict: Zero Common Sense Left.");
+  document.querySelector("#death-screen .btn").textContent = "TRY AGAIN";
+  document.querySelector("#death-screen .btn").onclick = startGame;
+}
+
+function nextRoundOrRestart() {
+  if (lives > 0) {
+    nextMiniGame();
+  } else {
+    startGame();
+  }
+}
+</script>
+</body>
+</html>
