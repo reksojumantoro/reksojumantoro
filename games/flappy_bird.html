@@ -2,9 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <!-- Meta viewport penting agar tidak nge-zoom sendiri di HP -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Flappy Meme Hardcore - Mobile Version</title>
+  <title>Flappy Meme - Ultra Responsive</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,19 +11,17 @@
       -webkit-user-select: none;
       user-select: none;
     }
-    body {
+    html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
+      height: 100%;
       background-color: #1a1a2e;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      width: 100vw;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: white;
       overflow: hidden;
-      /* Mematikan gestur scroll & zoom bawaan browser HP */
+      /* Mematikan delay scroll & double tap zoom bawaan HP */
       touch-action: none;
     }
     #game-container {
@@ -50,15 +47,14 @@
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
 
-  // Fungsi penyesuaian ukuran canvas dengan layar HP/Browser
+  // Penyesuaian ukuran canvas mengikuti layar HP secara dinamis
   function resizeCanvas() {
-    const maxWidth = 420; // Maksimal lebar seperti layar HP
-    const maxHeight = 750; // Maksimal tinggi
+    const maxWidth = 420;
+    const maxHeight = 750;
 
     let w = window.innerWidth;
     let h = window.innerHeight;
 
-    // Jaga aspect ratio jika dibuka di laptop/tablet
     if (w / h > maxWidth / maxHeight) {
       w = h * (maxWidth / maxHeight);
     } else {
@@ -69,7 +65,10 @@
     canvas.height = h;
   }
 
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    if (!gameStarted) initGame();
+  });
   resizeCanvas();
 
   let frames = 0;
@@ -80,6 +79,7 @@
 
   const memeList = ["🤡", "🗿", "💀", "🤓", "🤪", "👻", "👺", "👽"];
 
+  // Background Meme Pop-up
   const memeBackground = {
     currentMeme: null,
     timer: 0,
@@ -87,15 +87,15 @@
     update() {
       if (!gameStarted || gameOver) return;
 
-      if (frames % 150 === 0) {
+      if (frames % 140 === 0) {
         this.currentMeme = {
           symbol: memeList[Math.floor(Math.random() * memeList.length)],
           x: Math.floor(Math.random() * (canvas.width - 100)) + 50,
           y: Math.floor(Math.random() * (canvas.height - 150)) + 50,
-          size: Math.floor(canvas.width * 0.2), // Ukuran dinamis sesuai layar
+          size: Math.floor(canvas.width * 0.22),
           opacity: 0.35
         };
-        this.timer = 90;
+        this.timer = 80;
       }
 
       if (this.timer > 0) {
@@ -117,7 +117,7 @@
     }
   };
 
-  // Karakter Player (Nilai dinamis berdasarkan tinggi canvas)
+  // Karakter Player
   const bird = {
     x: 0,
     y: 0,
@@ -128,18 +128,20 @@
     rotation: 0,
 
     init() {
-      this.x = canvas.width * 0.2;
+      this.x = canvas.width * 0.22;
       this.y = canvas.height * 0.4;
       this.radius = canvas.width * 0.045;
-      this.gravity = canvas.height * 0.00075;
-      this.jump = canvas.height * 0.0125;
+      
+      // Fisika dibuat lebi snappy & garing (tanpa delay)
+      this.gravity = canvas.height * 0.00095;
+      this.jump = canvas.height * 0.014;
     },
     
     draw() {
       ctx.save();
       ctx.translate(this.x, this.y);
       
-      this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (this.velocity / (canvas.height * 0.02))));
+      this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (this.velocity / (canvas.height * 0.018))));
       ctx.rotate(this.rotation);
 
       const fontSize = Math.floor(this.radius * 1.6);
@@ -152,6 +154,8 @@
     },
     
     flap() {
+      // KUNCI RESPONSIF: Matikan kecepatan jatuh secara instan sebelum lompat
+      this.velocity = 0;
       this.velocity = -this.jump;
     },
     
@@ -189,8 +193,8 @@
 
     init() {
       this.w = canvas.width * 0.15;
-      this.gap = canvas.height * 0.2; // Celah disesuaikan agar tetap pas di HP
-      this.dx = canvas.width * 0.007;
+      this.gap = canvas.height * 0.20;
+      this.dx = canvas.width * 0.0075;
     },
 
     draw() {
@@ -221,7 +225,7 @@
     update() {
       if (!gameStarted || gameOver) return;
 
-      if (frames % 80 === 0) {
+      if (frames % 75 === 0) {
         const groundHeight = canvas.height * 0.06;
         const minTop = canvas.height * 0.1;
         const maxTop = canvas.height - groundHeight - this.gap - (canvas.height * 0.1);
@@ -296,18 +300,13 @@
     gameStarted = true;
   }
 
-  // EVENT INPUT KHUSUS MOBILE (touchstart instan tanpa delay 300ms)
-  window.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // Mencegah emulasi klik ganda
-    handleInput();
-  }, { passive: false });
+  // SYSTEM INPUT SUPER INSTAN (Bypass delay browser HP)
+  function handleAction(e) {
+    if (e) {
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+    }
 
-  // Fallback untuk Desktop
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "Space") handleInput();
-  });
-
-  function handleInput() {
     if (!gameStarted) {
       gameStarted = true;
     } else if (gameOver) {
@@ -316,6 +315,15 @@
       bird.flap();
     }
   }
+
+  // Gunakan Pointer Event & Touch Event dengan Listener Passive False
+  window.addEventListener("pointerdown", handleAction, { passive: false });
+  window.addEventListener("touchstart", handleAction, { passive: false });
+
+  // Keyboard Space untuk Laptop/PC
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "Space") handleAction(e);
+  });
 
   function drawUI() {
     ctx.fillStyle = "#FFF";
