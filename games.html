@@ -249,12 +249,16 @@
         ========================= */
 
         .coming-soon {
-            margin-top: 25px;
+            height: 100%;
             border: 2px dashed #ddd;
             border-radius: 18px;
             padding: 40px;
             text-align: center;
             color: #999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .coming-soon-icon {
@@ -312,10 +316,6 @@
 
 
 <body>
-
-    <!-- =========================
-         NAVIGATION
-    ========================== -->
 
     <nav class="navbar navbar-expand-lg navbar-light">
 
@@ -376,10 +376,6 @@
     </nav>
 
 
-    <!-- =========================
-         HERO
-    ========================== -->
-
     <section class="games-hero">
 
         <div class="container">
@@ -403,20 +399,12 @@
     </section>
 
 
-    <!-- =========================
-         GAME LIST
-    ========================== -->
-
     <section class="games-section">
 
         <div class="games-container">
 
             <div class="row g-4">
 
-
-                <!-- =========================
-                     RANDOM BULLSHIT GENERATOR
-                ========================== -->
 
                 <div class="col-md-6">
 
@@ -466,8 +454,6 @@
                             <a
                                href="games/random_bullshit_generator.html" class="play-button" target="_blank">
                                 Play Now &rarr;
-                           
-
                             </a>
 
                         </div>
@@ -477,11 +463,64 @@
                 </div>
 
 
-                <!-- =========================
-                     FUTURE GAME
-                ========================== -->
-
                 <div class="col-md-6">
+
+                    <div class="game-card">
+
+                        <div class="game-banner">
+
+                            <div class="game-icon">
+                                🐤
+                            </div>
+
+                        </div>
+
+
+                        <div class="game-content">
+
+                            <span class="game-tag">
+                                Arcade / Casual
+                            </span>
+
+                            <h3>
+                                Flappy Bird
+                            </h3>
+
+                            <p>
+                                A simple arcade game where you tap to flap 
+                                your wings and avoid obstacles to reach 
+                                high scores.
+                            </p>
+
+                            <div class="game-meta">
+
+                                <span>
+                                    🎮 Single Player
+                                </span>
+
+                                <span>
+                                    🕹️ Arcade
+                                </span>
+
+                                <span>
+                                    🔥 Addictive
+                                </span>
+
+                            </div>
+
+                            <a
+                               href="games/flappy_bird.html" class="play-button" target="_blank">
+                                Play Now &rarr;
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12">
 
                     <div class="coming-soon">
 
@@ -510,10 +549,6 @@
     </section>
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
     <footer>
 
         <p>
@@ -523,10 +558,6 @@
 
     </footer>
 
-
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
