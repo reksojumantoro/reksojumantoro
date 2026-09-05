@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>How Long Can You Survive? - JOYSTICK EDITION</title>
+  <title>How Long Can You Survive? - Cross Platform Edition</title>
   <style>
     * { box-sizing: border-box; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
     body { margin: 0; background: #08090d; color: #fff; font-family: Arial, sans-serif; overflow: hidden; touch-action: none; }
@@ -45,7 +45,7 @@
       left: 50%;
       transform: translateX(-50%);
       font-weight: 900;
-      font-size: 22px;
+      font-size: 20px;
       text-shadow: 0 2px 8px #000;
       z-index: 3;
       text-align: center;
@@ -54,37 +54,40 @@
       color: #ff3366;
     }
 
-    /* Area khusus Touch Joystick (Sisi Kiri Layar) */
-    #touch-zone {
+    /* KONTROL MOBILE (Default Sembunyi, Muncul di Layar Sentuh) */
+    .mobile-ctrl {
+      display: none;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .mobile-ctrl { display: block; }
+    }
+
+    /* JOYSTICK FIX DI POJOK KANAN BAWAH */
+    #joystick-container {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 50vw;
-      height: 100vh;
-      z-index: 4;
+      bottom: 25px;
+      right: 25px;
+      width: 130px;
+      height: 130px;
+      z-index: 6;
       touch-action: none;
     }
 
-    /* Visual Joystick Analog */
     #joystick-base {
-      position: fixed;
-      width: 110px;
-      height: 110px;
-      background: rgba(255, 255, 255, 0.12);
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.1);
       border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      display: none;
-      z-index: 5;
     }
 
     #joystick-stick {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
       background: rgba(89, 184, 255, 0.6);
       border: 2px solid #59b8ff;
       border-radius: 50%;
@@ -92,7 +95,7 @@
       pointer-events: none;
     }
 
-    /* Tombol Aksi Kanan */
+    /* TOMBOL AKSI DI SEBELAH KIRI BAWAH */
     .action-btn {
       position: fixed;
       border-radius: 50%;
@@ -104,25 +107,26 @@
       z-index: 6;
       touch-action: none;
       user-select: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     #btn-dash {
-      bottom: 30px;
-      right: 30px;
+      bottom: 25px;
+      left: 25px;
       width: 75px;
       height: 75px;
       font-size: 13px;
-      background: rgba(89, 184, 255, 0.3);
+      background: rgba(89, 184, 255, 0.35);
       border: 2px solid #59b8ff;
     }
 
     #btn-sprint {
-      bottom: 120px;
-      right: 35px;
+      bottom: 115px;
+      left: 30px;
       width: 60px;
       height: 60px;
       font-size: 11px;
-      background: rgba(255, 215, 0, 0.3);
+      background: rgba(255, 215, 0, 0.35);
       border: 2px solid #ffd700;
     }
 
@@ -133,7 +137,7 @@
 
     #screen { position: fixed; inset: 0; background: #07090df5; display: flex; align-items: center; justify-content: center; z-index: 9; }
     .panel { width: min(620px, 90vw); padding: 24px; background: #12151d; border: 1px solid #596273; border-radius: 14px; box-shadow: 0 20px 80px #000; text-align: center; }
-    h1 { font-size: 32px; margin: 0 0 10px; color: #ff4757; }
+    h1 { font-size: 28px; margin: 0 0 10px; color: #ff4757; }
     p { line-height: 1.5; margin: 8px 0; }
     .muted { color: #aeb5c2; font-size: 13px; }
     button { padding: 14px 28px; background: #ff4757; color: white; border: none; border-radius: 7px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
@@ -153,17 +157,19 @@
 
 <div id="event"></div>
 
-<!-- Controller Layer -->
-<div id="touch-zone"></div>
-<div id="joystick-base"><div id="joystick-stick"></div></div>
-<div id="btn-sprint" class="action-btn">RUN</div>
-<div id="btn-dash" class="action-btn">DASH</div>
+<!-- Mobile Controls -->
+<div id="btn-sprint" class="action-btn mobile-ctrl">RUN</div>
+<div id="btn-dash" class="action-btn mobile-ctrl">DASH</div>
+<div id="joystick-container" class="mobile-ctrl">
+  <div id="joystick-base">
+    <div id="joystick-stick"></div>
+  </div>
+</div>
 
 <div id="screen">
   <div class="panel" id="panel">
-    <h1>JOYSTICK CONTROL EDITION</h1>
-    <p>Sentuh & geser area kiri layar untuk menggerakkan karakter dengan Analog 360°!</p>
-    <p class="muted">Gunakan tombol RUN & DASH di sisi kanan untuk menghindar.</p>
+    <h1>ABSURD SURVIVAL</h1>
+    <p><b>Mobile:</b> RUN/DASH di Kiri, Joystick di Kanan.<br><b>Laptop:</b> WASD / Panah + Shift + Space.</p>
     <button id="start">START SURVIVING</button>
   </div>
 </div>
@@ -179,7 +185,6 @@ let hz=[], npcs=[], parts=[], traps=[];
 // VIRTUAL JOYSTICK STATE
 let joyActive = false;
 let joyTouchId = null;
-let joyOrigin = { x: 0, y: 0 };
 let joyDir = { x: 0, y: 0 };
 
 const say=s=>{let e=document.getElementById("event");e.textContent=s;e.style.opacity=1;clearTimeout(say.q);say.q=setTimeout(()=>e.style.opacity=0,1200)};
@@ -197,7 +202,7 @@ function hit(){if(inv>0||dead)return;p.h--;inv=1;shake=.4;say("💥 OUCH! WHO DI
 function die(){
   dead=1;run=0;
   document.getElementById("screen").style.display="flex";
-  document.getElementById("panel").innerHTML="<h1>YOU DIED</h1><p>Survived for <b>"+fmt(t)+"</b> with <b>"+ec+"</b> chaotic events.</p><p class='muted'>"+["Pure chaos won.","Even the game didn't expect that.","Physics left the chat.","Congratulations, you exploded.","Try dodging next time!"][Math.floor(Math.random()*5)]+"</p><button onclick='location.reload()'>PLAY AGAIN</button>";
+  document.getElementById("panel").innerHTML="<h1>YOU DIED</h1><p>Survived for <b>"+fmt(t)+"</b> with <b>"+ec+"</b> chaotic events.</p><button onclick='location.reload()'>PLAY AGAIN</button>";
 }
 function fmt(z){return String(Math.floor(z/60)).padStart(2,"0")+":"+String(Math.floor(z%60)).padStart(2,"0")+"."+Math.floor(z%1*10)}
 
@@ -212,18 +217,9 @@ function spawn(type){
     hz.push({type:"boulder", x: dir? 70 : 890, y: r(100,500), vx: (dir? 1 : -1)*(3+th*.3), z: 6, R:30});
     say("🪨 GIANT BOULDER ROLLING!");
   }
-  else if(type=="bomb"){
-    traps.push({type:"bomb", x:r(100,860), y:r(100,500), timer: 1.2, R: 55});
-    say("💣 WARNING: BOMB AREA!");
-  }
-  else if(type=="banana"){
-    traps.push({type:"banana", x:r(100,860), y:r(100,500), timer: 10, R: 15});
-    say("🍌 SOMEONE DROPPED A BANANA!");
-  }
-  else if(type=="ducks"){
-    for(let i=0;i<5;i++) hz.push({type:"goose",x:r(80,880),y:r(80,520),z:6,R:12,sp:1.4});
-    say("🦆 DUCK ARMY ATTACK!");
-  }
+  else if(type=="bomb"){ traps.push({type:"bomb", x:r(100,860), y:r(100,500), timer: 1.2, R: 55}); say("💣 BOMB AREA!"); }
+  else if(type=="banana"){ traps.push({type:"banana", x:r(100,860), y:r(100,500), timer: 10, R: 15}); say("🍌 BANANA SLIP!"); }
+  else if(type=="ducks"){ for(let i=0;i<5;i++) hz.push({type:"goose",x:r(80,880),y:r(80,520),z:6,R:12,sp:1.4}); say("🦆 DUCK ARMY!"); }
   else { npcs.push({type:"npc",x:r(80,880),y:r(80,520),z:7,R:13,sp:.7+th*.03}); say("🧍 AGGRESSIVE NPC!"); }
 }
 
@@ -232,11 +228,10 @@ function triggerEvent(){
   let pool = ["meteor","piano","goose","ghost","ufo","boulder","bomb","banana","ducks","npc","lava","reverse","slip","black","timewarp"];
   let q = pool[Math.floor(Math.random()*pool.length)];
 
-  if(["meteor","piano","goose","ghost","ufo","boulder","bomb","banana","ducks","npc"].includes(q)) {
-    spawn(q);
-  } else if(q=="lava"){ lava=4; say("🌋 THE FLOOR IS LAVA!"); }
+  if(["meteor","piano","goose","ghost","ufo","boulder","bomb","banana","ducks","npc"].includes(q)) spawn(q);
+  else if(q=="lava"){ lava=4; say("🌋 FLOOR IS LAVA!"); }
   else if(q=="reverse"){ reverse=!reverse; say(reverse?"🔄 CONTROLS REVERSED!":"🔄 CONTROLS NORMAL!"); }
-  else if(q=="slip"){ slip=5; say("🧊 SUPER SLIPPERY FLOOR!"); }
+  else if(q=="slip"){ slip=5; say("🧊 SLIPPERY FLOOR!"); }
   else if(q=="black"){ black=3.5; say("🌑 LIGHTS OUT!"); }
   else if(q=="timewarp"){ timeScale = Math.random() < .5 ? 1.8 : 0.5; setTimeout(()=>timeScale=1, 4000); say(timeScale>1?"⏩ SPEED UP!":"⏸️ SLOW MOTION!"); }
 }
@@ -244,22 +239,17 @@ function triggerEvent(){
 function move(dt){
   let a=0,b=0;
   
-  // Baca Input Keyboard (PC)
-  if(K.w||K.ArrowUp)b--; if(K.s||K.ArrowDown)b++;
-  if(K.a||K.ArrowLeft)a--; if(K.d||K.ArrowRight)a++;
+  if(K.w||K.KeyW||K.ArrowUp)b--; if(K.s||K.KeyS||K.ArrowDown)b++;
+  if(K.a||K.KeyA||K.ArrowLeft)a--; if(K.d||K.KeyD||K.ArrowRight)a++;
 
-  // Kombinasikan dengan Input Joystick Analog (Mobile)
-  if(joyActive){
-    a = joyDir.x;
-    b = joyDir.y;
-  }
+  if(joyActive){ a = joyDir.x; b = joyDir.y; }
 
   if(reverse){a=-a;b=-b}
   
   if(a || b){
     let z = Math.hypot(a,b);
-    if(z > 1) { a /= z; b /= z; } // Normalize jika melebihi 1
-    let sprint = (K.Shift || K.sprint) && p.st > 0, sp = 2.8 * (sprint ? 1.75 : 1);
+    if(z > 1) { a /= z; b /= z; }
+    let sprint = (K.ShiftLeft || K.ShiftRight || K.sprint) && p.st > 0, sp = 2.8 * (sprint ? 1.75 : 1);
     if(sprint) p.st = Math.max(0, p.st - 40 * dt); else p.st = Math.min(100, p.st + 25 * dt);
     
     if(slip){ p.vx += a * sp * dt * 6; p.vy += b * sp * dt * 6; p.vx *= .98; p.vy *= .98; }
@@ -337,7 +327,6 @@ function update(dt){
 
 function draw(){
   x.clearRect(0,0,W,H);
-  
   x.save();
   if(shake > 0) x.translate(r(-shake*15, shake*15), r(-shake*15, shake*15));
 
@@ -387,7 +376,7 @@ function draw(){
   if(black>0){
     x.fillStyle="#000e"; x.fillRect(0,0,W,H);
     x.fillStyle="#fff"; x.font="20px Arial"; x.textAlign="center";
-    x.fillText("PITCH BLACK! GOOD LUCK!",480,300);
+    x.fillText("PITCH BLACK!",480,300);
   }
 
   x.restore();
@@ -403,62 +392,60 @@ function loop(now){
   draw(); requestAnimationFrame(loop);
 }
 
-// LOGIK KONTROL DYNAMIC JOYSTICK
-const touchZone = document.getElementById("touch-zone");
-const joyBase = document.getElementById("joystick-base");
+// LOGIKA JOYSTICK TETAP (POJOK KANAN BAWAH)
+const joyContainer = document.getElementById("joystick-container");
 const joyStick = document.getElementById("joystick-stick");
 
-touchZone.addEventListener("touchstart", e => {
-  e.preventDefault();
-  if(joyActive) return;
-  const touch = e.changedTouches[0];
-  joyTouchId = touch.identifier;
-  joyActive = true;
-  joyOrigin = { x: touch.clientX, y: touch.clientY };
+function handleJoyMove(clientX, clientY) {
+  const rect = joyContainer.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  let dx = clientX - centerX;
+  let dy = clientY - centerY;
+  let dist = Math.hypot(dx, dy);
+  let maxDist = rect.width / 2;
 
-  joyBase.style.left = joyOrigin.x + "px";
-  joyBase.style.top = joyOrigin.y + "px";
-  joyBase.style.display = "block";
-  joyStick.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
-  joyDir = { x: 0, y: 0 };
+  if (dist > maxDist) {
+    dx = (dx / dist) * maxDist;
+    dy = (dy / dist) * maxDist;
+  }
+
+  joyStick.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px)`;
+  joyDir = { x: dx / maxDist, y: dy / maxDist };
+}
+
+joyContainer.addEventListener("touchstart", e => {
+  e.preventDefault();
+  joyActive = true;
+  joyTouchId = e.changedTouches[0].identifier;
+  handleJoyMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
 });
 
-touchZone.addEventListener("touchmove", e => {
-  e.preventDefault();
-  if(!joyActive) return;
-  for(let i=0; i<e.changedTouches.length; i++){
-    let touch = e.changedTouches[i];
-    if(touch.identifier === joyTouchId){
-      let dx = touch.clientX - joyOrigin.x;
-      let dy = touch.clientY - joyOrigin.y;
-      let dist = Math.hypot(dx, dy);
-      let maxDist = 45; // Maksimal jangkauan analog
-
-      if(dist > maxDist){
-        dx = (dx / dist) * maxDist;
-        dy = (dy / dist) * maxDist;
-      }
-
-      joyStick.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px)`;
-      joyDir = { x: dx / maxDist, y: dy / maxDist };
+window.addEventListener("touchmove", e => {
+  if (!joyActive) return;
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    if (e.changedTouches[i].identifier === joyTouchId) {
+      handleJoyMove(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
     }
   }
 });
 
-const endJoy = e => {
-  for(let i=0; i<e.changedTouches.length; i++){
-    if(e.changedTouches[i].identifier === joyTouchId){
+const resetJoy = e => {
+  if (!joyActive) return;
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    if (e.changedTouches[i].identifier === joyTouchId) {
       joyActive = false;
       joyTouchId = null;
-      joyBase.style.display = "none";
+      joyStick.style.transform = `translate(-50%, -50%) translate(0px, 0px)`;
       joyDir = { x: 0, y: 0 };
     }
   }
 };
-touchZone.addEventListener("touchend", endJoy);
-touchZone.addEventListener("touchcancel", endJoy);
+window.addEventListener("touchend", resetJoy);
+window.addEventListener("touchcancel", resetJoy);
 
-// KONTROL TOMBOL SPRINT & DASH
+// BIND TOMBOL RUN & DASH (SISI KIRI BAWAH)
 function bindBtn(id, keyName){
   const el = document.getElementById(id);
   const start = (e) => { e.preventDefault(); K[keyName] = 1; el.classList.add('active'); };
@@ -481,13 +468,13 @@ function triggerDash(){
   setTimeout(()=>{p.vx*=.2; p.vy*=.2},120);
 }
 
-// KEYBOARD BINDING (PC)
+// KEYBOARD BINDING (LAPTOP/PC)
 document.addEventListener("keydown",e=>{
-  K[e.key]=1;
-  if([" ","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
-  if(e.key==" "&&run&&!dead) triggerDash();
+  K[e.code]=1; K[e.key]=1;
+  if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.code)) e.preventDefault();
+  if(e.code=="Space"&&run&&!dead) triggerDash();
 });
-document.addEventListener("keyup",e=>K[e.key]=0);
+document.addEventListener("keyup",e=>{ K[e.code]=0; K[e.key]=0; });
 
 document.getElementById("start").onclick=()=>{
   run=1; document.getElementById("screen").style.display="none"; say("SURVIVE IF YOU CAN!");
