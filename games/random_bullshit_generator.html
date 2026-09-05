@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Bullshit Generator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:#111827;color:#f9fafb;display:flex;align-items:center;justify-content:center;padding:20px}
+.game{width:min(760px,100%);background:#1f2937;border:2px solid #374151;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+h1{margin:0 0 6px;font-size:30px;text-align:center}.subtitle{text-align:center;color:#9ca3af;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}.stat{background:#111827;border-radius:12px;padding:12px;text-align:center;font-weight:bold}.stat span{display:block;font-size:12px;color:#9ca3af;margin-bottom:4px}
+.event{background:#111827;border-radius:14px;padding:22px;min-height:290px}.day{color:#9ca3af;font-size:14px;margin-bottom:12px}.event h2{margin:0 0 14px;font-size:25px}.event p{line-height:1.6;font-size:17px;white-space:pre-line}
+.choices{display:grid;gap:10px;margin-top:20px}button{border:0;border-radius:10px;padding:14px 16px;background:#374151;color:white;font-size:15px;cursor:pointer;transition:.15s}button:hover{background:#4b5563;transform:translateY(-1px)}
+.restart{margin-top:16px;width:100%;background:#7c3aed;display:none}.restart:hover{background:#6d28d9}.inventory{margin-top:18px;color:#d1d5db;font-size:14px}.log{margin-top:18px;max-height:150px;overflow-y:auto;background:#111827;border-radius:12px;padding:12px;font-size:13px;color:#9ca3af}.log div{margin-bottom:7px}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}.game{padding:16px}}
+</style>
+</head>
+<body>
+<div class="game">
+<h1>🎲 RANDOM BULLSHIT GENERATOR</h1>
+<div class="subtitle">30+ new ways to make questionable decisions.</div>
+<div class="stats">
+<div class="stat"><span>❤️ HP</span><b id="hp">100</b></div>
+<div class="stat"><span>💰 COINS</span><b id="coins">10</b></div>
+<div class="stat"><span>📅 DAY</span><b id="day">1</b></div>
+<div class="stat"><span>🍀 LUCK</span><b id="luck">0</b></div>
+</div>
+<div class="event">
+<div class="day" id="dayText">DAY 1</div>
+<h2 id="title">You wake up.</h2>
+<p id="description">You have absolutely no idea where you are.</p>
+<div class="choices" id="choices"></div>
+</div>
+<div class="inventory">🎒 <strong>Inventory:</strong> <span id="inventory">Empty</span></div>
+<div class="log" id="log"></div>
+<button class="restart" id="restart" onclick="restartGame()">🔄 Play Again</button>
+</div>
+
+<script>
+let state={hp:100,coins:10,day:1,luck:0,inventory:[],alive:true};
+
+const events=[
+{title:"There is a goose.",description:"You open the door.\n\nThere is a goose wearing sunglasses. It looks disappointed in you.",choices:[
+["🪿 Fight the goose",()=>{damage(20);addLog("You fought the goose. The goose won emotionally.")}],
+["🍞 Offer bread",()=>{state.coins+=2;addItem("Goose Friend");addLog("The goose accepts your bread. You gain a powerful ally.")}],
+["🏃 Run away",()=>{state.luck++;addLog("You ran. The goose respects your survival instinct.")}]
+]},
+{title:"The floor is lava.",description:"The floor suddenly becomes lava.\n\nThere is absolutely no explanation.",choices:[
+["🪑 Climb onto a chair",()=>{Math.random()<.7?addLog("You survive on the chair. Physics approves."):damage(20)}],
+["🏄 Surf the lava",()=>{Math.random()<.35?(state.luck+=3,addItem("Lava Surfboard"),addLog("You SURF THE LAVA. You are now legally cool.")):(damage(40),addLog("You are not, in fact, a professional lava surfer."))}],
+["😐 Accept your fate",()=>{state.hp=1;addLog("You simply stand there. Somehow this works.")}]
+]},
+{title:"Suspicious vending machine.",description:"A vending machine stands alone in a field.\n\nIt sells one thing: MYSTERY JUICE — 3 COINS.",choices:[
+["🥤 Buy it",()=>{if(state.coins<3)addLog("You cannot afford the Mystery Juice. The machine judges you.");else{state.coins-=3;Math.random()<.5?(state.hp=Math.min(100,state.hp+30),addLog("The juice heals you. It tastes like battery acid.")):(damage(15),addLog("The juice was mostly battery acid."))}}],
+["👊 Punch it",()=>{Math.random()<.5?(state.coins+=8,addLog("You punched the machine and somehow got 8 coins.")):(damage(10),addLog("The vending machine punched back."))}],
+["🚶 Ignore it",()=>addLog("You make the responsible decision. Boring.")]
+]},
+{title:"Tiny wizard, huge frying pan.",description:"A tiny wizard appears and says:\n\n'Choose wisely, mortal.'\n\nHe is holding a frying pan.",choices:[
+["🧙 Ask for money",()=>{let n=Math.floor(Math.random()*16)+1;state.coins+=n;addLog("The wizard gives you "+n+" coins. He clearly has no idea what he's doing.")}],
+["🍳 Duel him",()=>{Math.random()<.5?(state.luck+=2,addItem("Wizard Hat"),addLog("You defeat the wizard. He gives you his hat.")):(damage(25),addLog("The wizard hits you with the frying pan."))}],
+["😐 Pretend he isn't there",()=>addLog("The wizard respects your commitment to denial.")]
+]},
+{title:"The briefcase.",description:"A briefcase is sitting on the ground.\n\nBeep... beep... beep...",choices:[
+["💼 Open it",()=>{Math.random()<.65?(state.coins+=25,addLog("It's full of money. Congratulations, capitalism.")):(damage(35),addLog("It was mostly angry bees."))}],
+["👟 Kick it",()=>{state.luck++;addLog("You kick the briefcase. Nothing happens. Probably.")}],
+["🚶 Walk away",()=>addLog("You choose peace.")]
+]},
+{title:"A stranger in a trench coat.",description:"A suspicious stranger whispers:\n\n'One coin. One mystery box. No refunds.'",choices:[
+["📦 Buy the box",()=>{if(state.coins<1)addLog("You have no money. The stranger calls you 'brokie'.");else{state.coins--;let r=Math.random();r<.33?(state.coins+=20,addLog("You got 20 coins.")):r<.66?(addItem("Rubber Duck"),state.luck++,addLog("You got a rubber duck. It seems important.")):(damage(20),addLog("The box contained a smaller box. The smaller box contained violence."))}}],
+["🤨 Ask what's inside",()=>addLog("He says: 'A box.' You leave.")],
+["🫵 Rob him",()=>{Math.random()<.4?(state.coins+=15,addLog("You successfully rob the mysterious stranger. Bold.")):(damage(30),addLog("He was apparently a martial arts master."))}]
+]},
+{title:"A duck challenges you to chess.",description:"A duck sits across from you at a chessboard.\n\nIt has already played the Sicilian Defense.",choices:[
+["♟️ Accept",()=>{Math.random()<.5?(state.luck+=2,state.coins+=5,addLog("You beat the duck. It quacks angrily.")):(damage(10),addLog("The duck destroys you with a beautiful checkmate."))}],
+["🦆 Befriend duck",()=>{addItem("Chess Duck");state.luck++;addLog("You ignore the chess game and gain a duck friend.")}],
+["🏃 Flip the table",()=>{damage(5);addLog("You flip the table. The duck is impressed.")}]
+]},
+{title:"A suspicious button.",description:"There is a giant red button labeled:\n\n'DO NOT PRESS.'\n\nIt is glowing.",choices:[
+["🔴 Press it",()=>{let r=Math.random();r<.4?(state.coins+=30,addLog("Thirty coins fall from the sky.")):r<.75?(damage(25),addLog("A piano falls from the sky.")):(state.hp=100,addLog("Everything resets. Your HP is somehow full."))}],
+["🚫 Don't press it",()=>{state.luck++;addLog("You resist temptation. Character development.")}],
+["👀 Press it twice",()=>{damage(10);addLog("You press it twice because apparently once wasn't enough.")}]
+]},
+{title:"You find a magic hat.",description:"A top hat is lying on the sidewalk.\n\nIt whispers your name.",choices:[
+["🎩 Wear it",()=>{addItem("Magic Hat");state.luck+=2;addLog("The hat grants +2 luck. It also judges your fashion.")}],
+["🗑️ Throw it away",()=>{state.coins+=5;addLog("There were five coins underneath it.")}],
+["🗣️ Talk to it",()=>{state.luck++;addLog("The hat gives you terrible life advice. Somehow you feel better.")}]
+]},
+{title:"A meteor is coming.",description:"You look up.\n\nA meteor is heading directly toward you.",choices:[
+["🏃 Run",()=>{Math.random()<.7?addLog("You run exactly 4 meters. Somehow the meteor misses."):(damage(45),addLog("The meteor clips you. Rude."))}],
+["🪨 Throw a rock at it",()=>{Math.random()<.2?(state.luck+=5,addLog("You destroy a meteor with a rock. You are built different.")):(damage(30),addLog("The rock does absolutely nothing."))}],
+["📸 Take a selfie",()=>{state.coins+=10;addLog("The selfie goes viral. Worth it.")}]
+]},
+{title:"The angry pigeon.",description:"A pigeon lands on your head.\n\nIt refuses to leave.",choices:[
+["🐦 Negotiate",()=>{Math.random()<.6?(addItem("Pigeon Contract"),addLog("The pigeon agrees to a peaceful arrangement.")):(damage(12),addLog("Negotiations fail. The pigeon chooses violence."))}],
+["🍟 Give it food",()=>{state.coins=Math.max(0,state.coins-2);addLog("The pigeon eats your food and becomes your landlord.")}],
+["💨 Shake it off",()=>{damage(8);addLog("The pigeon takes this personally.")}]
+]},
+{title:"You encounter a vending machine cult.",description:"Seven people are worshipping a vending machine.\n\nThey invite you to join.",choices:[
+["🙏 Join the cult",()=>{state.luck+=3;addItem("Cult Membership Card");addLog("You are now spiritually aligned with snacks.")}],
+["🚪 Leave",()=>addLog("You slowly back away.")],
+["🥤 Ask for snacks",()=>{state.coins+=6;addLog("They give you six coins and ask you to spread the word.")}]
+]},
+{title:"The suspicious elevator.",description:"You enter an elevator.\n\nButtons: 1, 2, 3, and '???'.",choices:[
+["⬆️ Press 1",()=>addLog("You arrive on floor 1. There is nothing here.")],
+["⬆️ Press 3",()=>{state.coins+=7;addLog("Floor 3 contains seven coins.")}],
+["❓ Press ???",()=>{Math.random()<.5?(addItem("Interdimensional Key"),state.luck+=2,addLog("You briefly visit another dimension. It is worse.")):(damage(20),addLog("The elevator takes you nowhere and charges you for the trip."))}]
+]},
+{title:"A cat offers you a job.",description:"A cat in a tiny tie hands you a contract.\n\nSalary: 3 fish per day.",choices:[
+["🐈 Accept",()=>{addItem("Cat Employee Badge");state.coins+=8;addLog("You complete one shift. The cat pays you in coins instead of fish.")}],
+["❌ Decline",()=>addLog("The cat silently writes your name on a list.")],
+["🐟 Demand fish",()=>{state.hp=Math.min(100,state.hp+10);addLog("The cat gives you fish. You feel healthier.")}]
+]},
+{title:"You find a genie.",description:"A genie emerges from a suspiciously cheap lamp.\n\n'One wish. No loopholes.'",choices:[
+["💰 Wish for money",()=>{state.coins+=20;addLog("You receive 20 coins. Inflation has apparently ruined magic.")}],
+["❤️ Wish for health",()=>{state.hp=100;addLog("Your HP is restored.")}],
+["🦆 Wish for a duck",()=>{addItem("Wish Duck");state.luck+=3;addLog("You receive a duck. Best wish ever.")}]
+]},
+{title:"The floor is suddenly slippery.",description:"Every surface is now covered in butter.\n\nYou must move.",choices:[
+["🧦 Shuffle carefully",()=>addLog("You shuffle like a confused penguin and survive.")],
+["🛝 Slide",()=>{Math.random()<.6?(state.coins+=4,addLog("You slide into four coins.")):(damage(15),addLog("You slide directly into a wall."))}],
+["🏃 Sprint",()=>{damage(10);addLog("You sprint. Gravity files a complaint.")}]
+]},
+{title:"A pirate appears in your bathtub.",description:"You don't have a bathtub.\n\nYet there is a pirate in one.",choices:[
+["🏴‍☠️ Ask for treasure",()=>{state.coins+=15;addLog("The pirate gives you treasure and vanishes.")}],
+["⚔️ Duel",()=>{Math.random()<.5?(state.luck++,addItem("Pirate Hat"),addLog("You defeat the pirate.")):(damage(25),addLog("The pirate is better at swords than you."))}],
+["🛁 Ask how he got there",()=>addLog("He says 'long story.'")]
+]},
+{title:"A mysterious egg.",description:"You find a warm egg.\n\nIt wiggles.",choices:[
+["🥚 Hatch it",()=>{let r=Math.random();r<.33?(addItem("Baby Dragon"),state.luck+=4,addLog("A tiny dragon hatches. It likes you.")):r<.66?(damage(10),addLog("A very angry chicken hatches.")):(addItem("Mystery Egg"),addLog("It does not hatch. Yet."))}],
+["🍳 Cook it",()=>{state.hp=Math.min(100,state.hp+20);addLog("You make an excellent omelette.")}],
+["🚶 Leave it",()=>addLog("The egg wiggles ominously as you leave.")]
+]},
+{title:"Your shadow is acting weird.",description:"Your shadow waves at you.\n\nYou are not waving.",choices:[
+["👋 Wave back",()=>{state.luck+=2;addLog("Your shadow waves back. You are now friends.")}],
+["😨 Run",()=>{damage(5);addLog("Your shadow follows you. Obviously.")}],
+["🕵️ Investigate",()=>{addItem("Shadow Coin");state.coins+=3;addLog("You find a coin that only exists in shadows.")}]
+]},
+{title:"A giant snail races toward you.",description:"A snail the size of a car is moving surprisingly fast.",choices:[
+["🐌 Race it",()=>{Math.random()<.5?(state.luck+=2,addLog("You win. Nobody understands how.")):(damage(10),addLog("The snail wins. You will never recover socially."))}],
+["🚗 Bet on the snail",()=>{if(state.coins<2)addLog("You can't afford the bet.");else{state.coins-=2;Math.random()<.6?(state.coins+=8,addLog("The snail wins. Huge profit.")):(addLog("The snail loses. Tragic."))}}],
+["🧂 Show salt",()=>{damage(5);addLog("The snail takes this as a threat and leaves.")}]
+]},
+{title:"A skeleton asks for directions.",description:"A skeleton politely asks:\n\n'Excuse me, where is the nearest graveyard?'",choices:[
+["🪦 Point left",()=>{state.coins+=5;addLog("The skeleton thanks you and gives you five coins.")}],
+["🧭 Point right",()=>addLog("The skeleton walks away. You hope that was correct.")],
+["💀 Ask if he's lost",()=>{state.luck++;addLog("He says 'yes.' You both laugh awkwardly.")}]
+]},
+{title:"You discover a portal.",description:"A glowing portal appears in a bush.\n\nA sign says: 'Probably Safe.'",choices:[
+["🌀 Enter",()=>{let r=Math.random();r<.4?(state.coins+=20,addLog("You return with 20 coins.")):r<.75?(damage(20),addLog("You return with a headache.")):(addItem("Alien Spoon"),state.luck+=2,addLog("You return with an alien spoon."))}],
+["🌳 Hide behind bush",()=>addLog("The portal closes. You survive another day.")],
+["🥄 Throw something in",()=>{state.luck++;addLog("You throw a shoe through it. The shoe is now someone else's problem.")}]
+]},
+{title:"A squirrel demands tribute.",description:"A squirrel blocks your path.\n\nIt holds out one tiny paw.",choices:[
+["🌰 Give 2 coins",()=>{if(state.coins>=2){state.coins-=2;state.luck+=2;addLog("The squirrel accepts the tribute.");}else addLog("The squirrel checks your pockets and looks disappointed.")}],
+["🐿️ Challenge squirrel",()=>{Math.random()<.4?(state.coins+=10,addLog("You defeat the squirrel. It drops ten coins.")):(damage(12),addLog("The squirrel has allies."))}],
+["🚶 Walk around",()=>addLog("You successfully avoid squirrel politics.")]
+]},
+{title:"The moon sends you a text.",description:"Your phone buzzes.\n\nMessage from: 🌕 MOON\n'We need to talk.'",choices:[
+["📱 Reply 'k'",()=>{state.luck++;addLog("The Moon replies: 'fair enough.'") }],
+["📵 Ignore it",()=>addLog("The Moon leaves you on read.")]
+]},
+{title:"A haunted microwave.",description:"A microwave is running with nothing inside.\n\nIt whispers: '2 minutes remaining.'",choices:[
+["🔌 Unplug it",()=>{state.luck+=2;addLog("The microwave screams and disappears.")}],
+["🍿 Put popcorn inside",()=>{state.hp=Math.min(100,state.hp+15);addLog("Perfect popcorn. Haunted, but delicious.")}],
+]},
+{title:"You become temporarily invisible.",description:"You look down. Your body is gone.\n\nYou are invisible for 30 seconds.",choices:[
+["💰 Steal coins",()=>{state.coins+=15;addLog("You steal exactly 15 coins. Morally questionable.")}],
+["🪞 Look in mirror",()=>{state.luck+=2;addLog("You discover invisibility is extremely inconvenient.")}],
+["😈 Cause chaos",()=>{state.luck++;addLog("You move objects around and blame ghosts.")}]
+]},
+{title:"A motivational rock.",description:"A rock speaks to you:\n\n'You can do anything.'\n\nIt is surprisingly convincing.",choices:[
+["🪨 Believe it",()=>{state.hp=Math.min(100,state.hp+10);state.luck++;addLog("You feel motivated. The rock is proud.")}],
+["🤨 Question the rock",()=>addLog("The rock says nothing. Because it is a rock.")],
+["🎒 Pick it up",()=>{addItem("Motivational Rock");addLog("You now carry your own personal life coach.")}]
+]},
+{title:"A door with no building.",description:"There is a single door standing in an empty field.\n\nIt says: 'Definitely Not A Trap.'",choices:[
+["🚪 Open it",()=>{Math.random()<.5?(state.coins+=18,addLog("You find a room full of coins.")):(damage(25),addLog("It is, unfortunately, a trap."))}],
+["🔨 Knock",()=>{addLog("Something knocks back.")}],
+["🚶 Ignore it",()=>{state.luck++;addLog("You walk away. Suspiciously mature.")}]
+]},
+{title:"You are challenged to a dance battle.",description:"A mysterious NPC points at you.\n\n'You. Me. Dance floor. Now.'",choices:[
+["🕺 Accept",()=>{Math.random()<.55?(state.coins+=12,state.luck+=2,addLog("You win the dance battle. Legendary.")):(damage(8),addLog("You lose the dance battle. Brutal."))}],
+["💃 Freestyle",()=>{state.luck++;addLog("You freestyle so badly that everyone applauds.")}],
+["🏃 Run",()=>addLog("You flee before the music starts.")]
+]},
+{title:"Your phone gains sentience.",description:"Your phone unlocks itself and says:\n\n'Bro, we need to talk about your screen time.'",choices:[
+["📱 Listen",()=>{state.hp=Math.min(100,state.hp+5);addLog("Your phone gives surprisingly good advice.")}],
+["🔇 Mute it",()=>{state.coins+=5;addLog("Your phone pays you five coins to stop talking.")}],
+["📴 Throw it",()=>{damage(5);addLog("You throw the phone. It lands perfectly upright and judges you.")}]
+]},
+{title:"A giant chicken appears.",description:"A chicken the size of a bus is blocking the road.\n\nIt clucks once.",choices:[
+["🐔 Bow",()=>{state.luck+=3;addLog("The chicken accepts your respect.")}],
+["🥊 Fight",()=>{Math.random()<.25?(state.coins+=25,addLog("You defeat the giant chicken. Impossible.")):(damage(35),addLog("The chicken absolutely destroys you."))}],
+["🌽 Offer corn",()=>{addItem("Chicken Blessing");addLog("The chicken blesses you with its tiny wing.")}]
+]},
+{title:"The universe gives you a choice.",description:"A cosmic voice says:\n\n'Choose: 100 coins OR one duck.'",choices:[
+["💰 Take 100 coins",()=>{state.coins+=100;addLog("You take the money. Capitalism wins.")}],
+["🦆 Take the duck",()=>{addItem("Cosmic Duck");state.luck+=10;addLog("You choose the duck. Correct answer.")}],
+["🤝 Ask for both",()=>{Math.random()<.15?(state.coins+=100,addItem("Cosmic Duck"),addLog("The universe respects audacity.")):(damage(20),addLog("The universe says 'greedy.'"))}]
+]},
+{title:"The end is near.",description:"A narrator suddenly appears and says:\n\n'You have one final choice.'",choices:[
+["🎉 Celebrate",()=>{state.coins+=10;addLog("You celebrate. The narrator approves.")}],
+["😎 Say 'skill issue'",()=>{state.luck+=5;addLog("The narrator laughs. Respect.")}],
+["🚪 Walk into the sunset",()=>{state.day=10;addLog("You walk dramatically toward the sunset.")}]
+]}
+];
+
+function randomEvent(){return events[Math.floor(Math.random()*events.length)]}
+function renderEvent(){
+if(!state.alive)return;
+const e=randomEvent();
+document.getElementById("dayText").textContent="DAY "+state.day;
+document.getElementById("title").textContent=e.title;
+document.getElementById("description").textContent=e.description;
+const c=document.getElementById("choices");c.innerHTML="";
+e.choices.forEach(ch=>{
+let b=document.createElement("button");b.textContent=ch[0];b.onclick=()=>{
+ch[1]();updateUI();
+if(!state.alive)return;
+if(state.day>=10){winGame();return}
+state.day++;setTimeout(renderEvent,300)
+};c.appendChild(b)
+})
+}
+function damage(n){state.hp-=n;if(state.hp<=0){state.hp=0;gameOver()}}
+function addItem(x){if(!state.inventory.includes(x))state.inventory.push(x)}
+function addLog(x){let d=document.createElement("div");d.textContent="• "+x;document.getElementById("log").prepend(d)}
+function updateUI(){
+document.getElementById("hp").textContent=state.hp;
+document.getElementById("coins").textContent=state.coins;
+document.getElementById("day").textContent=state.day;
+document.getElementById("luck").textContent=state.luck;
+document.getElementById("inventory").textContent=state.inventory.length?state.inventory.join(", "):"Empty"
+}
+function gameOver(){
+state.alive=false;
+document.getElementById("title").textContent="💀 YOU DIED";
+document.getElementById("description").textContent="You survived "+state.day+" day(s).\n\nCause of death: probably something stupid.";
+document.getElementById("choices").innerHTML="";
+document.getElementById("restart").style.display="block";addLog("GAME OVER.")
+}
+function winGame(){
+state.alive=false;
+document.getElementById("title").textContent="🏆 YOU SURVIVED";
+document.getElementById("description").textContent="You survived 10 days of completely unnecessary nonsense.\n\nFinal coins: "+state.coins+"\nLuck: "+state.luck+"\nItems: "+state.inventory.length;
+document.getElementById("choices").innerHTML="";
+document.getElementById("restart").style.display="block";addLog("YOU WIN. Nobody knows how.")
+}
+function restartGame(){
+state={hp:100,coins:10,day:1,luck:0,inventory:[],alive:true};
+document.getElementById("log").innerHTML="";
+document.getElementById("restart").style.display="none";
+updateUI();addLog("You wake up. Again.");renderEvent()
+}
+updateUI();addLog("Welcome to the expanded edition.");renderEvent();
+</script>
+</body>
+</html>
