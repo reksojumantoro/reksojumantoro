@@ -2,9 +2,16 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Flappy Meme Hardcore</title>
+  <!-- Meta viewport penting agar tidak nge-zoom sendiri di HP -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Flappy Meme Hardcore - Mobile Version</title>
   <style>
+    * {
+      box-sizing: border-box;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -13,37 +20,57 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      width: 100vw;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: white;
       overflow: hidden;
+      /* Mematikan gestur scroll & zoom bawaan browser HP */
+      touch-action: none;
     }
     #game-container {
-      text-align: center;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     canvas {
-      border: 4px solid #16213e;
-      border-radius: 12px;
       background: linear-gradient(to bottom, #0f3460, #16213e);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-    }
-    p {
-      margin-top: 12px;
-      font-size: 14px;
-      color: #e94560;
-      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
     }
   </style>
 </head>
 <body>
 
 <div id="game-container">
-  <canvas id="canvas" width="360" height="520"></canvas>
-  <p>SPASI / KLIK untuk lompat | Focus!</p>
+  <canvas id="canvas"></canvas>
 </div>
 
 <script>
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
+
+  // Fungsi penyesuaian ukuran canvas dengan layar HP/Browser
+  function resizeCanvas() {
+    const maxWidth = 420; // Maksimal lebar seperti layar HP
+    const maxHeight = 750; // Maksimal tinggi
+
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+
+    // Jaga aspect ratio jika dibuka di laptop/tablet
+    if (w / h > maxWidth / maxHeight) {
+      w = h * (maxWidth / maxHeight);
+    } else {
+      h = w * (maxHeight / maxWidth);
+    }
+
+    canvas.width = w;
+    canvas.height = h;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
   let frames = 0;
   let score = 0;
@@ -51,10 +78,8 @@
   let gameOver = false;
   let gameStarted = false;
 
-  // Daftar Emoji Meme Face buat Popup Background
   const memeList = ["🤡", "🗿", "💀", "🤓", "🤪", "👻", "👺", "👽"];
 
-  // Background Meme Pop-up Manager
   const memeBackground = {
     currentMeme: null,
     timer: 0,
@@ -62,16 +87,15 @@
     update() {
       if (!gameStarted || gameOver) return;
 
-      // Tiap ~2,5 detik (150 frames), ganti/munculin meme baru di posisi acak
       if (frames % 150 === 0) {
         this.currentMeme = {
           symbol: memeList[Math.floor(Math.random() * memeList.length)],
           x: Math.floor(Math.random() * (canvas.width - 100)) + 50,
           y: Math.floor(Math.random() * (canvas.height - 150)) + 50,
-          size: Math.floor(Math.random() * 60) + 60, // Ukuran jumbo biar berdistraksi
-          opacity: 0.35 // Semi-transparan biar tetap kelihatan jalurnya
+          size: Math.floor(canvas.width * 0.2), // Ukuran dinamis sesuai layar
+          opacity: 0.35
         };
-        this.timer = 90; // Muncul selama 90 frame (~1.5 detik)
+        this.timer = 90;
       }
 
       if (this.timer > 0) {
@@ -93,24 +117,33 @@
     }
   };
 
-  // Karakter Player
+  // Karakter Player (Nilai dinamis berdasarkan tinggi canvas)
   const bird = {
-    x: 60,
-    y: 200,
-    radius: 18,
-    gravity: 0.38,
-    jump: 6.2,
+    x: 0,
+    y: 0,
+    radius: 0,
+    gravity: 0,
+    jump: 0,
     velocity: 0,
     rotation: 0,
+
+    init() {
+      this.x = canvas.width * 0.2;
+      this.y = canvas.height * 0.4;
+      this.radius = canvas.width * 0.045;
+      this.gravity = canvas.height * 0.00075;
+      this.jump = canvas.height * 0.0125;
+    },
     
     draw() {
       ctx.save();
       ctx.translate(this.x, this.y);
       
-      this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (this.velocity / 10)));
+      this.rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (this.velocity / (canvas.height * 0.02))));
       ctx.rotate(this.rotation);
 
-      ctx.font = "28px serif";
+      const fontSize = Math.floor(this.radius * 1.6);
+      ctx.font = `${fontSize}px serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("👾", 0, 0);
@@ -128,13 +161,12 @@
       this.velocity += this.gravity;
       this.y += this.velocity;
 
-      // Benturan Tanah
-      if (this.y + this.radius >= canvas.height - 30) {
-        this.y = canvas.height - 30 - this.radius;
+      const groundHeight = canvas.height * 0.06;
+      if (this.y + this.radius >= canvas.height - groundHeight) {
+        this.y = canvas.height - groundHeight - this.radius;
         endGame();
       }
 
-      // Atap
       if (this.y - this.radius <= 0) {
         this.y = this.radius;
         this.velocity = 0;
@@ -142,7 +174,7 @@
     },
     
     reset() {
-      this.y = 200;
+      this.init();
       this.velocity = 0;
       this.rotation = 0;
     }
@@ -151,11 +183,18 @@
   // Pipa
   const pipes = {
     position: [],
-    w: 55,
-    gap: 98, // Celah sempit (susah)
-    dx: 3,   // Speed cepat
+    w: 0,
+    gap: 0,
+    dx: 0,
+
+    init() {
+      this.w = canvas.width * 0.15;
+      this.gap = canvas.height * 0.2; // Celah disesuaikan agar tetap pas di HP
+      this.dx = canvas.width * 0.007;
+    },
 
     draw() {
+      const groundHeight = canvas.height * 0.06;
       for (let i = 0; i < this.position.length; i++) {
         let p = this.position[i];
         let topY = p.y;
@@ -174,18 +213,22 @@
         ctx.strokeRect(p.x, 0, this.w, topY);
 
         // Pipa bawah
-        ctx.fillRect(p.x, bottomY, this.w, canvas.height - bottomY - 30);
-        ctx.strokeRect(p.x, bottomY, this.w, canvas.height - bottomY - 30);
+        ctx.fillRect(p.x, bottomY, this.w, canvas.height - bottomY - groundHeight);
+        ctx.strokeRect(p.x, bottomY, this.w, canvas.height - bottomY - groundHeight);
       }
     },
 
     update() {
       if (!gameStarted || gameOver) return;
 
-      if (frames % 75 === 0) {
+      if (frames % 80 === 0) {
+        const groundHeight = canvas.height * 0.06;
+        const minTop = canvas.height * 0.1;
+        const maxTop = canvas.height - groundHeight - this.gap - (canvas.height * 0.1);
+        
         this.position.push({
           x: canvas.width,
-          y: Math.floor(Math.random() * (canvas.height - 220 - this.gap)) + 40
+          y: Math.floor(Math.random() * (maxTop - minTop)) + minTop
         });
       }
 
@@ -193,7 +236,6 @@
         let p = this.position[i];
         p.x -= this.dx;
 
-        // Hitbox Pipa
         let birdTop = bird.y - bird.radius;
         let birdBottom = bird.y + bird.radius;
         let birdLeft = bird.x - bird.radius;
@@ -205,7 +247,6 @@
           }
         }
 
-        // Skor
         if (p.x + this.w < bird.x && !p.passed) {
           score++;
           p.passed = true;
@@ -220,21 +261,22 @@
 
     reset() {
       this.position = [];
+      this.init();
     }
   };
 
   // Tanah
   const fg = {
-    h: 30,
     draw() {
+      const groundHeight = canvas.height * 0.06;
       ctx.fillStyle = "#16213e";
-      ctx.fillRect(0, canvas.height - this.h, canvas.width, this.h);
+      ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
       
       ctx.strokeStyle = "#e94560";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(0, canvas.height - this.h);
-      ctx.lineTo(canvas.width, canvas.height - this.h);
+      ctx.moveTo(0, canvas.height - groundHeight);
+      ctx.lineTo(canvas.width, canvas.height - groundHeight);
       ctx.stroke();
     }
   };
@@ -254,11 +296,16 @@
     gameStarted = true;
   }
 
+  // EVENT INPUT KHUSUS MOBILE (touchstart instan tanpa delay 300ms)
+  window.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Mencegah emulasi klik ganda
+    handleInput();
+  }, { passive: false });
+
+  // Fallback untuk Desktop
   window.addEventListener("keydown", (e) => {
     if (e.code === "Space") handleInput();
   });
-
-  canvas.addEventListener("click", handleInput);
 
   function handleInput() {
     if (!gameStarted) {
@@ -272,38 +319,42 @@
 
   function drawUI() {
     ctx.fillStyle = "#FFF";
-    ctx.font = "bold 18px sans-serif";
 
     if (!gameStarted) {
       ctx.textAlign = "center";
-      ctx.fillText("KLIK / SPASI UNTUK MULAI", canvas.width / 2, canvas.height / 2);
+      ctx.font = `bold ${Math.floor(canvas.width * 0.05)}px sans-serif`;
+      ctx.fillText("TAP LAYAR UNTUK MULAI", canvas.width / 2, canvas.height / 2);
     } else if (gameOver) {
       ctx.fillStyle = "rgba(15, 52, 96, 0.85)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       ctx.textAlign = "center";
       ctx.fillStyle = "#e94560";
-      ctx.font = "bold 32px sans-serif";
-      ctx.fillText("YOU DIED!", canvas.width / 2, 180);
+      ctx.font = `bold ${Math.floor(canvas.width * 0.08)}px sans-serif`;
+      ctx.fillText("YOU DIED!", canvas.width / 2, canvas.height * 0.35);
       
       ctx.fillStyle = "#FFF";
-      ctx.font = "18px sans-serif";
-      ctx.fillText(`Skor Kamu: ${score}`, canvas.width / 2, 230);
-      ctx.fillText(`Skor Tertinggi: ${highScore}`, canvas.width / 2, 260);
+      ctx.font = `${Math.floor(canvas.width * 0.05)}px sans-serif`;
+      ctx.fillText(`Skor: ${score}`, canvas.width / 2, canvas.height * 0.45);
+      ctx.fillText(`Best: ${highScore}`, canvas.width / 2, canvas.height * 0.50);
       
       ctx.fillStyle = "#4ecca3";
-      ctx.fillText("Klik untuk Coba Lagi", canvas.width / 2, 320);
+      ctx.fillText("Tap untuk Coba Lagi", canvas.width / 2, canvas.height * 0.60);
     } else {
       ctx.textAlign = "left";
-      ctx.font = "bold 28px sans-serif";
-      ctx.fillText(score, 20, 45);
+      ctx.font = `bold ${Math.floor(canvas.width * 0.08)}px sans-serif`;
+      ctx.fillText(score, canvas.width * 0.06, canvas.height * 0.08);
     }
+  }
+
+  function initGame() {
+    bird.init();
+    pipes.init();
   }
 
   function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Render meme di layer paling belakang
     memeBackground.update();
     memeBackground.draw();
 
@@ -321,6 +372,7 @@
     requestAnimationFrame(loop);
   }
 
+  initGame();
   loop();
 </script>
 
