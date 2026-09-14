@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎲 MONEY MAYHEM</title>
+    <title>🎲 MONEY MAYHEM (12x12)</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -38,11 +38,10 @@
             padding: 10px;
         }
 
-        /* SCREEN MANAGEMENT */
         .screen {
             display: none;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             flex-direction: column;
             align-items: center;
         }
@@ -51,7 +50,7 @@
             display: flex;
         }
 
-        /* LOBBY / SETUP SCREEN */
+        /* LOBBY SCREEN */
         .lobby-card {
             background: var(--card-bg);
             border: 2px solid #334155;
@@ -131,18 +130,17 @@
 
         .main-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 25px rgba(16, 185, 129, 0.4);
         }
 
-        /* GAME BOARD LAYOUT */
+        /* GAME LAYOUT 12x12 */
         .game-layout {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr 340px;
             gap: 20px;
             width: 100%;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 950px) {
             .game-layout {
                 grid-template-columns: 1fr;
             }
@@ -150,9 +148,9 @@
 
         .board-container {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(6, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(12, 1fr);
+            gap: 4px;
             aspect-ratio: 1 / 1;
             background: #090d16;
             padding: 8px;
@@ -163,90 +161,94 @@
 
         .tile {
             background: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 6px;
             border: 1px solid #334155;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 4px;
+            padding: 2px;
             position: relative;
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             overflow: hidden;
             text-align: center;
         }
 
         .tile-header {
             width: 100%;
-            height: 8px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 2px;
             margin-bottom: 2px;
         }
 
         .tile-icon {
-            font-size: 1.4rem;
-            margin: 2px 0;
+            font-size: 1.1rem;
+            line-height: 1;
         }
 
         .tile-name {
             font-weight: 700;
-            font-size: 0.65rem;
-            line-height: 1.1;
+            font-size: 0.55rem;
+            line-height: 1;
             color: #cbd5e1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
         }
 
         .tile-price {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: var(--accent-gold);
             font-weight: 700;
         }
 
         .tile-owner {
             position: absolute;
-            top: 2px;
-            right: 2px;
-            font-size: 0.55rem;
+            top: 1px;
+            right: 1px;
+            font-size: 0.45rem;
             font-weight: 800;
-            padding: 1px 4px;
-            border-radius: 4px;
+            padding: 1px 3px;
+            border-radius: 3px;
             color: white;
         }
 
-        /* INNER BOARD CENTER */
+        /* BOARD CENTER 12x12 */
         .board-center {
-            grid-column: 2 / 6;
-            grid-row: 2 / 6;
+            grid-column: 2 / 12;
+            grid-row: 2 / 12;
             background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
             border-radius: 14px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             position: relative;
             border: 1px dashed #334155;
         }
 
         .center-logo {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--accent-gold);
             margin-bottom: 5px;
         }
 
         .timer-display {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--accent-red);
             background: rgba(239, 68, 68, 0.1);
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 20px;
             margin-bottom: 15px;
         }
 
         .dice-display {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin: 10px 0;
             transition: transform 0.2s ease;
         }
@@ -266,25 +268,25 @@
         /* TOKENS */
         .tokens-container {
             position: absolute;
-            bottom: 4px;
-            right: 4px;
+            bottom: 2px;
+            right: 2px;
             display: flex;
             gap: 2px;
             flex-wrap: wrap;
-            max-width: 90%;
+            max-width: 100%;
             justify-content: flex-end;
         }
 
         .player-token {
-            width: 14px;
-            height: 14px;
+            width: 11px;
+            height: 11px;
             border-radius: 50%;
-            border: 2px solid white;
+            border: 1.5px solid white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        /* SIDE PANEL / DASHBOARD */
+        /* DASHBOARD */
         .dashboard {
             background: var(--card-bg);
             border-radius: 20px;
@@ -308,7 +310,6 @@
             padding: 12px;
             border: 2px solid transparent;
             transition: 0.2s;
-            position: relative;
         }
 
         .player-card.active-turn {
@@ -388,7 +389,7 @@
         .modal-overlay {
             position: fixed;
             top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             display: none;
             justify-content: center;
             align-items: center;
@@ -417,35 +418,16 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .modal-icon {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .modal-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+        .modal-icon { font-size: 3.5rem; margin-bottom: 10px; }
+        .modal-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+        .modal-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4; }
+        .modal-actions { display: flex; gap: 10px; justify-content: center; }
 
         .log-box {
             background: #090d16;
             border-radius: 10px;
             padding: 10px;
-            height: 90px;
+            height: 100px;
             overflow-y: auto;
             font-size: 0.75rem;
             color: #94a3b8;
@@ -464,7 +446,7 @@
     <div id="lobby-screen" class="screen active">
         <div class="lobby-card">
             <div class="lobby-title">🎲 MONEY MAYHEM</div>
-            <div class="lobby-subtitle">Chaotic Fast-Paced Board Game</div>
+            <div class="lobby-subtitle">Chaotic 12x12 Fast-Paced Board Game</div>
             
             <div class="form-group">
                 <label>Jumlah Player (Pass-and-Play)</label>
@@ -492,9 +474,8 @@
     <div id="game-screen" class="screen">
         <div class="game-layout">
             
-            <!-- BOARD CONTAINER -->
+            <!-- BOARD CONTAINER (12x12 GRID) -->
             <div class="board-container" id="board">
-                <!-- CENTER -->
                 <div class="board-center">
                     <div class="center-logo">MAYHEM</div>
                     <div class="timer-display" id="timer">05:00</div>
@@ -516,7 +497,7 @@
                     </div>
 
                     <div class="log-box" id="game-log">
-                        <div class="log-entry">Selamat datang di <strong>Money Mayhem</strong>!</div>
+                        <div class="log-entry">Selamat datang di <strong>Money Mayhem 12x12</strong>!</div>
                     </div>
                 </div>
             </div>
@@ -524,7 +505,7 @@
         </div>
     </div>
 
-    <!-- GENERIC MODAL POPUP -->
+    <!-- MODAL POPUP -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <div class="modal-icon" id="modal-icon">📦</div>
@@ -535,34 +516,68 @@
     </div>
 
     <script>
-        const BOARD_TILES = [
-            { id: 0, name: "GO", type: "go", icon: "🚩", color: "#10b981" },
-            { id: 1, name: "BLOK A", type: "property", price: 500, rent: 100, icon: "🏠", color: "#ef4444" },
-            { id: 2, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
-            { id: 3, name: "BLOK B", type: "property", price: 600, rent: 120, icon: "🏠", color: "#ef4444" },
-            { id: 4, name: "BANK", type: "bank", icon: "💰", color: "#f59e0b" },
-            { id: 5, name: "JAIL", type: "jail", icon: "🚓", color: "#64748b" },
-            { id: 6, name: "BLOK C", type: "property", price: 800, rent: 160, icon: "🏠", color: "#3b82f6" },
-            { id: 7, name: "TRAIN", type: "train", icon: "🚆", color: "#06b6d4" },
-            { id: 8, name: "BLOK D", type: "property", price: 900, rent: 180, icon: "🏠", color: "#3b82f6" },
-            { id: 9, name: "TAX", type: "tax", price: 300, icon: "💸", color: "#f43f5e" },
-            { id: 10, name: "CASINO", type: "casino", icon: "🎰", color: "#ec4899" },
-            { id: 11, name: "BLOK E", type: "property", price: 1200, rent: 250, icon: "🏢", color: "#10b981" },
-            { id: 12, name: "AUCTION", type: "auction", icon: "💣", color: "#f59e0b" },
-            { id: 13, name: "BLOK F", type: "property", price: 1400, rent: 300, icon: "🏢", color: "#10b981" },
-            { id: 14, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
-            { id: 15, name: "BEACH", type: "rest", icon: "🏖️", color: "#64748b" },
-            { id: 16, name: "BLOK G", type: "property", price: 1800, rent: 400, icon: "🏙️", color: "#a855f7" },
-            { id: 17, name: "TRAIN", type: "train", icon: "🚆", color: "#06b6d4" },
-            { id: 18, name: "BLOK H", type: "property", price: 2200, rent: 500, icon: "🏙️", color: "#a855f7" },
-            { id: 19, name: "POLICE", type: "police", icon: "🚓", color: "#f43f5e" }
-        ];
+        // GENERATE 12x12 PERIMETER TILE COORDINATES (44 Petak)
+        function generatePerimeterCoords() {
+            const coords = [];
+            // Top Row (c: 12 -> 1, r: 1)
+            for (let c = 12; c >= 1; c--) coords.push({ r: 1, c: c });
+            // Left Col (r: 2 -> 12, c: 1)
+            for (let r = 2; r <= 12; r++) coords.push({ r: r, c: 1 });
+            // Bottom Row (c: 2 -> 12, r: 12)
+            for (let c = 2; c <= 12; c++) coords.push({ r: 12, c: c });
+            // Right Col (r: 11 -> 2, c: 12)
+            for (let r = 11; r >= 2; r--) coords.push({ r: r, c: 12 });
+            return coords;
+        }
 
-        const TILE_POSITIONS = [
-            { r: 6, c: 6 }, { r: 6, c: 5 }, { r: 6, c: 4 }, { r: 6, c: 3 }, { r: 6, c: 2 }, { r: 6, c: 1 },
-            { r: 5, c: 1 }, { r: 4, c: 1 }, { r: 3, c: 1 }, { r: 2, c: 1 },
-            { r: 1, c: 1 }, { r: 1, c: 2 }, { r: 1, c: 3 }, { r: 1, c: 4 }, { r: 1, c: 5 }, { r: 1, c: 6 },
-            { r: 2, c: 6 }, { r: 3, c: 6 }, { r: 4, c: 6 }, { r: 5, c: 6 }
+        const TILE_POSITIONS = generatePerimeterCoords(); // 44 tiles
+
+        // 44 PETAK VARIATIF
+        const BOARD_TILES = [
+            { id: 0, name: "START", type: "go", icon: "🚩", color: "#10b981" },
+            { id: 1, name: "BLOK A1", type: "property", price: 400, rent: 80, icon: "🏠", color: "#ef4444" },
+            { id: 2, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 3, name: "BLOK A2", type: "property", price: 500, rent: 100, icon: "🏠", color: "#ef4444" },
+            { id: 4, name: "BANK", type: "bank", icon: "💰", color: "#f59e0b" },
+            { id: 5, name: "BLOK B1", type: "property", price: 600, rent: 120, icon: "🏠", color: "#f97316" },
+            { id: 6, name: "TAX", type: "tax", price: 300, icon: "💸", color: "#f43f5e" },
+            { id: 7, name: "BLOK B2", type: "property", price: 700, rent: 140, icon: "🏠", color: "#f97316" },
+            { id: 8, name: "TRAIN 1", type: "train", icon: "🚆", color: "#06b6d4" },
+            { id: 9, name: "BLOK C1", type: "property", price: 800, rent: 160, icon: "🏡", color: "#eab308" },
+            { id: 10, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 11, name: "JAIL", type: "jail", icon: "🚓", color: "#64748b" },
+            { id: 12, name: "BLOK C2", type: "property", price: 900, rent: 180, icon: "🏡", color: "#eab308" },
+            { id: 13, name: "CASINO", type: "casino", icon: "🎰", color: "#ec4899" },
+            { id: 14, name: "BLOK D1", type: "property", price: 1000, rent: 200, icon: "🏡", color: "#84cc16" },
+            { id: 15, name: "BANK", type: "bank", icon: "💰", color: "#f59e0b" },
+            { id: 16, name: "BLOK D2", type: "property", price: 1100, rent: 220, icon: "🏡", color: "#84cc16" },
+            { id: 17, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 18, name: "BLOK E1", type: "property", price: 1200, rent: 250, icon: "🏢", color: "#10b981" },
+            { id: 19, name: "TRAIN 2", type: "train", icon: "🚆", color: "#06b6d4" },
+            { id: 20, name: "BLOK E2", type: "property", price: 1300, rent: 270, icon: "🏢", color: "#10b981" },
+            { id: 21, name: "TAX", type: "tax", price: 500, icon: "💸", color: "#f43f5e" },
+            { id: 22, name: "BEACH", type: "rest", icon: "🏖️", color: "#06b6d4" },
+            { id: 23, name: "BLOK F1", type: "property", price: 1400, rent: 300, icon: "🏢", color: "#06b6d4" },
+            { id: 24, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 25, name: "BLOK F2", type: "property", price: 1500, rent: 320, icon: "🏢", color: "#06b6d4" },
+            { id: 26, name: "BANK", type: "bank", icon: "💰", color: "#f59e0b" },
+            { id: 27, name: "BLOK G1", type: "property", price: 1600, rent: 350, icon: "🏙️", color: "#3b82f6" },
+            { id: 28, name: "CASINO", type: "casino", icon: "🎰", color: "#ec4899" },
+            { id: 29, name: "BLOK G2", type: "property", price: 1700, rent: 370, icon: "🏙️", color: "#3b82f6" },
+            { id: 30, name: "TRAIN 3", type: "train", icon: "🚆", color: "#06b6d4" },
+            { id: 31, name: "BLOK H1", type: "property", price: 1800, rent: 400, icon: "🏙️", color: "#6366f1" },
+            { id: 32, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 33, name: "POLICE", type: "police", icon: "🚓", color: "#f43f5e" },
+            { id: 34, name: "BLOK H2", type: "property", price: 2000, rent: 450, icon: "🏙️", color: "#6366f1" },
+            { id: 35, name: "TAX", type: "tax", price: 600, icon: "💸", color: "#f43f5e" },
+            { id: 36, name: "BLOK I1", type: "property", price: 2200, rent: 500, icon: "🏰", color: "#a855f7" },
+            { id: 37, name: "BANK", type: "bank", icon: "💰", color: "#f59e0b" },
+            { id: 38, name: "BLOK I2", type: "property", price: 2400, rent: 550, icon: "🏰", color: "#a855f7" },
+            { id: 39, name: "CHAOS", type: "chaos", icon: "❓", color: "#8b5cf6" },
+            { id: 40, name: "TRAIN 4", type: "train", icon: "🚆", color: "#06b6d4" },
+            { id: 41, name: "BLOK J1", type: "property", price: 2600, rent: 600, icon: "🏰", color: "#d946ef" },
+            { id: 42, name: "CASINO", type: "casino", icon: "🎰", color: "#ec4899" },
+            { id: 43, name: "BLOK J2", type: "property", price: 3000, rent: 700, icon: "👑", color: "#d946ef" }
         ];
 
         const PLAYER_COLORS = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b"];
@@ -575,7 +590,7 @@
         ];
 
         const SECRET_OBJECTIVES = [
-            { text: "🕵️ Owned 3 Properties", check: (p) => p.properties.length >= 3 },
+            { text: "🕵️ Own 3+ Properties", check: (p) => p.properties.length >= 3 },
             { text: "💰 Rich Goal (> Rp6.000)", check: (p) => p.money >= 6000 },
             { text: "👑 Tycoon (Own Level 3+)", check: (p) => p.properties.some(id => BOARD_TILES[id].level >= 3) }
         ];
@@ -610,7 +625,7 @@
                 players.push({
                     id: i,
                     name: `Player ${i + 1}`,
-                    money: 3000,
+                    money: 3500,
                     pos: 0,
                     inJail: false,
                     bankrupt: false,
@@ -623,7 +638,7 @@
             renderBoard();
             updateUI();
             startTimer();
-            log(`Game dimulai dengan ${playerCapacity} Player! Durasi: ${gameDurationMinutes} menit.`);
+            log(`Game dimulai! ${playerCapacity} Player | Durasi: ${gameDurationMinutes} menit.`);
         }
 
         function renderBoard() {
@@ -694,7 +709,7 @@
 
             if (player.inJail) {
                 player.inJail = false;
-                log(`<strong>${player.name}</strong> keluar dari Penjara!`);
+                log(`<strong>${player.name}</strong> bebas dari Penjara!`);
                 nextTurn();
                 return;
             }
@@ -709,33 +724,36 @@
                 const roll = Math.floor(Math.random() * 6) + 1;
                 diceEl.classList.remove('rolling');
                 diceEl.textContent = `🎲 ${roll}`;
-                isRolling = false;
 
                 log(`<strong>${player.name}</strong> melempar dadu: <strong>${roll}</strong>`);
                 movePlayer(player, roll);
             }, 500);
         }
 
+        // SLOW STEP-BY-STEP MOVEMENT + DELAYED POP-UP NOTIFICATION
         function movePlayer(player, steps) {
-            let current = player.pos;
             let movesLeft = steps;
 
             const interval = setInterval(() => {
-                current = (current + 1) % BOARD_TILES.length;
-                if (current === 0) {
+                player.pos = (player.pos + 1) % BOARD_TILES.length;
+                if (player.pos === 0) {
                     player.money += 2000;
-                    log(`<strong>${player.name}</strong> melewati GO (+Rp2.000)`);
+                    log(`<strong>${player.name}</strong> lewat START (+Rp2.000)`);
                 }
-                player.pos = current;
                 updateTokens();
                 updateUI();
                 movesLeft--;
 
                 if (movesLeft === 0) {
                     clearInterval(interval);
-                    handleTileAction(player, BOARD_TILES[player.pos]);
+
+                    // DELAY POP-UP EVENT (1.5 - 2.5 Detik)
+                    const randomDelay = Math.floor(Math.random() * 1000) + 1500;
+                    setTimeout(() => {
+                        handleTileAction(player, BOARD_TILES[player.pos]);
+                    }, randomDelay);
                 }
-            }, 150);
+            }, 300); // Pelan: 300ms per petak
         }
 
         function handleTileAction(player, tile) {
@@ -770,27 +788,27 @@
                 ]);
             } else if (tile.type === 'tax') {
                 player.money = Math.max(0, player.money - tile.price);
-                log(`<strong>${player.name}</strong> kena pajak Rp${tile.price}`);
+                log(`<strong>${player.name}</strong> bayar pajak Rp${tile.price}`);
                 checkBankruptcy(player);
                 showModal("💸", "BAYAR PAJAK", `Kamu membayar pajak sebesar Rp${tile.price}`, [
                     { text: "PASRAH", class: 'btn-pass', onClick: () => { closeModal(); nextTurn(); } }
                 ]);
             } else if (tile.type === 'bank') {
                 player.money += 500;
-                log(`<strong>${player.name}</strong> dapat deviden Bank +Rp500`);
+                log(`<strong>${player.name}</strong> dapat dividen Bank +Rp500`);
                 showModal("💰", "BANK DIVIDEND", "Mendapat bonus dividen bank sebesar +Rp500!", [
                     { text: "AMBIL", class: 'btn-buy', onClick: () => { closeModal(); nextTurn(); } }
                 ]);
             } else if (tile.type === 'train') {
-                const dest = (player.pos + 10) % 20;
+                const dest = (player.pos + 11) % BOARD_TILES.length;
                 player.pos = dest;
                 updateTokens();
                 log(`<strong>${player.name}</strong> naik Kereta Cepat ke ${BOARD_TILES[dest].name}!`);
                 showModal("🚆", "KERETA CEPAT", `Teleportasi langsung ke ${BOARD_TILES[dest].name}!`, [
-                    { text: "LUNZURRR", class: 'btn-buy', onClick: () => { closeModal(); nextTurn(); } }
+                    { text: "MELUNCUR", class: 'btn-buy', onClick: () => { closeModal(); nextTurn(); } }
                 ]);
             } else if (tile.type === 'police') {
-                player.pos = 5;
+                player.pos = 11;
                 player.inJail = true;
                 updateTokens();
                 log(`<strong>${player.name}</strong> ditangkap Polisi & masuk Penjara!`);
@@ -831,7 +849,7 @@
 
                 log(`<strong>${player.name}</strong> membeli ${tile.name} seharga Rp${tile.price}`);
             } else {
-                log(`<strong>${player.name}</strong> tidak cukup uang untuk membeli ${tile.name}!`);
+                log(`Uang <strong>${player.name}</strong> tidak cukup!`);
             }
             closeModal();
             nextTurn();
@@ -876,6 +894,7 @@
                 count++;
             } while (players[currentPlayerIdx].bankrupt && count < players.length);
 
+            isRolling = false;
             updateUI();
             const btnRoll = document.getElementById('btn-roll');
             if (btnRoll) {
