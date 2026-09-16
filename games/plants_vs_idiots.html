@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Plants vs Idiots - Android Landscape Edition</title>
+    <title>Plants vs Idiots - Mobile Portrait</title>
     <style>
         * {
             box-sizing: border-box;
@@ -33,9 +33,9 @@
             position: relative;
             width: 100%;
             height: 100%;
-            max-width: 1000px;
-            max-height: 600px;
-            aspect-ratio: 1000 / 600;
+            max-width: 480px;
+            max-height: 854px;
+            aspect-ratio: 9 / 16;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             overflow: hidden;
             background: #1b263b;
@@ -47,7 +47,7 @@
             display: block;
         }
 
-        /* UI TOP - Dibuat sangat ramping untuk HP Landscape */
+        /* UI TOP - Dashboard informasi atas */
         #ui-top {
             position: absolute;
             top: 0;
@@ -56,7 +56,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 12px;
+            padding: 10px 15px;
             background: linear-gradient(to bottom, rgba(15,16,32,0.95), rgba(15,16,32,0));
             pointer-events: none;
             z-index: 10;
@@ -64,14 +64,14 @@
 
         .hud-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             font-weight: 800;
-            font-size: clamp(10px, 2.2vw, 14px);
+            font-size: clamp(12px, 3.2vw, 15px);
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* UI BOTTOM - Panel card tanaman diperkecil biar area main luas */
+        /* UI BOTTOM - Panel card tanaman di bawah dengan kontrol besar & nyaman */
         #ui-bottom {
             position: absolute;
             bottom: 0;
@@ -79,38 +79,39 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 6px;
-            padding: 4px 8px;
-            background: linear-gradient(to top, rgba(15,16,32,0.95), rgba(15,16,32,0));
+            gap: 12px;
+            padding: 12px 15px 20px 15px;
+            background: linear-gradient(to top, rgba(15,16,32,0.98), rgba(15,16,32,0.8), rgba(15,16,32,0));
             z-index: 10;
         }
 
         .plant-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            width: clamp(45px, 11vw, 65px);
-            height: clamp(52px, 14vw, 72px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            width: clamp(75px, 22vw, 95px);
+            height: clamp(85px, 25vw, 105px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 3px 2px;
+            padding: 8px 4px;
             cursor: pointer;
-            transition: all 0.15s ease;
-            backdrop-filter: blur(4px);
+            transition: all 0.1s ease;
+            backdrop-filter: blur(6px);
         }
 
         .plant-card:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
             border-color: #00f5d4;
-            background: rgba(0, 245, 212, 0.2);
+            background: rgba(0, 245, 212, 0.25);
         }
 
         .plant-card.selected {
             border-color: #00f5d4;
             background: rgba(0, 245, 212, 0.35);
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.6);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.7);
+            transform: translateY(-4px);
         }
 
         .plant-card.disabled {
@@ -119,15 +120,15 @@
         }
 
         .plant-preview-box {
-            width: 22px;
-            height: 22px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .plant-card .name {
-            font-size: clamp(7px, 1.8vw, 9px);
+            font-size: clamp(10px, 2.7vw, 12px);
             font-weight: 700;
             text-align: center;
             color: #e2e8f0;
@@ -135,10 +136,10 @@
         }
 
         .plant-card .cost {
-            font-size: clamp(8px, 2vw, 10px);
+            font-size: clamp(11px, 3vw, 13px);
             background: rgba(0,0,0,0.6);
-            padding: 1px 3px;
-            border-radius: 3px;
+            padding: 2px 6px;
+            border-radius: 4px;
             color: #ff007f;
             font-weight: bold;
         }
@@ -150,40 +151,40 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 16, 32, 0.94);
+            background: rgba(15, 16, 32, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 20;
             text-align: center;
-            padding: 15px;
+            padding: 20px;
         }
 
         .screen-overlay h1 {
-            font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+            font-size: clamp(2rem, 7vw, 2.8rem);
             color: #00f5d4;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             text-shadow: 0 0 15px rgba(0, 245, 212, 0.5);
             font-weight: 900;
         }
 
         .screen-overlay p {
-            font-size: clamp(0.75rem, 1.8vw, 1.05rem);
+            font-size: clamp(0.9rem, 3.2vw, 1.1rem);
             color: #94a3b8;
-            max-width: 400px;
-            margin-bottom: 20px;
-            line-height: 1.4;
+            max-width: 320px;
+            margin-bottom: 25px;
+            line-height: 1.5;
         }
 
         .btn {
             background: linear-gradient(135deg, #ff007f, #7209b7);
             color: white;
             border: none;
-            padding: 10px 24px;
-            font-size: clamp(0.85rem, 2vw, 1.1rem);
+            padding: 14px 32px;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
             font-weight: 800;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
         }
@@ -197,10 +198,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
-            width: 40%;
-            max-width: 300px;
+            width: 50%;
+            max-width: 240px;
             height: auto;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 3px solid #ff007f;
             box-shadow: 0 0 30px rgba(255, 0, 127, 0.8);
             z-index: 50;
@@ -218,7 +219,7 @@
 <body>
 
     <div id="game-container">
-        <canvas id="gameCanvas" width="1000" height="600"></canvas>
+        <canvas id="gameCanvas" width="540" height="960"></canvas>
         <img id="monkey-popup" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaoRJ4T5OmBRqp5TO-0FgFMlyHkLnTSqSKAV0xioi-rg&s=10" alt="Middle Finger Monkey">
 
         <div id="ui-top">
@@ -236,7 +237,7 @@
         <div id="ui-bottom">
             <div class="plant-card" onclick="selectPlant('sunflower')">
                 <div class="plant-preview-box">
-                    <svg width="20" height="20" viewBox="0 0 36 36">
+                    <svg width="28" height="28" viewBox="0 0 36 36">
                         <circle cx="18" cy="18" r="14" fill="#ffb703" />
                         <circle cx="18" cy="18" r="7" fill="#3a86ff" />
                     </svg>
@@ -246,7 +247,7 @@
             </div>
             <div class="plant-card" onclick="selectPlant('peashooter')">
                 <div class="plant-preview-box">
-                    <svg width="20" height="20" viewBox="0 0 36 36">
+                    <svg width="28" height="28" viewBox="0 0 36 36">
                         <rect x="6" y="12" width="18" height="14" rx="4" fill="#38b000" />
                         <rect x="20" y="15" width="10" height="8" rx="2" fill="#70e000" />
                     </svg>
@@ -256,7 +257,7 @@
             </div>
             <div class="plant-card" onclick="selectPlant('wallpotato')">
                 <div class="plant-preview-box">
-                    <svg width="20" height="20" viewBox="0 0 36 36">
+                    <svg width="28" height="28" viewBox="0 0 36 36">
                         <ellipse cx="18" cy="18" rx="13" ry="15" fill="#bc6c25" />
                         <ellipse cx="18" cy="18" rx="9" ry="11" fill="#dda15e" />
                     </svg>
@@ -268,7 +269,7 @@
 
         <div id="start-screen" class="screen-overlay">
             <h1>PLANTS VS IDIOTS</h1>
-            <p>Hadapi gerombolan orang idiot yang konyol! Lindungi markasmu khusus di HP landscape.</p>
+            <p>Hadapi gerombolan orang idiot yang konyol! Lindungi markasmu.</p>
             <button class="btn" onclick="startGame()">MULAI BERMAIN</button>
         </div>
 
@@ -289,11 +290,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const COLS = 9;
-        const LANES = 5;
-        const TILE_W = 90;
-        const TILE_H = 95;
-        const GRID_OFFSET_X = 110;
+        const COLS = 5;
+        const LANES = 8;
+        const TILE_W = 92;
+        const TILE_H = 88;
+        const GRID_OFFSET_X = 50;
         const GRID_OFFSET_Y = 100;
 
         let gameState = 'START';
@@ -349,7 +350,7 @@
             for (let r = 0; r < LANES; r++) {
                 lawnMowers.push({
                     lane: r,
-                    x: GRID_OFFSET_X - 45,
+                    x: GRID_OFFSET_X - 35,
                     y: GRID_OFFSET_Y + r * TILE_H + TILE_H / 2,
                     active: false,
                     triggered: false
@@ -401,7 +402,7 @@
             for (let i = suns.length - 1; i >= 0; i--) {
                 let s = suns[i];
                 let dist = Math.hypot(mouseX - s.x, mouseY - s.y);
-                if (dist < 35) {
+                if (dist < 40) {
                     energy += 25;
                     createFloatingText('+25 ⚡', s.x, s.y, '#ffd166');
                     suns.splice(i, 1);
@@ -547,7 +548,7 @@
             projectiles = projectiles.filter(proj => proj.x < canvas.width);
 
             enemies.forEach(e => {
-                let collidingPlant = plants.find(p => p.lane === e.lane && Math.abs(p.x - e.x) < 30);
+                let collidingPlant = plants.find(p => p.lane === e.lane && Math.abs(p.x - e.x) < 28);
                 
                 if (collidingPlant) {
                     e.isEating = true;
@@ -562,7 +563,7 @@
                     e.x -= e.speed;
                 }
 
-                if (e.x < GRID_OFFSET_X - 60) {
+                if (e.x < GRID_OFFSET_X - 50) {
                     let mower = lawnMowers.find(m => m.lane === e.lane && !m.triggered);
                     if (mower) {
                         mower.triggered = true;
@@ -570,7 +571,7 @@
                     } else if (!lawnMowers.find(m => m.lane === e.lane && m.active)) {
                         houseHP--;
                         e.dead = true;
-                        createFloatingText('CRASH! -1', 80, GRID_OFFSET_Y + e.lane * TILE_H, '#ff5252');
+                        createFloatingText('CRASH! -1', 60, GRID_OFFSET_Y + e.lane * TILE_H, '#ff5252');
                         if (houseHP <= 0) {
                             gameState = 'GAMEOVER';
                             document.getElementById('gameover-screen').classList.remove('hidden');
@@ -583,7 +584,7 @@
                 if (m.active) {
                     m.x += 10;
                     enemies.forEach(e => {
-                        if (e.lane === m.lane && Math.abs(e.x - m.x) < 35) {
+                        if (e.lane === m.lane && Math.abs(e.x - m.x) < 30) {
                             e.dead = true;
                             createDataParticle(e.x, e.y, '#ff007f');
                         }
@@ -595,7 +596,7 @@
 
             projectiles.forEach((proj, pIdx) => {
                 enemies.forEach(e => {
-                    if (e.lane === proj.lane && Math.abs(e.x - proj.x) < 25) {
+                    if (e.lane === proj.lane && Math.abs(e.x - proj.x) < 22) {
                         e.hp -= proj.damage;
                         createDataParticle(proj.x, proj.y, '#00f5d4');
                         projectiles.splice(pIdx, 1);
@@ -619,7 +620,7 @@
                 y: GRID_OFFSET_Y + lane * TILE_H + TILE_H / 2,
                 hp: isRunner ? 60 : 120,
                 maxHp: isRunner ? 60 : 120,
-                speed: isRunner ? 1.5 : 0.65,
+                speed: isRunner ? 1.4 : 0.6,
                 type: isRunner ? 'runner' : 'normal',
                 idiotVariant: Math.floor(Math.random() * 3),
                 isEating: false,
@@ -659,9 +660,9 @@
             }
 
             ctx.fillStyle = '#ff007f';
-            ctx.fillRect(20, GRID_OFFSET_Y - 10, GRID_OFFSET_X - 30, LANES * TILE_H + 20);
+            ctx.fillRect(10, GRID_OFFSET_Y - 10, GRID_OFFSET_X - 18, LANES * TILE_H + 20);
             ctx.fillStyle = '#0f1020';
-            ctx.fillRect(28, GRID_OFFSET_Y + 10, GRID_OFFSET_X - 46, LANES * TILE_H - 20);
+            ctx.fillRect(16, GRID_OFFSET_Y + 10, GRID_OFFSET_X - 30, LANES * TILE_H - 20);
 
             for (let r = 0; r < LANES; r++) {
                 for (let c = 0; c < COLS; c++) {
@@ -675,10 +676,10 @@
 
             lawnMowers.forEach(m => {
                 ctx.fillStyle = m.triggered ? '#ff007f' : '#3a86ff';
-                ctx.fillRect(m.x, m.y - 18, 30, 36);
+                ctx.fillRect(m.x, m.y - 15, 24, 30);
                 ctx.fillStyle = '#fff';
                 ctx.beginPath();
-                ctx.arc(m.x + 15, m.y, 8, 0, Math.PI * 2);
+                ctx.arc(m.x + 12, m.y, 6, 0, Math.PI * 2);
                 ctx.fill();
             });
 
@@ -690,44 +691,44 @@
                 if (p.type === 'sunflower') {
                     ctx.fillStyle = '#ffb703';
                     ctx.beginPath();
-                    ctx.arc(0, 0, 22 + pulse * 0.5, 0, Math.PI * 2);
+                    ctx.arc(0, 0, 20 + pulse * 0.5, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.fillStyle = '#fb8500';
                     ctx.beginPath();
-                    ctx.arc(0, 0, 12, 0, Math.PI * 2);
+                    ctx.arc(0, 0, 10, 0, Math.PI * 2);
                     ctx.fill();
                 } else if (p.type === 'peashooter') {
                     ctx.fillStyle = '#38b000';
                     ctx.beginPath();
-                    ctx.roundRect(-16, -14 + pulse, 28, 28, 6);
+                    ctx.roundRect(-14, -12 + pulse, 24, 24, 5);
                     ctx.fill();
                     ctx.fillStyle = '#70e000';
                     ctx.beginPath();
-                    ctx.roundRect(4, -8 + pulse, 18, 16, 4);
+                    ctx.roundRect(4, -6 + pulse, 14, 12, 3);
                     ctx.fill();
                 } else if (p.type === 'wallpotato') {
                     ctx.fillStyle = '#bc6c25';
                     ctx.beginPath();
-                    ctx.roundRect(-18, -22, 36, 44, 10);
+                    ctx.roundRect(-16, -20, 32, 40, 8);
                     ctx.fill();
                     ctx.fillStyle = '#dda15e';
                     ctx.beginPath();
-                    ctx.roundRect(-12, -16, 24, 32, 6);
+                    ctx.roundRect(-10, -14, 20, 28, 5);
                     ctx.fill();
                 }
 
                 ctx.restore();
 
                 ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                ctx.fillRect(p.x - 22, p.y + 26, 44, 5);
+                ctx.fillRect(p.x - 20, p.y + 24, 40, 4);
                 ctx.fillStyle = '#00f5d4';
-                ctx.fillRect(p.x - 22, p.y + 26, 44 * (p.hp / p.maxHp), 5);
+                ctx.fillRect(p.x - 20, p.y + 24, 40 * (p.hp / p.maxHp), 4);
             });
 
             ctx.fillStyle = '#00f5d4';
             projectiles.forEach(proj => {
                 ctx.beginPath();
-                ctx.arc(proj.x, proj.y, 6, 0, Math.PI * 2);
+                ctx.arc(proj.x, proj.y, 5, 0, Math.PI * 2);
                 ctx.fill();
             });
 
@@ -739,38 +740,38 @@
 
                 ctx.fillStyle = e.type === 'runner' ? '#ff5400' : '#4361ee';
                 ctx.beginPath();
-                ctx.roundRect(-16, -20 + bounce, 32, 40, 8);
+                ctx.roundRect(-14, -18 + bounce, 28, 36, 6);
                 ctx.fill();
 
                 ctx.fillStyle = '#ffdbac';
                 ctx.beginPath();
-                ctx.arc(0, -26 + bounce, 14, 0, Math.PI * 2);
+                ctx.arc(0, -24 + bounce, 12, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.fillStyle = '#fff';
                 ctx.beginPath();
-                ctx.arc(-5, -28 + bounce, 5, 0, Math.PI * 2);
-                ctx.arc(5, -28 + bounce, 5, 0, Math.PI * 2);
+                ctx.arc(-4, -26 + bounce, 4, 0, Math.PI * 2);
+                ctx.arc(4, -26 + bounce, 4, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.fillStyle = '#000';
                 ctx.beginPath();
-                ctx.arc(e.type === 'runner' ? -4 : -6, -28 + bounce, 2, 0, Math.PI * 2);
-                ctx.arc(e.type === 'runner' ? 6 : 4, -28 + bounce, 2, 0, Math.PI * 2);
+                ctx.arc(-4, -26 + bounce, 1.5, 0, Math.PI * 2);
+                ctx.arc(4, -26 + bounce, 1.5, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.strokeStyle = '#000';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.arc(0, -20 + bounce, 5, 0, Math.PI);
+                ctx.arc(0, -18 + bounce, 4, 0, Math.PI);
                 ctx.stroke();
 
                 ctx.restore();
 
                 ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                ctx.fillRect(e.x - 20, e.y + 28, 40, 5);
+                ctx.fillRect(e.x - 18, e.y + 24, 36, 4);
                 ctx.fillStyle = '#ff007f';
-                ctx.fillRect(e.x - 20, e.y + 28, 40 * (e.hp / e.maxHp), 5);
+                ctx.fillRect(e.x - 18, e.y + 24, 36 * (e.hp / e.maxHp), 4);
             });
 
             suns.forEach(s => {
@@ -787,7 +788,7 @@
             particles.forEach(pt => {
                 ctx.fillStyle = pt.color;
                 ctx.globalAlpha = pt.alpha;
-                ctx.fillRect(pt.x, pt.y, 5, 5);
+                ctx.fillRect(pt.x, pt.y, 4, 4);
                 ctx.globalAlpha = 1.0;
                 pt.x += pt.vx;
                 pt.y += pt.vy;
@@ -796,7 +797,7 @@
             particles = particles.filter(pt => pt.alpha > 0);
 
             floatingTexts.forEach(ft => {
-                ctx.font = 'bold 18px sans-serif';
+                ctx.font = 'bold 16px sans-serif';
                 ctx.fillStyle = ft.color;
                 ctx.globalAlpha = ft.alpha;
                 ctx.textAlign = 'center';
