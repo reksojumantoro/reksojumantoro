@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEO STACK - Cyberpunk Edition</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: 'Courier New', Courier, monospace;
+            touch-action: manipulation;
+        }
+
+        body {
+            background-color: #05050a;
+            color: #00ffcc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            max-height: 850px;
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.2);
+            overflow: hidden;
+            background: radial-gradient(circle at center, #111122 0%, #05050a 100%);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI HUD OVERLAY */
+        #ui-top {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hud-box {
+            text-align: center;
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            padding: 8px 16px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hud-label {
+            font-size: 10px;
+            color: #8892b0;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .hud-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+        }
+
+        /* SCREENS */
+        .screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 10, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+            padding: 30px;
+            backdrop-filter: blur(8px);
+        }
+
+        .screen-overlay h1 {
+            font-size: 2.8rem;
+            color: #00ffcc;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+        }
+
+        .screen-overlay h2 {
+            font-size: 1.5rem;
+            color: #ff0055;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.6);
+        }
+
+        .screen-overlay p {
+            font-size: 0.95rem;
+            color: #8892b0;
+            max-width: 320px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .stats-card {
+            background: rgba(0, 255, 204, 0.03);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 6px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 260px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .stat-item .val {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+
+        .stat-item .lbl {
+            font-size: 9px;
+            color: #8892b0;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            background: transparent;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover, .btn:active {
+            background: #00ffcc;
+            color: #05050a;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="ui-top">
+            <div class="hud-box">
+                <div class="hud-label">SCORE</div>
+                <div id="score-display" class="hud-value">0</div>
+            </div>
+            <div class="hud-box">
+                <div class="hud-label">LEVEL</div>
+                <div id="height-display" class="hud-value">1</div>
+            </div>
+        </div>
+
+        <!-- START SCREEN -->
+        <div id="start-screen" class="screen-overlay">
+            <h1>NEO STACK</h1>
+            <p>Ketuk layar untuk melepaskan platform cahaya. Potong bagian yang meleset dan jaga agar platform tidak habis!</p>
+            <button class="btn" onclick="startGame()">INITIALIZE</button>
+        </div>
+
+        <!-- GAME OVER SCREEN -->
+        <div id="gameover-screen" class="screen-overlay hidden">
+            <h2 id="go-title">SYSTEM FAILURE</h2>
+            <p id="funny-quote" style="font-style: italic; color: #00ffcc; margin-bottom: 20px;">"Platform hancur berkeping-keping."</p>
+            
+            <div class="stats-card">
+                <div class="stat-item">
+                    <div id="go-height" class="val">1</div>
+                    <div class="lbl">LEVEL REACHED</div>
+                </div>
+                <div class="stat-item" style="border-left: 1px solid rgba(0,255,204,0.2); padding-left: 15px;">
+                    <div id="go-score" class="val">0</div>
+                    <div class="lbl">FINAL SCORE</div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="startGame()">RETRY</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let gameState = 'START';
+        let score = 0;
+        let height = 1;
+        let combo = 0;
+
+        // Camera / Scroll offset
+        let cameraY = 0;
+        let targetCameraY = 0;
+
+        const BLOCK_HEIGHT = 26;
+        const INITIAL_WIDTH = 180;
+        let stack = [];
+        let movingBlock = null;
+        let particles = [];
+        let debrisList = [];
+        let floatingTexts = [];
+
+        let shakeDuration = 0;
+        let shakeIntensity = 0;
+
+        const funnyQuotes = [
+            "Platform menyusut sampai tak tersisa.",
+            "Koneksi terputus di ketinggian ini.",
+            "Potongan meleset terlalu jauh.",
+            "Refleks fiber optikmu kurang cepat.",
+            "Sinyal stack terputus total."
+        ];
+
+        const neonColors = [
+            { main: '#00ffcc', glow: 'rgba(0, 255, 204, 0.8)', dark: '#006655' },
+            { main: '#ff0055', glow: 'rgba(255, 0, 85, 0.8)', dark: '#660022' },
+            { main: '#cc00ff', glow: 'rgba(204, 0, 255, 0.8)', dark: '#510066' },
+            { main: '#00ccff', glow: 'rgba(0, 204, 255, 0.8)', dark: '#005166' },
+            { main: '#ffcc00', glow: 'rgba(255, 204, 0, 0.8)', dark: '#665100' }
+        ];
+
+        class Block {
+            constructor(x, y, width, height, colorIndex, isMoving = false) {
+                this.x = x;
+                this.y = y; // Posisi Y absolut dari dasar dunia game
+                this.width = width;
+                this.height = height;
+                this.color = neonColors[colorIndex % neonColors.length];
+                this.isMoving = isMoving;
+                this.direction = 1;
+                this.speed = 3.8;
+            }
+
+            update() {
+                if (this.isMoving) {
+                    this.x += this.speed * this.direction;
+                    const boundRange = 180;
+                    const centerX = canvas.width / 2;
+
+                    if (this.x < centerX - boundRange || this.x + this.width > centerX + boundRange) {
+                        this.direction *= -1;
+                    }
+                }
+            }
+
+            draw() {
+                // Posisi render di layar dengan efek turun (cameraY)
+                const drawY = canvas.height - 150 - this.y + cameraY;
+
+                // Jangan render jika di luar layar
+                if (drawY < -100 || drawY > canvas.height + 100) return;
+
+                ctx.save();
+                
+                // Glow effect
+                ctx.shadowColor = this.color.main;
+                ctx.shadowBlur = 12;
+
+                // Body neon block
+                ctx.fillStyle = this.color.dark;
+                ctx.fillRect(this.x, drawY, this.width, this.height);
+
+                ctx.strokeStyle = this.color.main;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(this.x, drawY, this.width, this.height);
+
+                // Inner sci-fi core line
+                ctx.fillStyle = this.color.main;
+                ctx.fillRect(this.x + 4, drawY + this.height / 2 - 1, this.width - 8, 2);
+
+                ctx.restore();
+            }
+        }
+
+        class Debris {
+            constructor(x, y, width, height, color, isRightSide) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.color = color;
+                this.vx = isRightSide ? Math.random() * 4 + 2 : -(Math.random() * 4 + 2);
+                this.vy = Math.random() * -2 - 1;
+                this.rot = 0;
+                this.vRot = (Math.random() - 0.5) * 0.1;
+                this.alpha = 1.0;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.4; // gravitasi jatuh ke bawah
+                this.rot += this.vRot;
+                this.alpha -= 0.02;
+            }
+
+            draw() {
+                const drawY = canvas.height - 150 - this.y + cameraY;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.translate(this.x + this.width / 2, drawY + this.height / 2);
+                ctx.rotate(this.rot);
+                ctx.fillStyle = this.color.main;
+                ctx.shadowColor = this.color.main;
+                ctx.shadowBlur = 8;
+                ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.restore();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1.0;
+                this.size = Math.random() * 3 + 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.15;
+                this.alpha -= 0.035;
+            }
+
+            draw() {
+                const drawY = canvas.height - 150 - this.y + cameraY;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color.main;
+                ctx.shadowColor = this.color.main;
+                ctx.shadowBlur = 6;
+                ctx.fillRect(this.x, drawY, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        class FloatingText {
+            constructor(text, x, y, color) {
+                this.text = text;
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.alpha = 1.0;
+                this.vy = 1.5;
+            }
+
+            update() {
+                this.y += this.vy;
+                this.alpha -= 0.025;
+            }
+
+            draw() {
+                const drawY = canvas.height - 150 - this.y + cameraY;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.font = 'bold 15px Courier New';
+                ctx.fillStyle = this.color;
+                ctx.textAlign = 'center';
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
+                ctx.fillText(this.text, this.x, drawY);
+                ctx.restore();
+            }
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.add('hidden');
+
+            score = 0;
+            height = 1;
+            combo = 0;
+            cameraY = 0;
+            targetCameraY = 0;
+            stack = [];
+            particles = [];
+            debrisList = [];
+            floatingTexts = [];
+
+            const startX = canvas.width / 2 - INITIAL_WIDTH / 2;
+            const startY = 0;
+
+            // Base Block
+            stack.push(new Block(startX, startY, INITIAL_WIDTH, BLOCK_HEIGHT, 0));
+
+            spawnNextMovingBlock();
+            gameState = 'PLAYING';
+        }
+
+        function spawnNextMovingBlock() {
+            const topBlock = stack[stack.length - 1];
+            const newY = topBlock.y + BLOCK_HEIGHT;
+            let currentSpeed = 3.8 + Math.min((height - 1) * 0.05, 5.0);
+            
+            // Bergerak dari lebar blok sebelumnya yang tersisa
+            movingBlock = new Block(canvas.width / 2 - topBlock.width / 2, newY, topBlock.width, BLOCK_HEIGHT, height, true);
+            movingBlock.speed = currentSpeed;
+        }
+
+        function handleTap() {
+            if (gameState !== 'PLAYING' || !movingBlock) return;
+
+            const topBlock = stack[stack.length - 1];
+            
+            // Hitung overlap / selisih posisi dengan balok sebelumnya
+            let overlap = topBlock.width - Math.abs(movingBlock.x - topBlock.x);
+
+            if (overlap <= 0) {
+                // Meleset total -> Game Over
+                triggerGameOver();
+                return;
+            }
+
+            let newWidth = overlap;
+            let newX;
+            let debrisWidth = Math.abs(movingBlock.x - topBlock.x);
+            let debrisX;
+
+            if (movingBlock.x > topBlock.x) {
+                newX = topBlock.x;
+                debrisX = topBlock.x + newWidth;
+                // Debris jatuh ke kanan
+                debrisList.push(new Debris(debrisX, movingBlock.y, debrisWidth, BLOCK_HEIGHT, movingBlock.color, true));
+            } else {
+                newX = movingBlock.x + (movingBlock.width - overlap);
+                debrisX = movingBlock.x;
+                // Debris jatuh ke kiri
+                debrisList.push(new Debris(debrisX, movingBlock.y, debrisWidth, BLOCK_HEIGHT, movingBlock.color, false));
+                newX = topBlock.x - (topBlock.width - newWidth); // atau sesuaikan presisi potong kiri
+            }
+
+            // Perbaikan kalkulasi posisi X saat terpotong dari kiri
+            if (movingBlock.x < topBlock.x) {
+                newX = topBlock.x;
+            }
+
+            let absDiff = Math.abs(movingBlock.x - topBlock.x);
+            const centerX = newX + newWidth / 2;
+
+            if (absDiff <= 3) {
+                // PERFECT! Ukuran tidak berkurang atau bonus
+                newWidth = topBlock.width; // Tetap penuh jika sangat presisi
+                newX = topBlock.x;
+                combo++;
+                score += 100 * combo;
+                createParticles(centerX, movingBlock.y, movingBlock.color);
+                floatingTexts.push(new FloatingText(combo > 1 ? `PERFECT x${combo}` : 'PERFECT!', centerX, movingBlock.y + 40, '#00ffcc'));
+                triggerScreenShake(6, 150);
+            } else {
+                combo = 0;
+                score += 25;
+                createParticles(centerX, movingBlock.y, movingBlock.color);
+                triggerScreenShake(3, 80);
+            }
+
+            // Push balok baru yang sudah terpotong ke stack
+            stack.push(new Block(newX, movingBlock.y, newWidth, BLOCK_HEIGHT, height, false));
+
+            // Set target kamera agar turun seiring bertambahnya tumpukan ke atas
+            // Supaya balok baru selalu berada di level ketinggian layar yang sama,
+            // dunia game digeser ke bawah (cameraY bertambah)
+            height++;
+            targetCameraY = (height - 1) * BLOCK_HEIGHT;
+
+            spawnNextMovingBlock();
+        }
+
+        function triggerScreenShake(intensity, duration) {
+            shakeIntensity = intensity;
+            shakeDuration = duration;
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function triggerGameOver() {
+            gameState = 'GAMEOVER';
+            triggerScreenShake(12, 350);
+
+            // Hancurkan moving block jadi debris
+            debrisList.push(new Debris(movingBlock.x, movingBlock.y, movingBlock.width, BLOCK_HEIGHT, movingBlock.color, Math.random() > 0.5));
+
+            document.getElementById('go-height').innerText = height;
+            document.getElementById('go-score').innerText = score;
+            const randomQuote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
+            document.getElementById('funny-quote').innerText = `"${randomQuote}"`;
+
+            setTimeout(() => {
+                document.getElementById('gameover-screen').classList.remove('hidden');
+            }, 600);
+        }
+
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+            handleTap();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                handleTap();
+            }
+        });
+
+        let lastTime = 0;
+        function gameLoop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            let dt = (timestamp - lastTime) / 1000;
+            lastTime = timestamp;
+
+            // Smooth camera lerp turun mengikuti ketinggian
+            cameraY += (targetCameraY - cameraY) * 0.12;
+
+            if (gameState === 'PLAYING') {
+                if (movingBlock) {
+                    movingBlock.update();
+                }
+            }
+
+            particles.forEach(p => p.update());
+            particles = particles.filter(p => p.alpha > 0);
+
+            debrisList.forEach(d => d.update());
+            debrisList = debrisList.filter(d => d.alpha > 0);
+
+            floatingTexts.forEach(ft => ft.update());
+            floatingTexts = floatingTexts.filter(ft => ft.alpha > 0);
+
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('height-display').innerText = height;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+
+            if (shakeDuration > 0) {
+                shakeDuration -= dt * 1000;
+                let offsetX = (Math.random() - 0.5) * shakeIntensity;
+                let offsetY = (Math.random() - 0.5) * shakeIntensity;
+                ctx.translate(offsetX, offsetY);
+            }
+
+            // Cyberpunk Grid Background Background
+            ctx.strokeStyle = 'rgba(0, 255, 204, 0.04)';
+            ctx.lineWidth = 1;
+            let gridSpacing = 40;
+            let startGridY = (cameraY % gridSpacing);
+            for (let gy = startGridY - gridSpacing; gy < canvas.height + gridSpacing; gy += gridSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(canvas.width, gy);
+                ctx.stroke();
+            }
+
+            // Gambar Stack Tower (yang lama akan otomatis turun ke bawah layar)
+            stack.forEach(block => block.draw());
+
+            // Gambar Balok Bergerak di level atas
+            if (movingBlock && gameState === 'PLAYING') {
+                movingBlock.draw();
+            }
+
+            particles.forEach(p => p.draw());
+            debrisList.forEach(d => d.draw());
+            floatingTexts.forEach(ft => ft.draw());
+
+            ctx.restore();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>
