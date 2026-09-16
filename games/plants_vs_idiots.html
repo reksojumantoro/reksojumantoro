@@ -47,7 +47,7 @@
             display: block;
         }
 
-        /* UI OVERLAY STYLING */
+        /* UI OVERLAY STYLING - Dibuat lebih ramping untuk Android */
         #ui-top {
             position: absolute;
             top: 0;
@@ -56,18 +56,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background: linear-gradient(to bottom, rgba(15,16,32,0.9), rgba(15,16,32,0));
+            padding: 6px 12px;
+            background: linear-gradient(to bottom, rgba(15,16,32,0.95), rgba(15,16,32,0));
             pointer-events: none;
             z-index: 10;
         }
 
         .hud-group {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
             font-weight: 800;
-            font-size: clamp(12px, 2vw, 18px);
+            font-size: clamp(11px, 2.5vw, 15px);
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
@@ -78,8 +78,8 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 8px;
+            padding: 6px 10px;
             background: linear-gradient(to top, rgba(15,16,32,0.95), rgba(15,16,32,0));
             z-index: 10;
         }
@@ -87,21 +87,21 @@
         .plant-card {
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            width: clamp(60px, 12vw, 85px);
-            height: clamp(75px, 15vw, 100px);
+            border-radius: 8px;
+            width: clamp(52px, 14vw, 75px);
+            height: clamp(65px, 18vw, 85px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 4px;
+            padding: 4px 2px;
             cursor: pointer;
             transition: all 0.15s ease;
             backdrop-filter: blur(6px);
         }
 
         .plant-card:hover, .plant-card:active {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             border-color: #00f5d4;
             background: rgba(0, 245, 212, 0.15);
         }
@@ -109,7 +109,7 @@
         .plant-card.selected {
             border-color: #00f5d4;
             background: rgba(0, 245, 212, 0.3);
-            box-shadow: 0 0 15px rgba(0, 245, 212, 0.6);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.6);
         }
 
         .plant-card.disabled {
@@ -119,24 +119,25 @@
         }
 
         .plant-preview-box {
-            width: 32px;
-            height: 32px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .plant-card .name {
-            font-size: clamp(9px, 1.5vw, 11px);
+            font-size: clamp(8px, 2vw, 10px);
             font-weight: 700;
             text-align: center;
             color: #e2e8f0;
+            white-space: nowrap;
         }
 
         .plant-card .cost {
-            font-size: clamp(10px, 1.8vw, 12px);
+            font-size: clamp(9px, 2.2vw, 11px);
             background: rgba(0,0,0,0.6);
-            padding: 2px 6px;
+            padding: 1px 4px;
             border-radius: 4px;
             color: #ff007f;
             font-weight: bold;
@@ -160,7 +161,7 @@
         }
 
         .screen-overlay h1 {
-            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
             color: #00f5d4;
             margin-bottom: 10px;
             text-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
@@ -168,7 +169,7 @@
         }
 
         .screen-overlay p {
-            font-size: clamp(0.9rem, 2vw, 1.15rem);
+            font-size: clamp(0.85rem, 2vw, 1.15rem);
             color: #94a3b8;
             max-width: 450px;
             margin-bottom: 24px;
@@ -179,8 +180,8 @@
             background: linear-gradient(135deg, #ff007f, #7209b7);
             color: white;
             border: none;
-            padding: 14px 32px;
-            font-size: clamp(1rem, 2vw, 1.25rem);
+            padding: 12px 28px;
+            font-size: clamp(0.95rem, 2vw, 1.25rem);
             font-weight: 800;
             border-radius: 10px;
             cursor: pointer;
@@ -241,7 +242,7 @@
         <div id="ui-bottom">
             <div class="plant-card" onclick="selectPlant('sunflower')">
                 <div class="plant-preview-box">
-                    <svg width="30" height="30" viewBox="0 0 36 36">
+                    <svg width="24" height="24" viewBox="0 0 36 36">
                         <circle cx="18" cy="18" r="14" fill="#ffb703" />
                         <circle cx="18" cy="18" r="7" fill="#3a86ff" />
                     </svg>
@@ -251,7 +252,7 @@
             </div>
             <div class="plant-card" onclick="selectPlant('peashooter')">
                 <div class="plant-preview-box">
-                    <svg width="30" height="30" viewBox="0 0 36 36">
+                    <svg width="24" height="24" viewBox="0 0 36 36">
                         <rect x="6" y="12" width="18" height="14" rx="4" fill="#38b000" />
                         <rect x="20" y="15" width="10" height="8" rx="2" fill="#70e000" />
                     </svg>
@@ -261,7 +262,7 @@
             </div>
             <div class="plant-card" onclick="selectPlant('wallpotato')">
                 <div class="plant-preview-box">
-                    <svg width="30" height="30" viewBox="0 0 36 36">
+                    <svg width="24" height="24" viewBox="0 0 36 36">
                         <ellipse cx="18" cy="18" rx="13" ry="15" fill="#bc6c25" />
                         <ellipse cx="18" cy="18" rx="9" ry="11" fill="#dda15e" />
                     </svg>
@@ -526,7 +527,6 @@
                     }
                 } else if (p.type === 'peashooter') {
                     p.attackTimer += dt;
-                    // Memperbaiki deteksi musuh agar tanaman di kolom manapun (termasuk paling kiri) bisa menembak
                     let enemyInLane = enemies.some(e => e.lane === p.lane && e.x > p.x && e.x < canvas.width);
                     if (enemyInLane && p.attackTimer > 1.2) {
                         p.attackTimer = 0;
@@ -621,7 +621,7 @@
                 maxHp: isRunner ? 60 : 120,
                 speed: isRunner ? 1.5 : 0.65,
                 type: isRunner ? 'runner' : 'normal',
-                idiotVariant: Math.floor(Math.random() * 3), // Variasi muka/kepala idiot
+                idiotVariant: Math.floor(Math.random() * 3),
                 isEating: false,
                 dead: false
             });
@@ -648,7 +648,6 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Background Lane Gradients
             for (let r = 0; r < LANES; r++) {
                 ctx.fillStyle = r % 2 === 0 ? '#131b2e' : '#17223b';
                 ctx.fillRect(0, GRID_OFFSET_Y + r * TILE_H, canvas.width, TILE_H);
@@ -661,13 +660,11 @@
                 ctx.stroke();
             }
 
-            // Base/House Area
             ctx.fillStyle = '#ff007f';
             ctx.fillRect(20, GRID_OFFSET_Y - 10, GRID_OFFSET_X - 30, LANES * TILE_H + 20);
             ctx.fillStyle = '#0f1020';
             ctx.fillRect(28, GRID_OFFSET_Y + 10, GRID_OFFSET_X - 46, LANES * TILE_H - 20);
 
-            // Grid Lines
             for (let r = 0; r < LANES; r++) {
                 for (let c = 0; c < COLS; c++) {
                     let tx = GRID_OFFSET_X + c * TILE_W;
@@ -678,7 +675,6 @@
                 }
             }
 
-            // Lawnmowers
             lawnMowers.forEach(m => {
                 ctx.fillStyle = m.triggered ? '#ff007f' : '#3a86ff';
                 ctx.fillRect(m.x, m.y - 18, 30, 36);
@@ -688,7 +684,6 @@
                 ctx.fill();
             });
 
-            // Plants (Live Animation / Breathing Effect)
             plants.forEach(p => {
                 ctx.save();
                 ctx.translate(p.x, p.y);
@@ -725,14 +720,12 @@
 
                 ctx.restore();
 
-                // HP Bar Plant
                 ctx.fillStyle = 'rgba(0,0,0,0.6)';
                 ctx.fillRect(p.x - 22, p.y + 26, 44, 5);
                 ctx.fillStyle = '#00f5d4';
                 ctx.fillRect(p.x - 22, p.y + 26, 44 * (p.hp / p.maxHp), 5);
             });
 
-            // Projectiles
             ctx.fillStyle = '#00f5d4';
             projectiles.forEach(proj => {
                 ctx.beginPath();
@@ -740,58 +733,48 @@
                 ctx.fill();
             });
 
-            // Enemies (Detailed Idiots - Lebih Hidup & Ekspresif)
             enemies.forEach(e => {
                 ctx.save();
                 ctx.translate(e.x, e.y);
 
-                let bounce = Math.sin(Date.now() / 70) * 4; // Gerakan melangkah konyol
+                let bounce = Math.sin(Date.now() / 70) * 4;
 
-                // Badan Idiot
                 ctx.fillStyle = e.type === 'runner' ? '#ff5400' : '#4361ee';
                 ctx.beginPath();
                 ctx.roundRect(-16, -20 + bounce, 32, 40, 8);
                 ctx.fill();
 
-                // Kepala / Muka Idiot Konyol
-                ctx.fillStyle = '#ffdbac'; // warna kulit
+                ctx.fillStyle = '#ffdbac';
                 ctx.beginPath();
                 ctx.arc(0, -26 + bounce, 14, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Mata Melotot / Oon
                 ctx.fillStyle = '#fff';
                 ctx.beginPath();
                 ctx.arc(-5, -28 + bounce, 5, 0, Math.PI * 2);
                 ctx.arc(5, -28 + bounce, 5, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Pupil mata tidak sinkron (kesan idiot)
                 ctx.fillStyle = '#000';
                 ctx.beginPath();
                 ctx.arc(e.type === 'runner' ? -4 : -6, -28 + bounce, 2, 0, Math.PI * 2);
                 ctx.arc(e.type === 'runner' ? 6 : 4, -28 + bounce, 2, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Mulut Mangap / Nyengir Bodoh
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(0, -20 + bounce, 5, 0, Math.PI);
                 ctx.stroke();
 
-                // Rambut acak-acakan / Atribut konyol berdasarkan varian
                 if (e.idiotVariant === 0) {
-                    // Rambut berdiri kucel
                     ctx.fillStyle = '#7209b7';
                     ctx.fillRect(-6, -44 + bounce, 12, 6);
                 } else if (e.idiotVariant === 1) {
-                    // Pakai topi terbalik
                     ctx.fillStyle = '#ff007f';
                     ctx.fillRect(-12, -38 + bounce, 20, 5);
                     ctx.fillRect(2, -43 + bounce, 12, 5);
                 } else {
-                    // Kepala botak plontos mengkilap
                     ctx.fillStyle = 'rgba(255,255,255,0.3)';
                     ctx.beginPath();
                     ctx.arc(-4, -34 + bounce, 3, 0, Math.PI * 2);
@@ -800,14 +783,12 @@
 
                 ctx.restore();
 
-                // HP Bar Enemy
                 ctx.fillStyle = 'rgba(0,0,0,0.6)';
                 ctx.fillRect(e.x - 20, e.y + 28, 40, 5);
                 ctx.fillStyle = '#ff007f';
                 ctx.fillRect(e.x - 20, e.y + 28, 40 * (e.hp / e.maxHp), 5);
             });
 
-            // Suns
             suns.forEach(s => {
                 ctx.fillStyle = '#ffd166';
                 ctx.beginPath();
@@ -819,7 +800,6 @@
                 ctx.fill();
             });
 
-            // Particles
             particles.forEach(pt => {
                 ctx.fillStyle = pt.color;
                 ctx.globalAlpha = pt.alpha;
@@ -831,7 +811,6 @@
             });
             particles = particles.filter(pt => pt.alpha > 0);
 
-            // Floating Texts
             floatingTexts.forEach(ft => {
                 ctx.font = 'bold 18px sans-serif';
                 ctx.fillStyle = ft.color;
