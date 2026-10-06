@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nokia 3310 Snake Classic</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #1a1c23;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* PHONE FRAME ALA NOKIA */
+        #nokia-casing {
+            width: 100vw;
+            height: 100vh;
+            max-width: 420px;
+            max-height: 820px;
+            background: linear-gradient(145deg, #3d4452, #292d37);
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 3px rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border: 4px solid #1f2229;
+        }
+
+        /* BRAND LOGO */
+        .brand {
+            color: #8b95a5;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* SCREEN CONTAINER (MONOCHROME GREEN) */
+        #screen-bezel {
+            background: #202619;
+            padding: 12px;
+            border-radius: 12px;
+            border: 3px solid #11140e;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #retro-screen {
+            background-color: #9bbc0f; /* Khas Layar GameBoy / Nokia */
+            border: 2px solid #8bac0f;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            box-shadow: inset 0 0 8px rgba(15, 56, 15, 0.3);
+            border-radius: 4px;
+        }
+
+        /* HUD TOP */
+        .hud {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            color: #0f380f;
+            margin-bottom: 6px;
+            border-bottom: 2px solid #0f380f;
+            padding-bottom: 4px;
+        }
+
+        /* CANVAS ARENA */
+        canvas {
+            background-color: #8bac0f;
+            border: 2px solid #0f380f;
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        /* CONTROLS AREA FOR MOBILE */
+        .controls-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 210px;
+            height: 210px;
+            gap: 8px;
+        }
+
+        .btn-dpad {
+            background: linear-gradient(145deg, #4f5869, #333944);
+            border: 1px solid #22262f;
+            border-radius: 16px;
+            color: #d1d5db;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #1c1f26, 0 8px 10px rgba(0,0,0,0.3);
+            transition: all 0.05s ease;
+        }
+
+        .btn-dpad:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #1c1f26, 0 3px 5px rgba(0,0,0,0.3);
+            background: #252930;
+        }
+
+        /* GRID POSITIONS FOR DPAD */
+        #btn-up { grid-column: 2; grid-row: 1; }
+        #btn-left { grid-column: 1; grid-row: 2; }
+        #btn-center { 
+            grid-column: 2; 
+            grid-row: 2; 
+            background: linear-gradient(145deg, #ff9800, #e65100); 
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50%;
+            box-shadow: 0 5px 0 #b33c00;
+        }
+        #btn-center:active {
+            box-shadow: 0 1px 0 #b33c00;
+        }
+        #btn-right { grid-column: 3; grid-row: 2; }
+        #btn-down { grid-column: 2; grid-row: 3; }
+
+        .hint {
+            font-size: 11px;
+            color: #8b95a5;
+            margin-top: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="nokia-casing">
+    <div class="brand">NOKIA</div>
+
+    <!-- Retro LCD Screen -->
+    <div id="screen-bezel">
+        <div id="retro-screen">
+            <div class="hud">
+                <span id="score-label">SKOR: 0</span>
+                <span id="high-label">HIGH: 0</span>
+            </div>
+            <canvas id="gameCanvas" width="280" height="280"></canvas>
+        </div>
+    </div>
+
+    <!-- Analog / D-Pad Virtual -->
+    <div class="controls-container">
+        <div class="dpad">
+            <div class="btn-dpad" id="btn-up" onclick="game.setDirection('UP')">▲</div>
+            <div class="btn-dpad" id="btn-left" onclick="game.setDirection('LEFT')">◄</div>
+            <div class="btn-dpad" id="btn-center" onclick="game.handleCenterBtn()">OK</div>
+            <div class="btn-dpad" id="btn-right" onclick="game.setDirection('RIGHT')">►</div>
+            <div class="btn-dpad" id="btn-down" onclick="game.setDirection('DOWN')">▼</div>
+        </div>
+        <div class="hint">PC: Pakai Tombol Panah / WASD / Space</div>
+    </div>
+</div>
+
+<script>
+class SnakeGame {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+
+        this.gridSize = 14; // Ukuran sel grid
+        this.tileCount = this.canvas.width / this.gridSize; // 20x20 Grid
+
+        this.snake = [];
+        this.food = { x: 0, y: 0 };
+        
+        this.dx = this.gridSize;
+        this.dy = 0;
+        this.nextDx = this.gridSize;
+        this.nextDy = 0;
+
+        this.score = 0;
+        this.highScore = parseInt(localStorage.getItem('nokia_snake_high') || '0');
+        
+        this.isGameOver = false;
+        this.isPaused = false;
+        this.isGameStarted = false;
+        this.gameLoop = null;
+
+        this.updateHUD();
+        this.drawStartScreen();
+        this.bindEvents();
+    }
+
+    start() {
+        this.snake = [
+            { x: 5 * this.gridSize, y: 10 * this.gridSize },
+            { x: 4 * this.gridSize, y: 10 * this.gridSize },
+            { x: 3 * this.gridSize, y: 10 * this.gridSize }
+        ];
+        
+        this.dx = this.gridSize;
+        this.dy = 0;
+        this.nextDx = this.gridSize;
+        this.nextDy = 0;
+
+        this.score = 0;
+        this.isGameOver = false;
+        this.isPaused = false;
+        this.isGameStarted = true;
+
+        this.updateHUD();
+        this.spawnFood();
+
+        if (this.gameLoop) clearInterval(this.gameLoop);
+        this.gameLoop = setInterval(() => this.update(), 120); // Kecepatan khas Nokia
+    }
+
+    spawnFood() {
+        while (true) {
+            this.food.x = Math.floor(Math.random() * this.tileCount) * this.gridSize;
+            this.food.y = Math.floor(Math.random() * this.tileCount) * this.gridSize;
+
+            // Pastikan makanan tidak muncul di tubuh ular
+            let onSnake = this.snake.some(segment => segment.x === this.food.x && segment.y === this.food.y);
+            if (!onSnake) break;
+        }
+    }
+
+    setDirection(dir) {
+        if (!this.isGameStarted || this.isGameOver) return;
+
+        if (dir === 'UP' && this.dy === 0) {
+            this.nextDx = 0;
+            this.nextDy = -this.gridSize;
+        } else if (dir === 'DOWN' && this.dy === 0) {
+            this.nextDx = 0;
+            this.nextDy = this.gridSize;
+        } else if (dir === 'LEFT' && this.dx === 0) {
+            this.nextDx = -this.gridSize;
+            this.nextDy = 0;
+        } else if (dir === 'RIGHT' && this.dx === 0) {
+            this.nextDx = this.gridSize;
+            this.nextDy = 0;
+        }
+    }
+
+    handleCenterBtn() {
+        if (!this.isGameStarted || this.isGameOver) {
+            this.start();
+        } else {
+            this.isPaused = !this.isPaused;
+            if (this.isPaused) {
+                this.drawText("PAUSED", "Tekan OK Lanjut");
+            }
+        }
+    }
+
+    update() {
+        if (this.isPaused) return;
+
+        this.dx = this.nextDx;
+        this.dy = this.nextDy;
+
+        // Hitung posisi kepala baru
+        const head = { x: this.snake[0].x + this.dx, y: this.snake[0].y + this.dy };
+
+        // Cek Tabrakan Dinding (Khas Nokia Snake 1: Tabrak Dinding = Mati)
+        if (head.x < 0 || head.x >= this.canvas.width || head.y < 0 || head.y >= this.canvas.height) {
+            this.triggerGameOver();
+            return;
+        }
+
+        // Cek Tabrakan Badan Sendiri
+        for (let i = 0; i < this.snake.length; i++) {
+            if (head.x === this.snake[i].x && head.y === this.snake[i].y) {
+                this.triggerGameOver();
+                return;
+            }
+        }
+
+        this.snake.unshift(head);
+
+        // Cek Makan Makanan
+        if (head.x === this.food.x && head.y === this.food.y) {
+            this.score += 10;
+            if (this.score > this.highScore) {
+                this.highScore = this.score;
+                localStorage.setItem('nokia_snake_high', this.highScore);
+            }
+            this.updateHUD();
+            this.spawnFood();
+        } else {
+            this.snake.pop(); // Hapus ekor kalau tidak makan
+        }
+
+        this.render();
+    }
+
+    render() {
+        // Clear Canvas (Hijau LCD Nokia)
+        this.ctx.fillStyle = '#8bac0f';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Gambar Makanan (Kotak bertitik ala piksel Nokia)
+        this.ctx.fillStyle = '#0f380f';
+        this.ctx.fillRect(this.food.x + 1, this.food.y + 1, this.gridSize - 2, this.gridSize - 2);
+
+        // Gambar Ular
+        this.snake.forEach((segment, index) => {
+            if (index === 0) {
+                // Kepala Ular
+                this.ctx.fillStyle = '#0f380f';
+                this.ctx.fillRect(segment.x, segment.y, this.gridSize, this.gridSize);
+                // Mata Ular
+                this.ctx.fillStyle = '#8bac0f';
+                this.ctx.fillRect(segment.x + 3, segment.y + 3, 2, 2);
+                this.ctx.fillRect(segment.x + 9, segment.y + 3, 2, 2);
+            } else {
+                // Badan Ular (Memiliki border piksel retro)
+                this.ctx.fillStyle = '#0f380f';
+                this.ctx.fillRect(segment.x + 1, segment.y + 1, this.gridSize - 2, this.gridSize - 2);
+                this.ctx.fillStyle = '#8bac0f';
+                this.ctx.fillRect(segment.x + 3, segment.y + 3, this.gridSize - 6, this.gridSize - 6);
+                this.ctx.fillStyle = '#0f380f';
+                this.ctx.fillRect(segment.x + 4, segment.y + 4, this.gridSize - 8, this.gridSize - 8);
+            }
+        });
+    }
+
+    triggerGameOver() {
+        this.isGameOver = true;
+        clearInterval(this.gameLoop);
+        this.drawText("GAME OVER!", `Skor: ${this.score}`);
+    }
+
+    drawStartScreen() {
+        this.ctx.fillStyle = '#8bac0f';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawText("SNAKE 3310", "Tekan OK / Space");
+    }
+
+    drawText(mainText, subText) {
+        this.ctx.fillStyle = 'rgba(139, 172, 15, 0.85)';
+        this.ctx.fillRect(10, 80, this.canvas.width - 20, 110);
+        this.ctx.strokeStyle = '#0f380f';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(12, 82, this.canvas.width - 24, 106);
+
+        this.ctx.fillStyle = '#0f380f';
+        this.ctx.font = 'bold 20px "Courier New", monospace';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(mainText, this.canvas.width / 2, 125);
+
+        this.ctx.font = 'bold 12px "Courier New", monospace';
+        this.ctx.fillText(subText, this.canvas.width / 2, 155);
+    }
+
+    updateHUD() {
+        document.getElementById('score-label').innerText = `SKOR:${this.score}`;
+        document.getElementById('high-label').innerText = `HIGH:${this.highScore}`;
+    }
+
+    bindEvents() {
+        // Kontrol Keyboard untuk PC
+        window.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    this.setDirection('UP');
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    this.setDirection('DOWN');
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    this.setDirection('LEFT');
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    this.setDirection('RIGHT');
+                    break;
+                case ' ':
+                case 'Enter':
+                    this.handleCenterBtn();
+                    break;
+            }
+        });
+    }
+}
+
+// Inisialisasi Game
+const game = new SnakeGame();
+</script>
+</body>
+</html>
