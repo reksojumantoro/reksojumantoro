@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bounce Tales Remastered - Nokia Classic</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #080a0f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #nokia-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 480px;
+            max-height: 900px;
+            background: linear-gradient(160deg, #232832, #111318);
+            border-radius: 36px;
+            padding: 18px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 2px 4px rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: 4px solid #090b0e;
+        }
+
+        .brand-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px 6px 10px;
+        }
+
+        .brand-logo {
+            color: #8fa0b5;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .model-tag {
+            color: #4f5b6d;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        #screen-bezel {
+            background: #05070a;
+            padding: 8px;
+            border-radius: 18px;
+            border: 3px solid #1c212b;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.95);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        canvas {
+            background-color: #385266;
+            display: block;
+            border-radius: 10px;
+            width: 100%;
+            aspect-ratio: 4/3;
+            image-rendering: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* CONTROLS LAYER FOR MOBILE ANALOG & JUMP */
+        .controls-layer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 10px;
+            margin-top: 2px;
+        }
+
+        .analog-container {
+            width: 130px;
+            height: 130px;
+            background: radial-gradient(circle, #2b323e 0%, #171b22 100%);
+            border: 3px solid #101318;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.8), 0 6px 15px rgba(0,0,0,0.5);
+            touch-action: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .analog-stick {
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(145deg, #4b5565, #2c333f);
+            border: 2px solid #637185;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.3);
+            pointer-events: none;
+            transition: transform 0.04s linear;
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: linear-gradient(145deg, #ff4757, #c0392b);
+            border: 2px solid #e74c3c;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #7b241c, 0 10px 15px rgba(0,0,0,0.5);
+            touch-action: manipulation;
+            width: 82px;
+            height: 82px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn-action:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #7b241c, 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #5d6a7d;
+            text-align: center;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        /* OVERLAY / MENU */
+        .overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 10, 15, 0.94);
+            backdrop-filter: blur(8px);
+            border-radius: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            z-index: 20;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .overlay-title {
+            font-size: 30px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff4757, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 4px 12px rgba(255,71,87,0.4));
+        }
+
+        .overlay-subtitle {
+            font-size: 12px;
+            color: #90a0b7;
+            margin-bottom: 24px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .level-select {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .btn-level {
+            background: linear-gradient(135deg, #2f3640, #1e272e);
+            border: 2px solid #485460;
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #f5f6fa;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-level.active {
+            border-color: #2ed573;
+            background: linear-gradient(135deg, #1e3799, #0c2461);
+            box-shadow: 0 0 15px rgba(46,213,115,0.3);
+        }
+
+        .btn-start {
+            margin-top: 24px;
+            background: linear-gradient(135deg, #2ed573, #26af5f);
+            border: none;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 900;
+            padding: 14px 45px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(46,213,115,0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .btn-start:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+
+<div id="nokia-container">
+    <div class="brand-header">
+        <div class="brand-logo">NOKIA</div>
+        <div class="model-tag">BOUNCE HD</div>
+    </div>
+
+    <!-- Screen Bezel & Canvas -->
+    <div id="screen-bezel">
+        <canvas id="gameCanvas" width="480" height="360"></canvas>
+    </div>
+
+    <!-- Analog Controller & Jump Button -->
+    <div class="controls-layer">
+        <div class="analog-container" id="analog-base">
+            <div class="analog-stick" id="analog-stick"></div>
+        </div>
+        <div class="action-group">
+            <div class="btn-action" id="btn-jump">JUMP</div>
+        </div>
+    </div>
+
+    <div class="hint">PC: Keyboard (WASD / Panah + Space) | HP: Analog Touch</div>
+
+    <!-- Menu & Level Selector Overlay -->
+    <div id="overlay" class="overlay-screen">
+        <div class="overlay-title" id="overlay-title">BOUNCE TALES HD</div>
+        <div class="overlay-subtitle" id="overlay-sub">Petualangan Bola Merah Legendaris - 3 Level Panjang & Menantang!</div>
+        
+        <div class="level-select">
+            <button class="btn-level active" onclick="game.selectLevel(1)" id="lvl-1-btn">
+                <span>LEVEL 1: SKY HILLS</span>
+                <span>~10 MIN</span>
+            </button>
+            <button class="btn-level" onclick="game.selectLevel(2)" id="lvl-2-btn">
+                <span>LEVEL 2: MAGMA CAVERN</span>
+                <span>~10 MIN</span>
+            </button>
+            <button class="btn-level" onclick="game.selectLevel(3)" id="lvl-3-btn">
+                <span>LEVEL 3: SHADOW RUINS</span>
+                <span>~10 MIN</span>
+            </button>
+        </div>
+
+        <button class="btn-start" id="btn-start-game" onclick="game.startSelectedLevel()">MAIN NOW</button>
+    </div>
+</div>
+
+<script>
+class BounceTalesHD {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+
+        this.width = 480;
+        this.height = 360;
+
+        this.selectedLevel = 1;
+        this.isRunning = false;
+        this.isPaused = false;
+
+        // Input Tracking
+        this.keys = { left: false, right: false, jump: false, down: false };
+        this.analogVal = 0; // -1 (left) to 1 (right)
+
+        // Game Physics & State
+        this.score = 0;
+        this.ringsLeft = 0;
+        this.totalRings = 0;
+        this.cameraX = 0;
+        this.cameraY = 0;
+        this.levelLength = 0;
+
+        // Visual Particles & Effects
+        this.particles = [];
+        this.bgStars = [];
+
+        this.initAnalogControl();
+        this.initKeyboardControl();
+    }
+
+    selectLevel(lvl) {
+        this.selectedLevel = lvl;
+        for (let i = 1; i <= 3; i++) {
+            const btn = document.getElementById(`lvl-${i}-btn`);
+            if (i === lvl) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+    }
+
+    startSelectedLevel() {
+        document.getElementById('overlay').style.display = 'none';
+        this.initLevel(this.selectedLevel);
+        this.isRunning = true;
+        if (this.loopId) cancelAnimationFrame(this.loopId);
+        this.lastTime = performance.now();
+        this.gameLoop = this.gameLoop.bind(this);
+        requestAnimationFrame(this.gameLoop);
+    }
+
+    initLevel(levelNum) {
+        // Player Physics Config
+        this.ball = {
+            x: 80,
+            y: 200,
+            vx: 0,
+            vy: 0,
+            radius: 13,
+            rotation: 0,
+            isGrounded: false,
+            bouncePower: -10.5,
+            moveSpeed: 0.55,
+            maxSpeed: 5.5,
+            friction: 0.93,
+            gravity: 0.42,
+            squishX: 1,
+            squishY: 1
+        };
+
+        this.score = 0;
+        this.cameraX = 0;
+        this.cameraY = 0;
+        this.particles = [];
+
+        this.platforms = [];
+        this.rings = [];
+        this.gems = [];
+        this.spikes = [];
+        this.bumpers = [];
+        this.movingPlatforms = [];
+
+        // Build massive maps (~10 minutes per level at standard pace)
+        if (levelNum === 1) {
+            this.buildLevel1SkyHills();
+        } else if (levelNum === 2) {
+            this.buildLevel2MagmaCavern();
+        } else if (levelNum === 3) {
+            this.buildLevel3ShadowRuins();
+        }
+
+        this.totalRings = this.rings.length;
+        this.ringsLeft = this.totalRings;
+    }
+
+    // --- LEVEL 1: SKY HILLS (~20,000 pixels length) ---
+    buildLevel1SkyHills() {
+        this.theme = {
+            skyTop: '#1b4965', skyBottom: '#62b6cb',
+            grassTop: '#52b788', grassBody: '#2d6a4f',
+            dirt: '#403d39', bgHue: 180
+        };
+        this.levelLength = 22000;
+
+        let curX = 0;
+
+        // Section 1: Warmup & Rolling Slopes
+        this.addGround(0, 260, 1200);
+        this.addRing(300, 210);
+        this.addRing(600, 210);
+        this.addRing(900, 180);
+
+        curX = 1250;
+        // Section 2: Precision Jumps over Gaps
+        for (let i = 0; i < 8; i++) {
+            this.addGround(curX, 260 - (i % 2) * 50, 180);
+            this.addRing(curX + 90, 180 - (i % 2) * 50);
+            if (i % 3 === 0) this.addSpike(curX + 60, 260 - (i % 2) * 50 - 15, 60);
+            curX += 260;
+        }
+
+        // Section 3: Bumper Tower Ascent
+        this.addGround(curX, 280, 800);
+        this.addBumper(curX + 150, 265, 40);
+        this.addGround(curX + 260, 160, 120);
+        this.addBumper(curX + 300, 145, 40);
+        this.addGround(curX + 420, 60, 250);
+        this.addRing(curX + 480, 20);
+        this.addRing(curX + 540, 20);
+
+        curX += 850;
+        // Section 4: Moving Platform Gauntlet
+        this.addGround(curX, 280, 300);
+        for (let i = 0; i < 6; i++) {
+            this.addMovingPlatform(curX + 350 + i * 320, 220, 140, 20, 0, 80, 0.02 + i * 0.005);
+            this.addRing(curX + 420 + i * 320, 160);
+            if (i % 2 === 1) this.addSpike(curX + 380 + i * 320, 205, 40);
+        }
+
+        curX += 2400;
+        // Section 5: Long Canyon & Spike Valley
+        this.addGround(curX, 280, 400);
+        this.addSpike(curX + 400, 280, 800); // 800px deadly spike floor
+        for (let i = 0; i < 5; i++) {
+            this.addGround(curX + 450 + i * 150, 200 - (i % 3) * 35, 90);
+            this.addRing(curX + 490 + i * 150, 150 - (i % 3) * 35);
+        }
+
+        curX += 1300;
+        // Section 6: Slalom Hill Sprint
+        for (let i = 0; i < 12; i++) {
+            this.addGround(curX, 260 - Math.sin(i) * 60, 220);
+            if (i % 2 === 0) this.addGem(curX + 110, 200 - Math.sin(i) * 60);
+            else this.addRing(curX + 110, 200 - Math.sin(i) * 60);
+            curX += 200;
+        }
+
+        // Final Goal Area
+        this.addGround(curX, 260, 800);
+        this.flag = { x: curX + 500, y: 190, w: 24, h: 70 };
+    }
+
+    // --- LEVEL 2: MAGMA CAVERN ---
+    buildLevel2MagmaCavern() {
+        this.theme = {
+            skyTop: '#1a0000', skyBottom: '#3d0c00',
+            grassTop: '#ff4757', grassBody: '#b33939',
+            dirt: '#210808', bgHue: 10
+        };
+        this.levelLength = 24000;
+
+        let curX = 0;
+        this.addGround(0, 260, 800);
+
+        curX = 850;
+        // Volcanic Bumper Chambers
+        for (let i = 0; i < 10; i++) {
+            this.addGround(curX, 280, 220);
+            this.addBumper(curX + 90, 265, 40);
+            this.addGround(curX + 140, 120 - (i % 2) * 40, 100);
+            this.addRing(curX + 180, 80 - (i % 2) * 40);
+            this.addSpike(curX, 265, 50);
+            curX += 340;
+        }
+
+        // Collapse & Fast Drop Zone
+        for (let i = 0; i < 8; i++) {
+            this.addMovingPlatform(curX, 180 + (i * 20), 120, 20, 100, 0, 0.03);
+            this.addRing(curX + 60, 130 + (i * 20));
+            curX += 260;
+        }
+
+        this.addGround(curX, 260, 1000);
+        this.addSpike(curX + 200, 245, 600);
+        for (let k = 0; k < 6; k++) {
+            this.addBumper(curX + 230 + k * 100, 200, 30);
+            this.addRing(curX + 230 + k * 100, 120);
+        }
+
+        curX += 1100;
+        this.addGround(curX, 260, 800);
+        this.flag = { x: curX + 500, y: 190, w: 24, h: 70 };
+    }
+
+    // --- LEVEL 3: SHADOW RUINS ---
+    buildLevel3ShadowRuins() {
+        this.theme = {
+            skyTop: '#0c1017', skyBottom: '#1f2937',
+            grassTop: '#9b59b6', grassBody: '#8e44ad',
+            dirt: '#111827', bgHue: 270
+        };
+        this.levelLength = 25000;
+
+        let curX = 0;
+        this.addGround(0, 260, 600);
+
+        curX = 650;
+        // Extreme Precision & Double Spike Walls
+        for (let i = 0; i < 12; i++) {
+            this.addGround(curX, 260 - (i * 10), 140);
+            this.addSpike(curX + 10, 245 - (i * 10), 40);
+            this.addRing(curX + 80, 200 - (i * 10));
+            if (i % 2 === 0) {
+                this.addMovingPlatform(curX + 160, 200 - (i * 10), 90, 18, 0, 120, 0.04);
+            }
+            curX += 280;
+        }
+
+        this.addGround(curX, 260, 1200);
+        this.addSpike(curX + 100, 245, 1000);
+        for (let j = 0; j < 8; j++) {
+            this.addGround(curX + 150 + j * 120, 160 - (j % 2) * 50, 60);
+            this.addRing(curX + 175 + j * 120, 110 - (j % 2) * 50);
+        }
+
+        curX += 1300;
+        this.addGround(curX, 260, 800);
+        this.flag = { x: curX + 500, y: 190, w: 24, h: 70 };
+    }
+
+    // Helper functions for map generation
+    addGround(x, y, w, h = 120) { this.platforms.push({ x, y, w, h, type: 'ground' }); }
+    addSpike(x, y, w) { this.spikes.push({ x, y, w, h: 16 }); }
+    addBumper(x, y, w) { this.bumpers.push({ x, y, w, h: 16 }); }
+    addRing(x, y) { this.rings.push({ x, y, radius: 11, collected: false }); }
+    addGem(x, y) { this.gems.push({ x, y, radius: 9, collected: false }); }
+    addMovingPlatform(x, y, w, h, rangeX, rangeY, speed) {
+        this.movingPlatforms.push({
+            startX: x, startY: y, x, y, w, h,
+            rangeX, rangeY, speed, angle: 0
+        });
+    }
+
+    // Touch Analog Initialization
+    initAnalogControl() {
+        const base = document.getElementById('analog-base');
+        const stick = document.getElementById('analog-stick');
+        let active = false;
+
+        const handleMove = (clientX, clientY) => {
+            if (!active) return;
+            const rect = base.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            let deltaX = clientX - centerX;
+            let deltaY = clientY - centerY;
+            const dist = Math.hypot(deltaX, deltaY);
+            const maxDist = rect.width / 2 - 10;
+
+            if (dist > maxDist) {
+                deltaX = (deltaX / dist) * maxDist;
+                deltaY = (deltaY / dist) * maxDist;
+            }
+
+            stick.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            this.analogVal = deltaX / maxDist; // Normalized -1 to 1
+
+            if (this.analogVal < -0.25) { this.keys.left = true; this.keys.right = false; }
+            else if (this.analogVal > 0.25) { this.keys.right = true; this.keys.left = false; }
+            else { this.keys.left = false; this.keys.right = false; }
+        };
+
+        const handleEnd = () => {
+            active = false;
+            stick.style.transform = `translate(0px, 0px)`;
+            this.analogVal = 0;
+            this.keys.left = false;
+            this.keys.right = false;
+        };
+
+        base.addEventListener('touchstart', (e) => { active = true; handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+        window.addEventListener('touchmove', (e) => { if (active) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+        window.addEventListener('touchend', handleEnd);
+
+        // Jump button event
+        const btnJump = document.getElementById('btn-jump');
+        const triggerJump = (e) => { e.preventDefault(); this.keys.jump = true; };
+        const endJump = (e) => { e.preventDefault(); this.keys.jump = false; };
+        btnJump.addEventListener('touchstart', triggerJump);
+        btnJump.addEventListener('touchend', endJump);
+        btnJump.addEventListener('mousedown', triggerJump);
+        btnJump.addEventListener('mouseup', endJump);
+    }
+
+    initKeyboardControl() {
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowLeft', 'a', 'A'].includes(e.key)) this.keys.left = true;
+            if (['ArrowRight', 'd', 'D'].includes(e.key)) this.keys.right = true;
+            if (['ArrowUp', 'w', 'W', ' '].includes(e.key)) this.keys.jump = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (['ArrowLeft', 'a', 'A'].includes(e.key)) this.keys.left = false;
+            if (['ArrowRight', 'd', 'D'].includes(e.key)) this.keys.right = false;
+            if (['ArrowUp', 'w', 'W', ' '].includes(e.key)) this.keys.jump = false;
+        });
+    }
+
+    spawnParticle(x, y, color, count = 6) {
+        for (let i = 0; i < count; i++) {
+            this.particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * 6,
+                vy: (Math.random() - 0.5) * 6,
+                radius: Math.random() * 3.5 + 1.5,
+                color,
+                life: 1.0
+            });
+        }
+    }
+
+    updatePhysics() {
+        const b = this.ball;
+
+        // Smooth Squish recovery
+        b.squishX += (1 - b.squishX) * 0.15;
+        b.squishY += (1 - b.squishY) * 0.15;
+
+        // Horizontal Acceleration
+        if (this.keys.left) b.vx -= b.moveSpeed;
+        if (this.keys.right) b.vx += b.moveSpeed;
+
+        b.vx *= b.friction;
+        b.vx = Math.max(-b.maxSpeed, Math.min(b.maxSpeed, b.vx));
+
+        // Gravity
+        b.vy += b.gravity;
+
+        // Jump Physics with Squish
+        if (this.keys.jump && b.isGrounded) {
+            b.vy = b.bouncePower;
+            b.isGrounded = false;
+            b.squishX = 0.7;
+            b.squishY = 1.35;
+            this.spawnParticle(b.x, b.y + b.radius, '#ffffff', 8);
+        }
+
+        b.x += b.vx;
+        b.y += b.vy;
+
+        b.rotation += b.vx * 0.08;
+        b.isGrounded = false;
+
+        // Update Moving Platforms
+        this.movingPlatforms.forEach(p => {
+            p.angle += p.speed;
+            const prevX = p.x;
+            const prevY = p.y;
+            p.x = p.startX + Math.sin(p.angle) * p.rangeX;
+            p.y = p.startY + Math.cos(p.angle) * p.rangeY;
+
+            // Carry ball on top of platform
+            if (
+                b.x + b.radius > p.x &&
+                b.x - b.radius < p.x + p.w &&
+                b.y + b.radius >= p.y &&
+                b.y - b.radius < p.y + p.h &&
+                b.vy >= 0
+            ) {
+                b.y = p.y - b.radius;
+                b.vy = 0;
+                b.isGrounded = true;
+                b.x += p.x - prevX;
+            }
+        });
+
+        // Platform Collisions
+        this.platforms.forEach(p => {
+            if (
+                b.x + b.radius > p.x &&
+                b.x - b.radius < p.x + p.w &&
+                b.y + b.radius > p.y &&
+                b.y - b.radius < p.y + p.h
+            ) {
+                // Landing on Top
+                if (b.vy > 0 && b.y - b.vy <= p.y + 12) {
+                    b.y = p.y - b.radius;
+                    if (b.vy > 4) {
+                        b.squishX = 1.3;
+                        b.squishY = 0.7;
+                        this.spawnParticle(b.x, b.y + b.radius, '#a8e6cf', 5);
+                    }
+                    b.vy = -b.vy * 0.25; // Gentle bounce
+                    if (Math.abs(b.vy) < 0.8) b.vy = 0;
+                    b.isGrounded = true;
+                }
+                // Ceiling collision
+                else if (b.vy < 0 && b.y - b.vy >= p.y + p.h - 12) {
+                    b.y = p.y + p.h + b.radius;
+                    b.vy = 0;
+                }
+                // Walls
+                else if (b.vx > 0 && b.x < p.x) {
+                    b.x = p.x - b.radius;
+                    b.vx = 0;
+                } else if (b.vx < 0 && b.x > p.x + p.w) {
+                    b.x = p.x + p.w + b.radius;
+                    b.vx = 0;
+                }
+            }
+        });
+
+        // Bumper Collision (Trampoline)
+        this.bumpers.forEach(bp => {
+            if (
+                b.x + b.radius > bp.x &&
+                b.x - b.radius < bp.x + bp.w &&
+                b.y + b.radius > bp.y &&
+                b.y - b.radius < bp.y + bp.h
+            ) {
+                b.vy = -15.5; // High launch
+                b.squishX = 0.6;
+                b.squishY = 1.4;
+                this.spawnParticle(bp.x + bp.w / 2, bp.y, '#f1c40f', 12);
+            }
+        });
+
+        // Spikes Collision
+        this.spikes.forEach(sp => {
+            if (
+                b.x + b.radius > sp.x + 4 &&
+                b.x - b.radius < sp.x + sp.w - 4 &&
+                b.y + b.radius > sp.y + 4
+            ) {
+                this.triggerGameOver("POPPED BY SPIKES! 💥");
+            }
+        });
+
+        // Ring Collection
+        this.rings.forEach(r => {
+            if (!r.collected) {
+                const dist = Math.hypot(b.x - r.x, b.y - r.y);
+                if (dist < b.radius + r.radius) {
+                    r.collected = true;
+                    this.score += 150;
+                    this.ringsLeft--;
+                    this.spawnParticle(r.x, r.y, '#f1c40f', 10);
+                }
+            }
+        });
+
+        // Gem Collection
+        this.gems.forEach(g => {
+            if (!g.collected) {
+                const dist = Math.hypot(b.x - g.x, b.y - g.y);
+                if (dist < b.radius + g.radius) {
+                    g.collected = true;
+                    this.score += 300;
+                    this.spawnParticle(g.x, g.y, '#2ecc71', 8);
+                }
+            }
+        });
+
+        // Fall Death
+        if (b.y > this.height + 100) {
+            this.triggerGameOver("FELL INTO THE ABYSS! 💀");
+        }
+
+        // Goal Flag Reached
+        if (b.x >= this.flag.x && b.x <= this.flag.x + this.flag.w) {
+            if (this.ringsLeft === 0) {
+                this.triggerVictory();
+            }
+        }
+
+        // Camera Smooth Follow
+        this.cameraX += (b.x - this.cameraX - this.width * 0.38) * 0.08;
+        this.cameraX = Math.max(0, this.cameraX);
+
+        // Update Particles
+        this.particles.forEach((pt, idx) => {
+            pt.x += pt.vx;
+            pt.y += pt.vy;
+            pt.life -= 0.04;
+            if (pt.life <= 0) this.particles.splice(idx, 1);
+        });
+    }
+
+    drawHD() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+        // Sky Gradient
+        const skyGrad = this.ctx.createLinearGradient(0, 0, 0, this.height);
+        skyGrad.addColorStop(0, this.theme.skyTop);
+        skyGrad.addColorStop(1, this.theme.skyBottom);
+        this.ctx.fillStyle = skyGrad;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+        this.ctx.save();
+        this.ctx.translate(-Math.floor(this.cameraX), 0);
+
+        // HD Parallax Hills
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        for (let i = 0; i < 20; i++) {
+            this.ctx.beginPath();
+            this.ctx.arc(i * 700 - this.cameraX * 0.25, 380, 260, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
+        // Draw Platforms
+        this.platforms.forEach(p => {
+            // Ground Body
+            this.ctx.fillStyle = this.theme.dirt;
+            this.ctx.fillRect(p.x, p.y + 8, p.w, p.h - 8);
+
+            // Grass/Top Surface Highlight
+            const grassGrad = this.ctx.createLinearGradient(p.x, p.y, p.x, p.y + 8);
+            grassGrad.addColorStop(0, this.theme.grassTop);
+            grassGrad.addColorStop(1, this.theme.grassBody);
+            this.ctx.fillStyle = grassGrad;
+            this.ctx.fillRect(p.x, p.y, p.w, 8);
+        });
+
+        // Draw Moving Platforms
+        this.movingPlatforms.forEach(p => {
+            this.ctx.fillStyle = '#f39c12';
+            this.ctx.fillRect(p.x, p.y, p.w, p.h);
+            this.ctx.fillStyle = '#d35400';
+            this.ctx.fillRect(p.x + 3, p.y + 3, p.w - 6, p.h - 6);
+        });
+
+        // Draw Bumpers (Trampolines)
+        this.bumpers.forEach(bp => {
+            this.ctx.fillStyle = '#f1c40f';
+            this.ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
+            this.ctx.fillStyle = '#e67e22';
+            this.ctx.fillRect(bp.x + 4, bp.y + 2, bp.w - 8, bp.h - 4);
+        });
+
+        // Draw Spikes
+        this.spikes.forEach(sp => {
+            this.ctx.fillStyle = '#e74c3c';
+            for (let i = 0; i < sp.w; i += 12) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(sp.x + i, sp.y + sp.h);
+                this.ctx.lineTo(sp.x + i + 6, sp.y);
+                this.ctx.lineTo(sp.x + i + 12, sp.y + sp.h);
+                this.ctx.fill();
+            }
+        });
+
+        // Draw Rings with Glow
+        this.rings.forEach(r => {
+            if (!r.collected) {
+                this.ctx.lineWidth = 3.5;
+                this.ctx.strokeStyle = '#f1c40f';
+                this.ctx.shadowColor = '#f39c12';
+                this.ctx.shadowBlur = 8;
+                this.ctx.beginPath();
+                this.ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.shadowBlur = 0;
+            }
+        });
+
+        // Draw Gems
+        this.gems.forEach(g => {
+            if (!g.collected) {
+                this.ctx.fillStyle = '#2ecc71';
+                this.ctx.beginPath();
+                this.ctx.arc(g.x, g.y, g.radius, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        });
+
+        // Draw Goal Flag
+        this.ctx.fillStyle = '#ecf0f1';
+        this.ctx.fillRect(this.flag.x, this.flag.y, 5, this.flag.h);
+        this.ctx.fillStyle = this.ringsLeft === 0 ? '#2ecc71' : '#e74c3c';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.flag.x + 5, this.flag.y);
+        this.ctx.lineTo(this.flag.x + 30, this.flag.y + 12);
+        this.ctx.lineTo(this.flag.x + 5, this.flag.y + 24);
+        this.ctx.fill();
+
+        // Draw Particles
+        this.particles.forEach(pt => {
+            this.ctx.fillStyle = pt.color;
+            this.ctx.globalAlpha = pt.life;
+            this.ctx.beginPath();
+            this.ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
+        });
+
+        // Draw Player Red Ball (Shaded + Squish Physics)
+        const b = this.ball;
+        this.ctx.save();
+        this.ctx.translate(b.x, b.y);
+        this.ctx.rotate(b.rotation);
+        this.ctx.scale(b.squishX, b.squishY);
+
+        // Ball Shadow
+        this.ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        this.ctx.shadowBlur = 10;
+
+        // Ball Gradient
+        const ballGrad = this.ctx.createRadialGradient(-4, -4, 2, 0, 0, b.radius);
+        ballGrad.addColorStop(0, '#ff7675');
+        ballGrad.addColorStop(0.7, '#d63031');
+        ballGrad.addColorStop(1, '#962d2d');
+
+        this.ctx.fillStyle = ballGrad;
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.shadowBlur = 0;
+
+        // Ball Gloss Reflection
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        this.ctx.beginPath();
+        this.ctx.arc(-4, -4, 3.5, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.restore();
+        this.ctx.restore();
+
+        // HUD OVERLAY
+        this.drawHUD();
+    }
+
+    drawHUD() {
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillRect(10, 10, 200, 52);
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        this.ctx.strokeRect(10, 10, 200, 52);
+
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = 'bold 12px "Segoe UI", sans-serif';
+        this.ctx.fillText(`SCORE: ${this.score}`, 20, 28);
+        this.ctx.fillText(`RINGS: ${this.totalRings - this.ringsLeft} / ${this.totalRings}`, 20, 48);
+
+        if (this.ringsLeft > 0) {
+            this.ctx.fillStyle = '#ff7675';
+            this.ctx.font = 'bold 10px sans-serif';
+            this.ctx.fillText(`Collect all rings to unlock goal!`, 220, 25);
+        } else {
+            this.ctx.fillStyle = '#55efc4';
+            this.ctx.font = 'bold 10px sans-serif';
+            this.ctx.fillText(`GOAL UNLOCKED! REACH THE FLAG!`, 220, 25);
+        }
+    }
+
+    triggerGameOver(msg) {
+        this.isRunning = false;
+        document.getElementById('overlay-title').innerText = "GAME OVER";
+        document.getElementById('overlay-sub').innerText = `${msg} Skor: ${this.score}`;
+        document.getElementById('btn-start-game').innerText = "TRY AGAIN";
+        document.getElementById('overlay').style.display = 'flex';
+    }
+
+    triggerVictory() {
+        this.isRunning = false;
+        document.getElementById('overlay-title').innerText = "LEVEL CLEARED! 🎉";
+        document.getElementById('overlay-sub').innerText = `Selamat! Kamu menyelesaikan Level ${this.selectedLevel} dengan Skor ${this.score}!`;
+        document.getElementById('btn-start-game').innerText = "NEXT LEVEL";
+        document.getElementById('overlay').style.display = 'flex';
+    }
+
+    gameLoop(timestamp) {
+        this.updatePhysics();
+        this.drawHD();
+        if (this.isRunning) {
+            requestAnimationFrame(this.gameLoop);
+        }
+    }
+}
+
+// Initialize Game Instance
+const game = new BounceTalesHD();
+</script>
+</body>
+</html>
