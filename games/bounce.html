@@ -87,7 +87,7 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* CONTROLS LAYER FOR MOBILE ANALOG & JUMP */
+        /* CONTROLS LAYER (LEFT/RIGHT ARROWS & JUMP BUTTONS) */
         .controls-layer {
             width: 100%;
             display: flex;
@@ -97,30 +97,32 @@
             margin-top: 2px;
         }
 
-        .analog-container {
-            width: 130px;
-            height: 130px;
-            background: radial-gradient(circle, #2b323e 0%, #171b22 100%);
-            border: 3px solid #101318;
+        .dpad-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-ctrl {
+            background: linear-gradient(145deg, #3a4250, #252b35);
+            border: 2px solid #1c2028;
             border-radius: 50%;
-            position: relative;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.8), 0 6px 15px rgba(0,0,0,0.5);
-            touch-action: none;
+            color: #dbe0e8;
+            font-size: 26px;
+            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #12151a, 0 8px 12px rgba(0,0,0,0.4);
+            touch-action: manipulation;
+            width: 68px;
+            height: 68px;
         }
 
-        .analog-stick {
-            width: 54px;
-            height: 54px;
-            background: linear-gradient(145deg, #4b5565, #2c333f);
-            border: 2px solid #637185;
-            border-radius: 50%;
-            position: absolute;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.7), inset 0 2px 3px rgba(255,255,255,0.3);
-            pointer-events: none;
-            transition: transform 0.04s linear;
+        .btn-ctrl:active, .btn-ctrl.active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #12151a, 0 3px 6px rgba(0,0,0,0.4);
+            background: #20252e;
         }
 
         .action-group {
@@ -143,13 +145,13 @@
             cursor: pointer;
             box-shadow: 0 8px 0 #7b241c, 0 10px 15px rgba(0,0,0,0.5);
             touch-action: manipulation;
-            width: 82px;
-            height: 82px;
+            width: 78px;
+            height: 78px;
             letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .btn-action:active {
+        .btn-action:active, .btn-action.active {
             transform: translateY(4px);
             box-shadow: 0 4px 0 #7b241c, 0 4px 8px rgba(0,0,0,0.5);
         }
@@ -262,17 +264,18 @@
         <canvas id="gameCanvas" width="480" height="360"></canvas>
     </div>
 
-    <!-- Analog Controller & Jump Button -->
+    <!-- Left/Right Directional Pad & Jump Button -->
     <div class="controls-layer">
-        <div class="analog-container" id="analog-base">
-            <div class="analog-stick" id="analog-stick"></div>
+        <div class="dpad-group">
+            <div class="btn-ctrl" id="btn-left">◄</div>
+            <div class="btn-ctrl" id="btn-right">►</div>
         </div>
         <div class="action-group">
             <div class="btn-action" id="btn-jump">JUMP</div>
         </div>
     </div>
 
-    <div class="hint">PC: Keyboard (WASD / Panah + Space) | HP: Analog Touch</div>
+    <div class="hint">PC: Keyboard (WASD / Panah + Space) | HP: Tombol Kiri, Kanan, & Jump</div>
 
     <!-- Menu & Level Selector Overlay -->
     <div id="overlay" class="overlay-screen">
@@ -313,7 +316,6 @@ class BounceTalesHD {
 
         // Input Tracking
         this.keys = { left: false, right: false, jump: false, down: false };
-        this.analogVal = 0; // -1 (left) to 1 (right)
 
         // Game Physics & State
         this.score = 0;
@@ -325,10 +327,9 @@ class BounceTalesHD {
 
         // Visual Particles & Effects
         this.particles = [];
-        this.bgStars = [];
+        this.lastTime = 0;
 
-        this.initAnalogControl();
-        this.initKeyboardControl();
+        this.initControls();
     }
 
     selectLevel(lvl) {
@@ -351,7 +352,7 @@ class BounceTalesHD {
     }
 
     initLevel(levelNum) {
-        // Player Physics Config
+        // Player Physics Config (Fixed step rate for consistent speed across mobile & PC)
         this.ball = {
             x: 80,
             y: 200,
@@ -360,11 +361,11 @@ class BounceTalesHD {
             radius: 13,
             rotation: 0,
             isGrounded: false,
-            bouncePower: -10.5,
-            moveSpeed: 0.55,
-            maxSpeed: 5.5,
-            friction: 0.93,
-            gravity: 0.42,
+            bouncePower: -10.2,
+            moveSpeed: 0.45,
+            maxSpeed: 4.8,
+            friction: 0.92,
+            gravity: 0.40,
             squishX: 1,
             squishY: 1
         };
@@ -381,7 +382,6 @@ class BounceTalesHD {
         this.bumpers = [];
         this.movingPlatforms = [];
 
-        // Build massive maps (~10 minutes per level at standard pace)
         if (levelNum === 1) {
             this.buildLevel1SkyHills();
         } else if (levelNum === 2) {
@@ -394,7 +394,7 @@ class BounceTalesHD {
         this.ringsLeft = this.totalRings;
     }
 
-    // --- LEVEL 1: SKY HILLS (~20,000 pixels length) ---
+    // --- LEVEL 1: SKY HILLS ---
     buildLevel1SkyHills() {
         this.theme = {
             skyTop: '#1b4965', skyBottom: '#62b6cb',
@@ -404,15 +404,12 @@ class BounceTalesHD {
         this.levelLength = 22000;
 
         let curX = 0;
-
-        // Section 1: Warmup & Rolling Slopes
         this.addGround(0, 260, 1200);
         this.addRing(300, 210);
         this.addRing(600, 210);
         this.addRing(900, 180);
 
         curX = 1250;
-        // Section 2: Precision Jumps over Gaps
         for (let i = 0; i < 8; i++) {
             this.addGround(curX, 260 - (i % 2) * 50, 180);
             this.addRing(curX + 90, 180 - (i % 2) * 50);
@@ -420,7 +417,6 @@ class BounceTalesHD {
             curX += 260;
         }
 
-        // Section 3: Bumper Tower Ascent
         this.addGround(curX, 280, 800);
         this.addBumper(curX + 150, 265, 40);
         this.addGround(curX + 260, 160, 120);
@@ -430,7 +426,6 @@ class BounceTalesHD {
         this.addRing(curX + 540, 20);
 
         curX += 850;
-        // Section 4: Moving Platform Gauntlet
         this.addGround(curX, 280, 300);
         for (let i = 0; i < 6; i++) {
             this.addMovingPlatform(curX + 350 + i * 320, 220, 140, 20, 0, 80, 0.02 + i * 0.005);
@@ -439,16 +434,14 @@ class BounceTalesHD {
         }
 
         curX += 2400;
-        // Section 5: Long Canyon & Spike Valley
         this.addGround(curX, 280, 400);
-        this.addSpike(curX + 400, 280, 800); // 800px deadly spike floor
+        this.addSpike(curX + 400, 280, 800);
         for (let i = 0; i < 5; i++) {
             this.addGround(curX + 450 + i * 150, 200 - (i % 3) * 35, 90);
             this.addRing(curX + 490 + i * 150, 150 - (i % 3) * 35);
         }
 
         curX += 1300;
-        // Section 6: Slalom Hill Sprint
         for (let i = 0; i < 12; i++) {
             this.addGround(curX, 260 - Math.sin(i) * 60, 220);
             if (i % 2 === 0) this.addGem(curX + 110, 200 - Math.sin(i) * 60);
@@ -456,7 +449,6 @@ class BounceTalesHD {
             curX += 200;
         }
 
-        // Final Goal Area
         this.addGround(curX, 260, 800);
         this.flag = { x: curX + 500, y: 190, w: 24, h: 70 };
     }
@@ -474,7 +466,6 @@ class BounceTalesHD {
         this.addGround(0, 260, 800);
 
         curX = 850;
-        // Volcanic Bumper Chambers
         for (let i = 0; i < 10; i++) {
             this.addGround(curX, 280, 220);
             this.addBumper(curX + 90, 265, 40);
@@ -484,7 +475,6 @@ class BounceTalesHD {
             curX += 340;
         }
 
-        // Collapse & Fast Drop Zone
         for (let i = 0; i < 8; i++) {
             this.addMovingPlatform(curX, 180 + (i * 20), 120, 20, 100, 0, 0.03);
             this.addRing(curX + 60, 130 + (i * 20));
@@ -516,7 +506,6 @@ class BounceTalesHD {
         this.addGround(0, 260, 600);
 
         curX = 650;
-        // Extreme Precision & Double Spike Walls
         for (let i = 0; i < 12; i++) {
             this.addGround(curX, 260 - (i * 10), 140);
             this.addSpike(curX + 10, 245 - (i * 10), 40);
@@ -539,7 +528,6 @@ class BounceTalesHD {
         this.flag = { x: curX + 500, y: 190, w: 24, h: 70 };
     }
 
-    // Helper functions for map generation
     addGround(x, y, w, h = 120) { this.platforms.push({ x, y, w, h, type: 'ground' }); }
     addSpike(x, y, w) { this.spikes.push({ x, y, w, h: 16 }); }
     addBumper(x, y, w) { this.bumpers.push({ x, y, w, h: 16 }); }
@@ -552,59 +540,22 @@ class BounceTalesHD {
         });
     }
 
-    // Touch Analog Initialization
-    initAnalogControl() {
-        const base = document.getElementById('analog-base');
-        const stick = document.getElementById('analog-stick');
-        let active = false;
-
-        const handleMove = (clientX, clientY) => {
-            if (!active) return;
-            const rect = base.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            let deltaX = clientX - centerX;
-            let deltaY = clientY - centerY;
-            const dist = Math.hypot(deltaX, deltaY);
-            const maxDist = rect.width / 2 - 10;
-
-            if (dist > maxDist) {
-                deltaX = (deltaX / dist) * maxDist;
-                deltaY = (deltaY / dist) * maxDist;
-            }
-
-            stick.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-            this.analogVal = deltaX / maxDist; // Normalized -1 to 1
-
-            if (this.analogVal < -0.25) { this.keys.left = true; this.keys.right = false; }
-            else if (this.analogVal > 0.25) { this.keys.right = true; this.keys.left = false; }
-            else { this.keys.left = false; this.keys.right = false; }
+    // Touch & Keyboard Controls Setup (Panah Kiri, Kanan, & Jump)
+    initControls() {
+        const bindBtn = (id, keyName) => {
+            const el = document.getElementById(id);
+            const start = (e) => { e.preventDefault(); this.keys[keyName] = true; el.classList.add('active'); };
+            const end = (e) => { e.preventDefault(); this.keys[keyName] = false; el.classList.remove('active'); };
+            el.addEventListener('touchstart', start);
+            el.addEventListener('touchend', end);
+            el.addEventListener('mousedown', start);
+            el.addEventListener('mouseup', end);
         };
 
-        const handleEnd = () => {
-            active = false;
-            stick.style.transform = `translate(0px, 0px)`;
-            this.analogVal = 0;
-            this.keys.left = false;
-            this.keys.right = false;
-        };
+        bindBtn('btn-left', 'left');
+        bindBtn('btn-right', 'right');
+        bindBtn('btn-jump', 'jump');
 
-        base.addEventListener('touchstart', (e) => { active = true; handleMove(e.touches[0].clientX, e.touches[0].clientY); });
-        window.addEventListener('touchmove', (e) => { if (active) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
-        window.addEventListener('touchend', handleEnd);
-
-        // Jump button event
-        const btnJump = document.getElementById('btn-jump');
-        const triggerJump = (e) => { e.preventDefault(); this.keys.jump = true; };
-        const endJump = (e) => { e.preventDefault(); this.keys.jump = false; };
-        btnJump.addEventListener('touchstart', triggerJump);
-        btnJump.addEventListener('touchend', endJump);
-        btnJump.addEventListener('mousedown', triggerJump);
-        btnJump.addEventListener('mouseup', endJump);
-    }
-
-    initKeyboardControl() {
         window.addEventListener('keydown', (e) => {
             if (['ArrowLeft', 'a', 'A'].includes(e.key)) this.keys.left = true;
             if (['ArrowRight', 'd', 'D'].includes(e.key)) this.keys.right = true;
@@ -630,24 +581,21 @@ class BounceTalesHD {
         }
     }
 
-    updatePhysics() {
+    updatePhysics(dt) {
         const b = this.ball;
 
-        // Smooth Squish recovery
         b.squishX += (1 - b.squishX) * 0.15;
         b.squishY += (1 - b.squishY) * 0.15;
 
-        // Horizontal Acceleration
-        if (this.keys.left) b.vx -= b.moveSpeed;
-        if (this.keys.right) b.vx += b.moveSpeed;
+        // Consistent movement speed using normalized dt scaling
+        if (this.keys.left) b.vx -= b.moveSpeed * dt;
+        if (this.keys.right) b.vx += b.moveSpeed * dt;
 
-        b.vx *= b.friction;
+        b.vx *= Math.pow(b.friction, dt);
         b.vx = Math.max(-b.maxSpeed, Math.min(b.maxSpeed, b.vx));
 
-        // Gravity
-        b.vy += b.gravity;
+        b.vy += b.gravity * dt;
 
-        // Jump Physics with Squish
         if (this.keys.jump && b.isGrounded) {
             b.vy = b.bouncePower;
             b.isGrounded = false;
@@ -656,21 +604,19 @@ class BounceTalesHD {
             this.spawnParticle(b.x, b.y + b.radius, '#ffffff', 8);
         }
 
-        b.x += b.vx;
-        b.y += b.vy;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
 
-        b.rotation += b.vx * 0.08;
+        b.rotation += b.vx * 0.08 * dt;
         b.isGrounded = false;
 
-        // Update Moving Platforms
         this.movingPlatforms.forEach(p => {
-            p.angle += p.speed;
+            p.angle += p.speed * dt;
             const prevX = p.x;
             const prevY = p.y;
             p.x = p.startX + Math.sin(p.angle) * p.rangeX;
             p.y = p.startY + Math.cos(p.angle) * p.rangeY;
 
-            // Carry ball on top of platform
             if (
                 b.x + b.radius > p.x &&
                 b.x - b.radius < p.x + p.w &&
@@ -685,7 +631,6 @@ class BounceTalesHD {
             }
         });
 
-        // Platform Collisions
         this.platforms.forEach(p => {
             if (
                 b.x + b.radius > p.x &&
@@ -693,24 +638,21 @@ class BounceTalesHD {
                 b.y + b.radius > p.y &&
                 b.y - b.radius < p.y + p.h
             ) {
-                // Landing on Top
-                if (b.vy > 0 && b.y - b.vy <= p.y + 12) {
+                if (b.vy > 0 && b.y - (b.vy * dt) <= p.y + 12) {
                     b.y = p.y - b.radius;
                     if (b.vy > 4) {
                         b.squishX = 1.3;
                         b.squishY = 0.7;
                         this.spawnParticle(b.x, b.y + b.radius, '#a8e6cf', 5);
                     }
-                    b.vy = -b.vy * 0.25; // Gentle bounce
+                    b.vy = -b.vy * 0.25;
                     if (Math.abs(b.vy) < 0.8) b.vy = 0;
                     b.isGrounded = true;
                 }
-                // Ceiling collision
-                else if (b.vy < 0 && b.y - b.vy >= p.y + p.h - 12) {
+                else if (b.vy < 0 && b.y - (b.vy * dt) >= p.y + p.h - 12) {
                     b.y = p.y + p.h + b.radius;
                     b.vy = 0;
                 }
-                // Walls
                 else if (b.vx > 0 && b.x < p.x) {
                     b.x = p.x - b.radius;
                     b.vx = 0;
@@ -721,7 +663,6 @@ class BounceTalesHD {
             }
         });
 
-        // Bumper Collision (Trampoline)
         this.bumpers.forEach(bp => {
             if (
                 b.x + b.radius > bp.x &&
@@ -729,14 +670,13 @@ class BounceTalesHD {
                 b.y + b.radius > bp.y &&
                 b.y - b.radius < bp.y + bp.h
             ) {
-                b.vy = -15.5; // High launch
+                b.vy = -15.5;
                 b.squishX = 0.6;
                 b.squishY = 1.4;
                 this.spawnParticle(bp.x + bp.w / 2, bp.y, '#f1c40f', 12);
             }
         });
 
-        // Spikes Collision
         this.spikes.forEach(sp => {
             if (
                 b.x + b.radius > sp.x + 4 &&
@@ -747,7 +687,6 @@ class BounceTalesHD {
             }
         });
 
-        // Ring Collection
         this.rings.forEach(r => {
             if (!r.collected) {
                 const dist = Math.hypot(b.x - r.x, b.y - r.y);
@@ -760,7 +699,6 @@ class BounceTalesHD {
             }
         });
 
-        // Gem Collection
         this.gems.forEach(g => {
             if (!g.collected) {
                 const dist = Math.hypot(b.x - g.x, b.y - g.y);
@@ -772,27 +710,23 @@ class BounceTalesHD {
             }
         });
 
-        // Fall Death
         if (b.y > this.height + 100) {
             this.triggerGameOver("FELL INTO THE ABYSS! 💀");
         }
 
-        // Goal Flag Reached
         if (b.x >= this.flag.x && b.x <= this.flag.x + this.flag.w) {
             if (this.ringsLeft === 0) {
                 this.triggerVictory();
             }
         }
 
-        // Camera Smooth Follow
         this.cameraX += (b.x - this.cameraX - this.width * 0.38) * 0.08;
         this.cameraX = Math.max(0, this.cameraX);
 
-        // Update Particles
         this.particles.forEach((pt, idx) => {
-            pt.x += pt.vx;
-            pt.y += pt.vy;
-            pt.life -= 0.04;
+            pt.x += pt.vx * dt;
+            pt.y += pt.vy * dt;
+            pt.life -= 0.04 * dt;
             if (pt.life <= 0) this.particles.splice(idx, 1);
         });
     }
@@ -800,7 +734,6 @@ class BounceTalesHD {
     drawHD() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Sky Gradient
         const skyGrad = this.ctx.createLinearGradient(0, 0, 0, this.height);
         skyGrad.addColorStop(0, this.theme.skyTop);
         skyGrad.addColorStop(1, this.theme.skyBottom);
@@ -810,7 +743,6 @@ class BounceTalesHD {
         this.ctx.save();
         this.ctx.translate(-Math.floor(this.cameraX), 0);
 
-        // HD Parallax Hills
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
         for (let i = 0; i < 20; i++) {
             this.ctx.beginPath();
@@ -818,13 +750,10 @@ class BounceTalesHD {
             this.ctx.fill();
         }
 
-        // Draw Platforms
         this.platforms.forEach(p => {
-            // Ground Body
             this.ctx.fillStyle = this.theme.dirt;
             this.ctx.fillRect(p.x, p.y + 8, p.w, p.h - 8);
 
-            // Grass/Top Surface Highlight
             const grassGrad = this.ctx.createLinearGradient(p.x, p.y, p.x, p.y + 8);
             grassGrad.addColorStop(0, this.theme.grassTop);
             grassGrad.addColorStop(1, this.theme.grassBody);
@@ -832,7 +761,6 @@ class BounceTalesHD {
             this.ctx.fillRect(p.x, p.y, p.w, 8);
         });
 
-        // Draw Moving Platforms
         this.movingPlatforms.forEach(p => {
             this.ctx.fillStyle = '#f39c12';
             this.ctx.fillRect(p.x, p.y, p.w, p.h);
@@ -840,7 +768,6 @@ class BounceTalesHD {
             this.ctx.fillRect(p.x + 3, p.y + 3, p.w - 6, p.h - 6);
         });
 
-        // Draw Bumpers (Trampolines)
         this.bumpers.forEach(bp => {
             this.ctx.fillStyle = '#f1c40f';
             this.ctx.fillRect(bp.x, bp.y, bp.w, bp.h);
@@ -848,7 +775,6 @@ class BounceTalesHD {
             this.ctx.fillRect(bp.x + 4, bp.y + 2, bp.w - 8, bp.h - 4);
         });
 
-        // Draw Spikes
         this.spikes.forEach(sp => {
             this.ctx.fillStyle = '#e74c3c';
             for (let i = 0; i < sp.w; i += 12) {
@@ -860,7 +786,6 @@ class BounceTalesHD {
             }
         });
 
-        // Draw Rings with Glow
         this.rings.forEach(r => {
             if (!r.collected) {
                 this.ctx.lineWidth = 3.5;
@@ -874,7 +799,6 @@ class BounceTalesHD {
             }
         });
 
-        // Draw Gems
         this.gems.forEach(g => {
             if (!g.collected) {
                 this.ctx.fillStyle = '#2ecc71';
@@ -884,7 +808,6 @@ class BounceTalesHD {
             }
         });
 
-        // Draw Goal Flag
         this.ctx.fillStyle = '#ecf0f1';
         this.ctx.fillRect(this.flag.x, this.flag.y, 5, this.flag.h);
         this.ctx.fillStyle = this.ringsLeft === 0 ? '#2ecc71' : '#e74c3c';
@@ -894,7 +817,6 @@ class BounceTalesHD {
         this.ctx.lineTo(this.flag.x + 5, this.flag.y + 24);
         this.ctx.fill();
 
-        // Draw Particles
         this.particles.forEach(pt => {
             this.ctx.fillStyle = pt.color;
             this.ctx.globalAlpha = pt.life;
@@ -904,18 +826,15 @@ class BounceTalesHD {
             this.ctx.globalAlpha = 1.0;
         });
 
-        // Draw Player Red Ball (Shaded + Squish Physics)
         const b = this.ball;
         this.ctx.save();
         this.ctx.translate(b.x, b.y);
         this.ctx.rotate(b.rotation);
         this.ctx.scale(b.squishX, b.squishY);
 
-        // Ball Shadow
         this.ctx.shadowColor = 'rgba(0,0,0,0.4)';
         this.ctx.shadowBlur = 10;
 
-        // Ball Gradient
         const ballGrad = this.ctx.createRadialGradient(-4, -4, 2, 0, 0, b.radius);
         ballGrad.addColorStop(0, '#ff7675');
         ballGrad.addColorStop(0.7, '#d63031');
@@ -927,7 +846,6 @@ class BounceTalesHD {
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
 
-        // Ball Gloss Reflection
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
         this.ctx.beginPath();
         this.ctx.arc(-4, -4, 3.5, 0, Math.PI * 2);
@@ -936,7 +854,6 @@ class BounceTalesHD {
         this.ctx.restore();
         this.ctx.restore();
 
-        // HUD OVERLAY
         this.drawHUD();
     }
 
@@ -979,8 +896,12 @@ class BounceTalesHD {
     }
 
     gameLoop(timestamp) {
-        this.updatePhysics();
+        const dt = Math.min((timestamp - this.lastTime) / 16.666, 2.0); // Normalize delta time for consistent speed
+        this.lastTime = timestamp;
+
+        this.updatePhysics(dt);
         this.drawHD();
+
         if (this.isRunning) {
             requestAnimationFrame(this.gameLoop);
         }
